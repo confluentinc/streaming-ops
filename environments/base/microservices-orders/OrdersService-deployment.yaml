@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: OrdersService
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: OrdersService
+  template:
+    metadata:
+      labels:
+        app: OrdersService
+    spec:
+      containers:
+      - name: OrdersService
+        image: cnfldemos/kafka-streams-examples:5.5.1-DEVX-1881-PR346
+        ports:
+        - containerPort: 18894
+
