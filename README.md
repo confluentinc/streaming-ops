@@ -60,8 +60,7 @@ https://github.com/bitnami-labs/sealed-secrets
 	* `make seal-dev`
 	* `git add secrets/sealed/dev/default-kafka-secrets.yaml`
 	* `git commit -m 'New secrets!'`
-  * `git push origin master`
-		* or to the appropriate branch if you are doing GitOps by PR already!
+	* `git push origin master` (or to the appropriate branch if you are doing GitOps by PR already!)
 
 1. Install Flux into the cluster
 
