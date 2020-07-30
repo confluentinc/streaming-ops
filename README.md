@@ -29,16 +29,18 @@ https://github.com/bitnami-labs/sealed-secrets
 
 1. Update the following variables in `scripts\flux-init.sh`
 
-	* `ENVIRONMENT=dev` You'd complete this process for each environment
+	* `ENVIRONMENT=dev` You'll complete this process for each environment
 	* `REPO_URL=git@github.com:confluentinc/kafka-devops` Update to match your git remote URL
 	* `REPO_GIT_USER=rspurgeon` Update to your git username
 	* `REPO_GIT_EMAIL=rspurgeon@confluent.io` Update to your git email
 
-1. To install all dependencies
+1. To install all dependencies on a Mac.  Uses `sudo` to install binaries to `/usr/local/bin`
 
-   `make init`
+	`make init`
 
-1. To create a local test cluster using k3d
+	(Linux instructions to come)
+
+1. To create a local test cluster on Docker using k3d
 
    `make cluster`
 
@@ -48,22 +50,29 @@ https://github.com/bitnami-labs/sealed-secrets
 
 1. Retrieve the secrets controller public key for this environment. The public key is stored in `secrets/keys/<environment>.crt`
 
-	 `make get-public-key`
+	 `make get-public-key ENV=dev`
 
 1. Create your secrets, commit and push them to the repository
 
-	 todo: link to secrets instructions
-
-1. Verify secrets are available
-
-	 `kubectl get sealedsecrets.bitnami.com`
-	 `kubectl get secrets`
+	* Create a file like the example `secrets\example.secret` containing your secret values.
+	* `kubectl create secret generic kafka-secrets --namespace=default --from-env-file=secrets/example.secret --dry-run=client -o yaml > secrets/local-toseal/dev/default-kafka-secrets.yaml`
+		* The output file name, the secret name, and the namespace are all linked with the above command. Study the `scripts/seal-secrets.sh` script before executing with different values.
+	* `make seal-dev`
+	* `git add secrets/sealed/dev/default-kafka-secrets.yaml`
+	* `git commit -m 'New secrets!'
+  * `git push origin master`
+		* or to the appropriate branch if you are doing GitOps by PR already!
 
 1. Install Flux into the cluster
 
    `make install-flux`
 
    	The script will install Flux into the cluster and then wait for you to add a Deploy Key in the repo with the key provided.
+
+1. Verify secrets are available
+
+	 `kubectl get sealedsecrets.bitnami.com`
+	 `kubectl get secrets`
 
 1. Verify the system is deployed
 
