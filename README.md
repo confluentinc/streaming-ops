@@ -1,8 +1,9 @@
 # kafka-devops
 
-Simulated production environment running Kafka and Confluent products managed by declarative infrastructure and GitOps.
+Simulated production environment running a streaming application targeting Apache Kafka on Confluent Cloud.
+Applications and resources are managed by declarative infrastructure and GitOps.
 
-# Tool pre-requisites
+# Tool prerequisites
 
 ## k3d
 If you'd like to run the example on a local Docker based Kubernetes cluster
