@@ -27,9 +27,12 @@ https://github.com/bitnami-labs/sealed-secrets
 
 1. Fork this repository
 
-1. Update the `REPO_URL` variable in `scripts\flux-init.sh` to point to your fork
+1. Update the following variables in `scripts\flux-init.sh`
 
-   `REPO_URL=${1:-git@github.com:confluentinc/kafka-devops}`
+		`ENVIRONMENT=dev` You'd complete this process for each environment
+		`REPO_URL=git@github.com:confluentinc/kafka-devops` Update to match your git remote URL
+		`REPO_GIT_USER=rspurgeon` Update to your git username
+		`REPO_GIT_EMAIL=rspurgeon@confluent.io` Update to your git email
 
 1. To install all dependencies
 
@@ -43,9 +46,18 @@ https://github.com/bitnami-labs/sealed-secrets
 
 	 `make install-bitnami-secret-controller`
 
-1. Create your secrets
+1. Retrieve the secrets controller public key for this environment. The public key is stored in `secrets/keys/<environment>.crt`
+
+	 `make get-public-key`
+
+1. Create your secrets, commit and push them to the repository
 
 	 todo: link to secrets instructions
+
+1. Verify secrets are available
+
+	 `kubectl get sealedsecrets.bitnami.com`
+	 `kubectl get secrets`
 
 1. Install Flux into the cluster
 
@@ -58,4 +70,5 @@ https://github.com/bitnami-labs/sealed-secrets
 	 `kubectl get all`
 
 ## Credits
-Significant portions of the repository are based on work by Steven Wade @ https://github.com/swade1987
+Significant portions of the repository are based on the work of Steven Wade @ https://github.com/swade1987
+
