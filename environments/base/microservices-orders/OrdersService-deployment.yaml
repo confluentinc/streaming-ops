@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: OrdersService
+  name: orders-service
 spec:
   replicas: 1
   selector:
@@ -13,7 +13,7 @@ spec:
         app: orders-service
     spec:
       containers:
-      - name: OrdersService
+      - name: orders-service
         image: cnfldemos/kafka-streams-examples:5.5.1-DEVX-1881-PR346
         ports:
         - containerPort: 18894
