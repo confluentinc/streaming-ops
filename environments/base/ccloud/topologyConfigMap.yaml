@@ -1,8 +1,8 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: topology-2
-  namespace: kafka-devops
+  name: topology
+  namespace: ccloud
 data:
   config: |
     environments:
