@@ -4,10 +4,10 @@ init:
 	brew install k3d
 
 cluster:
-	k3d create cluster kafka-gitops --servers 4
+	k3d cluster create kafka-gitops --servers 4
 
 destroy:
-	k3d delete cluster kafka-gitops
+	k3d cluster delete kafka-gitops
 
 install-flux:
 	./scripts/flux-init.sh
