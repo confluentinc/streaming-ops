@@ -17,5 +17,6 @@ spec:
         image: cnfldemos/kafka-streams-examples:5.5.1-DEVX-1881-PR346
         ports:
         - containerPort: 18894
-        command: [ sleep 50000; ]
+        command: [ "sleep" ]
+        args: [ "60" ]
 
