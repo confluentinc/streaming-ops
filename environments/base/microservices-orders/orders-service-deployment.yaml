@@ -17,5 +17,5 @@ spec:
         image: cnfldemos/kafka-streams-examples:5.5.1-DEVX-1881-PR346
         ports:
         - containerPort: 18894
-        command: [ java -cp /usr/share/java/kafka-streams-examples/kafka-streams-examples-5.5.1-standalone.jar io.confluent.examples.streams.microservices.OrdersService --help ]
+        command: [ sleep 50000; ]
 
