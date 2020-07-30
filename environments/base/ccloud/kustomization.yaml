@@ -5,6 +5,7 @@ commonLabels:
 generatorOptions:
   disableNameSuffixHash: true
 resources:
+- namespace.yaml
 configMapGenerator:
 - name: topology
   namespace: ccloud
