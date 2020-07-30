@@ -26,7 +26,7 @@ destroy:
 install-bitnami-secret-controller:
 	kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.12.4/controller.yaml
 
-install-flux: install-bitnami-secret-controller
+install-flux: 
 	./scripts/flux-init.sh
 
 seal-%:

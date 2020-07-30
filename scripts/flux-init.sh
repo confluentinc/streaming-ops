@@ -17,11 +17,13 @@ if [[ ! -x "$(command -v fluxctl)" ]]; then
     exit 1
 fi
 
-REPO_GIT_INIT_PATHS="environments/dev,secrets/dev"
+REPO_GIT_INIT_PATHS="environments/dev\,secrets/sealed/dev"
 REPO_ROOT=$(git rev-parse --show-toplevel)
 REPO_URL=${1:-git@github.com:confluentinc/kafka-devops}
 REPO_BRANCH=master
 TEMP=${REPO_ROOT}/.temp
+REPO_GIT_USER=rspurgeon
+REPO_GIT_EMAIL=rspurgeon@confluent.io
 
 rm -rf ${TEMP} && mkdir ${TEMP}
 
@@ -31,6 +33,8 @@ echo ">>> Installing Flux for ${REPO_URL} only watching the ${REPO_GIT_INIT_PATH
 kubectl create ns flux || true
 helm upgrade -i flux fluxcd/flux --wait \
 --set git.url=${REPO_URL} \
+--set git.user=${REPO_GIT_USER} \
+--set git.email=${REPO_GIT_EMAIL} \
 --set git.branch=${REPO_BRANCH} \
 --set git.path=${REPO_GIT_INIT_PATHS} \
 --set git.pollInterval=1m \
