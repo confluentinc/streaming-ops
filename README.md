@@ -46,7 +46,5 @@ https://github.com/bitnami-labs/sealed-secrets
    	The script will install Flux into the cluster and then wait for you to add a Deploy Key in the repo with the key provided.
 
 
-## docs link here coming
-
 ## Credits
 Significant portions of the repository are based on work by Steven Wade @ https://github.com/swade1987
