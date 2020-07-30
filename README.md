@@ -59,7 +59,7 @@ https://github.com/bitnami-labs/sealed-secrets
 		* The output file name, the secret name, and the namespace are all linked with the above command. Study the `scripts/seal-secrets.sh` script before executing with different values.
 	* `make seal-dev`
 	* `git add secrets/sealed/dev/default-kafka-secrets.yaml`
-	* `git commit -m 'New secrets!'
+	* `git commit -m 'New secrets!'`
   * `git push origin master`
 		* or to the appropriate branch if you are doing GitOps by PR already!
 
