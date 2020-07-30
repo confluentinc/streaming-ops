@@ -6,8 +6,5 @@ generatorOptions:
   disableNameSuffixHash: true
 resources:
 - namespace.yaml
-configMapGenerator:
-- name: topology
-  namespace: ccloud
-  files:
-  - topology.yaml
+- topologyConfigMap.yaml
+

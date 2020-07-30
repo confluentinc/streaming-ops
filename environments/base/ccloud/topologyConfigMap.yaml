@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: topology-2
+  namespace: kafka-devops
+data:
+  config: |
+    environments:
+    - name: kafka-devops
+      clusters:
+      - name: microservices-orders
+        cloud: aws
+        region: us-west-2
+        availability: single-zone
+        type: basic
+        topics:
+        - name: orders
+          config:
+            replication.factor: "3"
+            num.partitions: "3"
+        - name: warehouse-inventory
+          config:
+            replication.factor: "3"
+            num.partitions: "3"
+    
