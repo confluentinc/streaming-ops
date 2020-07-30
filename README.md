@@ -29,10 +29,10 @@ https://github.com/bitnami-labs/sealed-secrets
 
 1. Update the following variables in `scripts\flux-init.sh`
 
-		`ENVIRONMENT=dev` You'd complete this process for each environment
-		`REPO_URL=git@github.com:confluentinc/kafka-devops` Update to match your git remote URL
-		`REPO_GIT_USER=rspurgeon` Update to your git username
-		`REPO_GIT_EMAIL=rspurgeon@confluent.io` Update to your git email
+	* `ENVIRONMENT=dev` You'd complete this process for each environment
+	* `REPO_URL=git@github.com:confluentinc/kafka-devops` Update to match your git remote URL
+	* `REPO_GIT_USER=rspurgeon` Update to your git username
+	* `REPO_GIT_EMAIL=rspurgeon@confluent.io` Update to your git email
 
 1. To install all dependencies
 
