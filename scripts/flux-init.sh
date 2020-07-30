@@ -17,11 +17,11 @@ if [[ ! -x "$(command -v fluxctl)" ]]; then
     exit 1
 fi
 
-REPO_GIT_INIT_PATHS="environments/dev"
+REPO_GIT_INIT_PATHS="environments/dev,secrets/dev"
 REPO_ROOT=$(git rev-parse --show-toplevel)
 REPO_URL=${1:-git@github.com:confluentinc/kafka-devops}
 REPO_BRANCH=master
-TEMP=${REPO_ROOT}/temp
+TEMP=${REPO_ROOT}/.temp
 
 rm -rf ${TEMP} && mkdir ${TEMP}
 
