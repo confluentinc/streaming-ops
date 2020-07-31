@@ -26,5 +26,5 @@ spec:
         ports:
         - containerPort: 18894
         command: [ "java" ]
-        args: [ "-cp","/usr/share/java/kafka-streams-examples/kafka-streams-examples-5.5.1-standalone.jar","io.confluent.examples.streams.microservices.OrdersService","--bootstrap-servers","$(BOOTSTRAP_SERVERS)", "--schema-registry","$(SCHEMA_REGISTRY_URL)","--port","18894" ]
+        args: [ "-cp","/usr/share/java/kafka-streams-examples/kafka-streams-examples-5.5.1-standalone.jar","io.confluent.examples.streams.microservices.OrdersService","--config-file","/opt/docker/kafka.properties","--bootstrap-servers","$(grep \"bootstrap.servers\" /opt/docker/kafka.properties | cut -d'=' -f2)", "--schema-registry","$(grep \"schema.registry.url\" /opt/docker/kafka.properties | cut -d'=' -f2)","--port","18894" ]
 
