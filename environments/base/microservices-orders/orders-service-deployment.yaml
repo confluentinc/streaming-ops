@@ -18,7 +18,7 @@ spec:
           secretName: kafka-secrets
       containers:
       - name: orders-service
-        image: cnfldemos/orders-service:5.5.1-0.0.3
+        image: cnfldemos/orders-service:5.5.1-0.0.4
         volumeMounts:
         - name: kafka-properties-volume
           mountPath: /etc/kafka/
