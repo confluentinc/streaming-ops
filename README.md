@@ -19,9 +19,23 @@ Used to install Flux into the cluster
 https://helm.sh/docs/intro/install/
 
 ## Bitnami Sealed Secrets Kubeseal
-The repository uses sealed secrets and the Bitnami controller for managing secret values. `kubeseal` is used in scripting to create the secrets locally prior to being committed to the repository.
+The repository uses sealed secrets and the Bitnami controller for managing secret values. `kubeseal` is used in scripting to seal the secrets locally, which are then committed to the repository.
 
 https://github.com/bitnami-labs/sealed-secrets
+
+## jq
+https://stedolan.github.io/jq/
+
+## yq
+https://github.com/mikefarah/yq
+
+# Confluent Cloud
+
+This demo utilizes Confluent Cloud for Kafka as a service as well as Schema Registry and ksqlDB. In order to run this demo you will need a Confluent Cloud account, the ccloud CLI, and an environment and Kafka cluster setup. 
+
+In the future, all steps (besides account creation), will be automated and managed by operations in this repository. Until there there are some setup steps to make the application function properly.
+
+TOOD: Link to Docs for setting up ccloud and environment properly
 
 # Usage 
 
@@ -34,7 +48,7 @@ https://github.com/bitnami-labs/sealed-secrets
 	* `REPO_GIT_USER=rspurgeon` Update to your git username
 	* `REPO_GIT_EMAIL=rspurgeon@confluent.io` Update to your git email
 
-1. To install all dependencies on a Mac.  Uses `sudo` to install binaries to `/usr/local/bin`
+1. To install all dependencies on a Mac (uses `sudo` to install binaries to `/usr/local/bin`, so you will be prompted for pwd).
 
 	`make init`
 
@@ -42,13 +56,30 @@ https://github.com/bitnami-labs/sealed-secrets
 
 1. To create a local test cluster on Docker using k3d
 
-   `make cluster`
+  `make cluster`
+
+  Verify the cluster is ready:
+  ```
+  kubectl get nodes
+  NAME                        STATUS   ROLES    AGE   VERSION
+  k3d-kafka-gitops-server-0   Ready    master   24s   v1.18.4+k3s1
+  k3d-kafka-gitops-server-1   Ready    master   15s   v1.18.4+k3s1
+  k3d-kafka-gitops-server-2   Ready    master   12s   v1.18.4+k3s1
+  k3d-kafka-gitops-server-3   Ready    master   10s   v1.18.4+k3s1 
+  ```
 
 1. Install Bitnami Sealed Secrets Controller into the cluster
 
-	 `make install-bitnami-secret-controller`
+  `make install-bitnami-secret-controller`
+  
+  Verify the controller is ready:
 
-1. Retrieve the secrets controller public key for this environment. The public key is stored in `secrets/keys/<environment>.crt`
+  ```
+  kubectl get -n kube-system deployment/sealed-secrets-controller -o json | jq '.status.availableReplicas'
+  1
+  ```
+
+1. Retrieve the secrets controller public key for this environment. The public key is stored in `secrets/keys/<environment>.crt`, _but not checked into the repository_.  See the Bitnami docs for long term management of secrets.
 
 	 `make get-public-key ENV=dev`
 
