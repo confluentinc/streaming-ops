@@ -111,10 +111,12 @@ TOOD: Link to Docs for setting up ccloud and environment properly
 1. Verify secrets are available
 
 	`kubectl get sealedsecrets.bitnami.com`
+
 	`kubectl get secrets`
 
-	Using `jq`, you can decode that the bootstrap servers secret is properly set with:
-	`kubectl get secrets/kafka-secrets -o json | jq -r '.data."kafka.bootstrap.servers"' | base64 --decode`
+	Combining `kubectl`, `jq`, and `base64`, you can decode the secret file to ensure it has been properly set:
+
+	`kubectl get secrets/kafka-secrets -o json | jq -r '.data."kafka.properties"' | base64 --decode`
 
 1. Verify the system is deployed
 
