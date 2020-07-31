@@ -21,7 +21,7 @@ spec:
         image: cnfldemos/kafka-streams-examples:5.5.1-DEVX-1881-PR346
         volumeMounts:
         - name: kafka-properties-volume
-          mountPath: /opt/docker/kafka.properties
+          mountPath: /opt/docker/
           readOnly: true
         ports:
         - containerPort: 18894
