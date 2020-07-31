@@ -9,5 +9,8 @@ JAR=${JAR:-"/usr/share/java/kafka-streams-examples/kafka-streams-examples-5.5.1-
 CONFIG_FILE_ARG="--config-file $CONFIG_FILE"
 ADDITIONAL_ARGS=${ADDITIONAL_ARGS:-""}
 
+echo "starting orders-service"
+env
+
 java -cp $JAR io.confluent.examples.streams.microservices.OrdersService --bootstrap-servers $BOOTSTRAP_SERVERS --schema-registry $SCHEMA_REGISTRY_URL --port $RESTPORT $CONFIG_FILE_ARG $ADDITIONAL_ARGS
 
