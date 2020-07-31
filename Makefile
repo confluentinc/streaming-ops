@@ -10,12 +10,14 @@ kubeseal:
 k3d:
 	brew install k3d
 
+jq:
+	brew install jq
 yq:
 	wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_darwin_amd64
 	sudo install -m 755 yq_darwin_amd64 /usr/local/bin/yq
 	rm -f yq_darwin_amd64
 
-init: k3d kubeseal yq
+install-deps: k3d kubeseal jq yq
 
 cluster:
 	k3d cluster create kafka-gitops --servers 4

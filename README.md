@@ -48,9 +48,9 @@ TOOD: Link to Docs for setting up ccloud and environment properly
   * `REPO_GIT_USER=rspurgeon` Update to your git username
   * `REPO_GIT_EMAIL=rspurgeon@confluent.io` Update to your git email
 
-3.  To install all dependencies on a Mac (uses `sudo` to install binaries to `/usr/local/bin`, so you will be prompted for pwd).
+3.  To install all dependencies on a Mac. This command uses a combination of `sudo` to download and install binaries to `/usr/local/bin` and Homebrew to install the dependency software.  You can skip this step if you'd like to install them manually.
 
-		make init
+		make install-deps 
 
 4. To create a local test cluster on Docker using k3d
 
