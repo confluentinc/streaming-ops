@@ -54,19 +54,16 @@ TOOD: Link to Docs for setting up ccloud and environment properly
 
 4. To create a local test cluster on Docker using k3d
 
-  ```
-  make cluster
-  ```
+		make cluster
 
-  Verify the cluster is ready:
-  ```
-  kubectl get nodes
-  NAME                        STATUS   ROLES    AGE   VERSION
-  k3d-kafka-gitops-server-0   Ready    master   24s   v1.18.4+k3s1
-  k3d-kafka-gitops-server-1   Ready    master   15s   v1.18.4+k3s1
-  k3d-kafka-gitops-server-2   Ready    master   12s   v1.18.4+k3s1
-  k3d-kafka-gitops-server-3   Ready    master   10s   v1.18.4+k3s1 
-  ```
+		Verify the cluster is ready:
+
+			kubectl get nodes
+			NAME                        STATUS   ROLES    AGE   VERSION
+			k3d-kafka-gitops-server-0   Ready    master   24s   v1.18.4+k3s1
+			k3d-kafka-gitops-server-1   Ready    master   15s   v1.18.4+k3s1
+			k3d-kafka-gitops-server-2   Ready    master   12s   v1.18.4+k3s1
+			k3d-kafka-gitops-server-3   Ready    master   10s   v1.18.4+k3s1 
 
 5. Install Bitnami Sealed Secrets Controller into the cluster
 
