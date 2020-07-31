@@ -39,22 +39,22 @@ TOOD: Link to Docs for setting up ccloud and environment properly
 
 # Usage 
 
-1. Fork this repository
+1.  Fork this repository
 
-1. Update the following variables in `scripts\flux-init.sh`
+2.  Update the following variables in `scripts\flux-init.sh`
 
   * `ENVIRONMENT=dev` You'll complete this process for each environment
   * `REPO_URL=git@github.com:confluentinc/kafka-devops` Update to match your git remote URL
   * `REPO_GIT_USER=rspurgeon` Update to your git username
   * `REPO_GIT_EMAIL=rspurgeon@confluent.io` Update to your git email
 
-1. To install all dependencies on a Mac (uses `sudo` to install binaries to `/usr/local/bin`, so you will be prompted for pwd).
+3.  To install all dependencies on a Mac (uses `sudo` to install binaries to `/usr/local/bin`, so you will be prompted for pwd).
 
   `make init`
 
   (Linux instructions to come)
 
-1. To create a local test cluster on Docker using k3d
+4. To create a local test cluster on Docker using k3d
 
   `make cluster`
 
@@ -68,7 +68,7 @@ TOOD: Link to Docs for setting up ccloud and environment properly
   k3d-kafka-gitops-server-3   Ready    master   10s   v1.18.4+k3s1 
   ```
 
-1. Install Bitnami Sealed Secrets Controller into the cluster
+5. Install Bitnami Sealed Secrets Controller into the cluster
 
   `make install-bitnami-secret-controller`
   
@@ -78,11 +78,11 @@ TOOD: Link to Docs for setting up ccloud and environment properly
   kubectl get -n kube-system deployment/sealed-secrets-controller -o json | jq '.status.availableReplicas'
   ```
 
-1. Retrieve the secrets controller public key for this environment. The public key is stored in `secrets/keys/<environment>.crt`, _but not checked into the repository_.  See the Bitnami docs for long term management of secrets.
+6. Retrieve the secrets controller public key for this environment. The public key is stored in `secrets/keys/<environment>.crt`, _but not checked into the repository_.  See the Bitnami docs for long term management of secrets.
 
    `make get-public-key ENV=dev`
 
-1. Create and deploy the sealed secrets 4 steps:
+7. Create and deploy the sealed secrets 4 steps:
 
   * Create your secret file, like the example `secrets\example.secret` containing your endpoints and secret values. We are going to store the entire properties file we pass to Kafka clients as a secret. This makes configuring applications in Kubernetes easier. You can obtain this properties file, along with the cloud secrets, from the Confluent Cloud web console under "Tools & client config".
   
@@ -102,13 +102,13 @@ TOOD: Link to Docs for setting up ccloud and environment properly
     git push origin master # (or to the appropriate branch if you are doing GitOps by PR already!)
     ```
 
-1. Install Flux, the GitOps operator, into the cluster
+8. Install Flux, the GitOps operator, into the cluster
 
   `make install-flux`
 
   The script will install Flux into the cluster and then wait for you to add the shown key to your repository in the Settings->Deploy Keys section. Write access is required for Flux to manage Tags to control the syncronized state.  See the Flux documentation for more details.
 
-1. Verify secrets are available
+9. Verify secrets are available
 
   `kubectl get sealedsecrets.bitnami.com`
 
@@ -118,7 +118,7 @@ TOOD: Link to Docs for setting up ccloud and environment properly
 
   `kubectl get secrets/kafka-secrets -o json | jq -r '.data."kafka.properties"' | base64 --decode`
 
-1. Verify the system is deployed
+10. Verify the system is deployed
 
    `kubectl get all`
 
