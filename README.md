@@ -7,6 +7,8 @@ For the full documentation on the the project see the documenation on https://do
 
 # Tool prerequisites
 
+The included `Makefile` contains a target to install these on MacOS or they can be installed manually. Details for automated installation in the Usage section.
+
 ## k3d
 If you'd like to run the project on a local Docker based Kubernetes cluster
 
