@@ -86,7 +86,7 @@ TOOD: Link to Docs for setting up ccloud and environment properly
 
 	* Create your secret file, like the example `secrets\example.secret` containing your endpoints and secret values. We are going to store the entire properties file we pass to Kafka clients as a secret. This makes configuring applications in Kubernetes easier. You can obtain this properties file, along with the cloud secrets, from the Confluent Cloud web console under "Tools & client config".
 	
-	* Use `kubectl` to create a generic secret file from your properties file and put it into a staging area (`secrets/local-toseal`). The namespace, secret name, and generic secret file name are related in this command, do not change them without understanding the seal script, executed next.
+	* Use `kubectl` to create a generic secret file from your properties file and put it into a staging area (`secrets/local-toseal`). _The namespace, secret name, and generic secret file name are related in this command, do not change them without understanding the seal script, executed next_.
 
 		`kubectl create secret generic kafka-secrets --namespace=default --from-file=kafka.properties=secrets/example.secret --dry-run=client -o yaml > secrets/local-toseal/dev/default-kafka-secrets.yaml`
 
@@ -99,14 +99,14 @@ TOOD: Link to Docs for setting up ccloud and environment properly
 		```
 		git add secrets/sealed/dev/default-kafka-secrets.yaml
 		git commit -m 'New secrets!'
-		git push origin master` (or to the appropriate branch if you are doing GitOps by PR already!)
+		git push origin master # (or to the appropriate branch if you are doing GitOps by PR already!)
 		```
 
-1. Install Flux into the cluster
+1. Install Flux, the GitOps operator, into the cluster
 
 	`make install-flux`
 
-	The script will install Flux into the cluster and then wait for you to add the shown key to your repository in the Settings->Deploy Keys section. Write access is required for Flux to manage Tags in the repository.  See the Flux documentation for more details.
+	The script will install Flux into the cluster and then wait for you to add the shown key to your repository in the Settings->Deploy Keys section. Write access is required for Flux to manage Tags to control the syncronized state.  See the Flux documentation for more details.
 
 1. Verify secrets are available
 
