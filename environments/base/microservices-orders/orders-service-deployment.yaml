@@ -18,10 +18,10 @@ spec:
           secretName: kafka-secrets
       containers:
       - name: orders-service
-        image: cnfldemos/orders-service:5.5.1-0.0.1
+        image: cnfldemos/orders-service:5.5.1-0.0.2
         volumeMounts:
         - name: kafka-properties-volume
-          mountPath: /opt/docker/
+          mountPath: /etc/kafka/
           readOnly: true
         ports:
         - containerPort: 18894
