@@ -54,7 +54,7 @@ https://github.com/bitnami-labs/sealed-secrets
 
 1. Create your secrets, commit and push them to the repository
 
-	* Create a file like the example `secrets\example.secret` containing your secret values.
+	* Create a file like the example `secrets\example.secret` containing your secret values. We are going to store the entire properties file we pass to Kafka clients as a secret. This makes configuring applications in Kubernetes easier. You can obtain this properties file, along with the cloud secrets, from the Confluent Cloud web console under "Tools & client config".
 	* `kubectl create secret generic kafka-secrets --namespace=default --from-env-file=secrets/example.secret --dry-run=client -o yaml > secrets/local-toseal/dev/default-kafka-secrets.yaml`
 		* The output file name, the secret name, and the namespace are all linked with the above command. Study the `scripts/seal-secrets.sh` script before executing with different values.
 	* `make seal-dev`

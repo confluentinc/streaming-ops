@@ -14,26 +14,15 @@ spec:
     spec:
       volumes:
       - name: kafka-properties-volume
-        configMap:
-          name: kafka-properties
+        secret:
+          secretName: kafka-secrets
       containers:
       - name: orders-service
         image: cnfldemos/kafka-streams-examples:5.5.1-DEVX-1881-PR346
-        env:
-          - name: BOOTSTRAP_SERVERS
-            valueFrom:
-              secretKeyRef:
-                name: kafka-secrets
-                key: kafka.bootstrap.servers
-          - name: SCHEMA_REGISTRY_URL
-            valueFrom:
-              secretKeyRef:
-                name: kafka-secrets
-                key: schema.registry.url
         volumeMounts:
         - name: kafka-properties-volume
           mountPath: /opt/docker/kafka.properties
-          subPath: kafka.properties
+          readOnly: true
         ports:
         - containerPort: 18894
         command: [ "java" ]
