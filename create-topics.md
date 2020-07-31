@@ -1,0 +1,14 @@
+# Topics required
+
+bronze
+customers
+gold
+orders
+orders-enriched
+order-validations
+payments
+platinum
+silver
+warehouse-inventory
+_confluent-monitoring
+
