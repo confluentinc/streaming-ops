@@ -108,9 +108,9 @@ TOOD: Link to Docs for setting up ccloud and environment properly until automate
 
 		make install-flux
 
-		* The script will install Flux into the cluster and then wait for you to add the shown key to your repository in the Settings->Deploy Keys section. Write access is required for Flux to manage Tags to control the syncronized state.  See the Flux documentation for more details.
+	* The script will install Flux into the cluster and then wait for you to add the shown key to your repository in the Settings->Deploy Keys section. Write access is required for Flux to manage Tags to control the syncronized state.  See the Flux documentation for more details.
 
-		* You will see the following if the syncronization between Flux and the repository is setup properly:
+	* You will see the following if the syncronization between Flux and the repository is setup properly:
 
 			>>> Github deploy key is ready
 			>>> Cluster bootstrap done!
