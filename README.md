@@ -56,7 +56,7 @@ TOOD: Link to Docs for setting up ccloud and environment properly
 
 		make cluster
 
-Verify the cluster is ready:
+	Verify the cluster is ready:
 
 		kubectl get nodes
 		NAME                        STATUS   ROLES    AGE   VERSION
