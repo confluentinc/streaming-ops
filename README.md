@@ -78,7 +78,7 @@ TOOD: Link to Docs for setting up ccloud and environment properly until automate
 
 		make install-bitnami-secret-controller
 
-	Verify the controller is ready (1 available replica):
+	Wait for the controller to be ready. This will transition from `null` to `1` (available replica):
 
 		kubectl get -n kube-system deployment/sealed-secrets-controller -o json | jq '.status.availableReplicas'
 
@@ -88,11 +88,11 @@ TOOD: Link to Docs for setting up ccloud and environment properly until automate
 
 7. Create and deploy the sealed secrets 4 steps:
 
-  * Create your secret file, like the example `secrets\example.secret` containing your endpoints and secret values. We are going to store the entire properties file we pass to Kafka clients as a secret. This makes configuring applications in Kubernetes easier. You can obtain this properties file, along with the cloud secrets, from the Confluent Cloud web console under "Tools & client config".
+  * Create your secret file, like the example `secrets/example.secret` containing your endpoints and secret values. We are going to store the entire properties file we pass to Kafka clients as a secret. This allows us to mount the entire properties file as a volume on Pods, making configuring applications in Kubernetes easier. You can obtain this properties file, along with your secret values, from the Confluent Cloud web console under "Tools & client config", or from the `ccloud` cli.  In the future these steps will be automated within this repository to support creating environments.
   
   * Use `kubectl` to create a generic secret file from your properties file and put it into a staging area (`secrets/local-toseal`). _The namespace, secret name, and generic secret file name are related in this command, do not change them without understanding the seal script, executed next_.
 
-		`kubectl create secret generic kafka-secrets --namespace=default --from-file=kafka.properties=secrets/example.secret --dry-run=client -o yaml > secrets/local-toseal/dev/default-kafka-secrets.yaml`
+		kubectl create secret generic kafka-secrets --namespace=default --from-file=kafka.properties=secrets/example.secret --dry-run=client -o yaml > secrets/local-toseal/dev/default-kafka-secrets.yaml
 
   * Seal the secrets, for the `dev` environment, with the following helper command which uses the `scripts/seal-secrets.sh` script. This command will place the sealed secret in `secrets/sealed/dev`, and this is the file which is safe to commit to the repository.
 
