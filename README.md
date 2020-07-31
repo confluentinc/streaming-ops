@@ -43,16 +43,16 @@ TOOD: Link to Docs for setting up ccloud and environment properly
 
 1. Update the following variables in `scripts\flux-init.sh`
 
-	* `ENVIRONMENT=dev` You'll complete this process for each environment
-	* `REPO_URL=git@github.com:confluentinc/kafka-devops` Update to match your git remote URL
-	* `REPO_GIT_USER=rspurgeon` Update to your git username
-	* `REPO_GIT_EMAIL=rspurgeon@confluent.io` Update to your git email
+  * `ENVIRONMENT=dev` You'll complete this process for each environment
+  * `REPO_URL=git@github.com:confluentinc/kafka-devops` Update to match your git remote URL
+  * `REPO_GIT_USER=rspurgeon` Update to your git username
+  * `REPO_GIT_EMAIL=rspurgeon@confluent.io` Update to your git email
 
 1. To install all dependencies on a Mac (uses `sudo` to install binaries to `/usr/local/bin`, so you will be prompted for pwd).
 
-	`make init`
+  `make init`
 
-	(Linux instructions to come)
+  (Linux instructions to come)
 
 1. To create a local test cluster on Docker using k3d
 
@@ -80,47 +80,47 @@ TOOD: Link to Docs for setting up ccloud and environment properly
 
 1. Retrieve the secrets controller public key for this environment. The public key is stored in `secrets/keys/<environment>.crt`, _but not checked into the repository_.  See the Bitnami docs for long term management of secrets.
 
-	 `make get-public-key ENV=dev`
+   `make get-public-key ENV=dev`
 
 1. Create and deploy the sealed secrets 4 steps:
 
-	* Create your secret file, like the example `secrets\example.secret` containing your endpoints and secret values. We are going to store the entire properties file we pass to Kafka clients as a secret. This makes configuring applications in Kubernetes easier. You can obtain this properties file, along with the cloud secrets, from the Confluent Cloud web console under "Tools & client config".
-	
-	* Use `kubectl` to create a generic secret file from your properties file and put it into a staging area (`secrets/local-toseal`). _The namespace, secret name, and generic secret file name are related in this command, do not change them without understanding the seal script, executed next_.
+  * Create your secret file, like the example `secrets\example.secret` containing your endpoints and secret values. We are going to store the entire properties file we pass to Kafka clients as a secret. This makes configuring applications in Kubernetes easier. You can obtain this properties file, along with the cloud secrets, from the Confluent Cloud web console under "Tools & client config".
+  
+  * Use `kubectl` to create a generic secret file from your properties file and put it into a staging area (`secrets/local-toseal`). _The namespace, secret name, and generic secret file name are related in this command, do not change them without understanding the seal script, executed next_.
 
-		`kubectl create secret generic kafka-secrets --namespace=default --from-file=kafka.properties=secrets/example.secret --dry-run=client -o yaml > secrets/local-toseal/dev/default-kafka-secrets.yaml`
+    `kubectl create secret generic kafka-secrets --namespace=default --from-file=kafka.properties=secrets/example.secret --dry-run=client -o yaml > secrets/local-toseal/dev/default-kafka-secrets.yaml`
 
-	* Seal the secrets, for the `dev` environment, with the following helper command which uses the `scripts/seal-secrets.sh` script. This command will place the sealed secret in `secrets/sealed/dev`, and this is the file which is safe to commit to the repository.
+  * Seal the secrets, for the `dev` environment, with the following helper command which uses the `scripts/seal-secrets.sh` script. This command will place the sealed secret in `secrets/sealed/dev`, and this is the file which is safe to commit to the repository.
 
-		`make seal-dev`
+    `make seal-dev`
 
-	* Commit the sealed secret to the repository so that Flux can sync it to the K8s cluster:
+  * Commit the sealed secret to the repository so that Flux can sync it to the K8s cluster:
 
-		```
-		git add secrets/sealed/dev/default-kafka-secrets.yaml
-		git commit -m 'New secrets!'
-		git push origin master # (or to the appropriate branch if you are doing GitOps by PR already!)
-		```
+    ```
+    git add secrets/sealed/dev/default-kafka-secrets.yaml
+    git commit -m 'New secrets!'
+    git push origin master # (or to the appropriate branch if you are doing GitOps by PR already!)
+    ```
 
 1. Install Flux, the GitOps operator, into the cluster
 
-	`make install-flux`
+  `make install-flux`
 
-	The script will install Flux into the cluster and then wait for you to add the shown key to your repository in the Settings->Deploy Keys section. Write access is required for Flux to manage Tags to control the syncronized state.  See the Flux documentation for more details.
+  The script will install Flux into the cluster and then wait for you to add the shown key to your repository in the Settings->Deploy Keys section. Write access is required for Flux to manage Tags to control the syncronized state.  See the Flux documentation for more details.
 
 1. Verify secrets are available
 
-	`kubectl get sealedsecrets.bitnami.com`
+  `kubectl get sealedsecrets.bitnami.com`
 
-	`kubectl get secrets`
+  `kubectl get secrets`
 
-	Combining `kubectl`, `jq`, and `base64`, you can decode the secret file to ensure it has been properly set:
+  Combining `kubectl`, `jq`, and `base64`, you can decode the secret file to ensure it has been properly set:
 
-	`kubectl get secrets/kafka-secrets -o json | jq -r '.data."kafka.properties"' | base64 --decode`
+  `kubectl get secrets/kafka-secrets -o json | jq -r '.data."kafka.properties"' | base64 --decode`
 
 1. Verify the system is deployed
 
-	 `kubectl get all`
+   `kubectl get all`
 
 ## Credits
 Significant portions of the repository are based on the work of Steven Wade @ https://github.com/swade1987
