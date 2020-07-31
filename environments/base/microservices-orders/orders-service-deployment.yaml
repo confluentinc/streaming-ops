@@ -25,4 +25,6 @@ spec:
           readOnly: true
         ports:
         - containerPort: 18894
+        command: ["sleep"]
+        args: ["600"]
 
