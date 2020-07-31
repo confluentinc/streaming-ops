@@ -1,4 +1,6 @@
-.test/
+.test/*
+!.test/.gitkeep
+
 secrets/keys/*.crt
 secrets/local-sealed/**/*.yaml
 secrets/local-sealed/**/*.yml
@@ -7,3 +9,5 @@ secrets/local-toseal/**/*.yaml
 secrets/local-toseal/**/*.yml
 secrets/local-toseal/**/*.json
 
+.data/*
+!.data/.gitkeep

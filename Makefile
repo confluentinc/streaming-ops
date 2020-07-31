@@ -27,7 +27,7 @@ helm:
 install-deps: k3d kubeseal jq yq kustomize helm
 
 cluster:
-	k3d cluster create kafka-gitops --servers 4
+	k3d cluster create kafka-gitops --servers 4 --volume $(PWD)/.data:/var/lib/host
 
 destroy:
 	k3d cluster delete kafka-gitops
@@ -48,7 +48,7 @@ endif
 	kubeseal --fetch-cert > secrets/keys/$(ENV).crt
 
 test-%:
-	mkdir -p .test
 	kustomize build environments/$* > .test/$*.yaml
 	@echo
 	@echo The output can be found at .test/$*.yaml
+
