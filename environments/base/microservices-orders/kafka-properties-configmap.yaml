@@ -4,7 +4,7 @@ metadata:
   name: kafka-properties
 data:
   kafka.properties: |
-    bootstrap.servers=
+    bootstrap.servers=${BOOTSTRAP_SERVERS}
     security.protocol=SASL_SSL
     sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="" password="";
     ssl.endpoint.identification.algorithm=https
