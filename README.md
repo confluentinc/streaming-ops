@@ -50,9 +50,9 @@ TOOD: Link to Docs for setting up ccloud and environment properly
 
 3.  To install all dependencies on a Mac (uses `sudo` to install binaries to `/usr/local/bin`, so you will be prompted for pwd).
 
-  ```
-  make init
-  ```
+		```
+		make init
+		```
 
 4. To create a local test cluster on Docker using k3d
 
