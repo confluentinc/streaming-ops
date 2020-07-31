@@ -28,18 +28,22 @@ The repository uses sealed secrets and the Bitnami controller for managing secre
 https://github.com/bitnami-labs/sealed-secrets
 
 ## jq
+`jq` is used for processing JSON
+
 https://stedolan.github.io/jq/
 
 ## yq
+`yq` is used for processing YAML
+
 https://github.com/mikefarah/yq
 
 # Confluent Cloud
 
-This demo utilizes Confluent Cloud for Kafka as a service as well as Schema Registry and ksqlDB. In order to run this demo you will need a Confluent Cloud account, the ccloud CLI, and an environment and Kafka cluster setup. 
+This demo utilizes Confluent Cloud for Kafka, Schema Registry, ksqlDB services. In order to run this demo you will need a Confluent Cloud account, the `ccloud` CLI, as well as an environment and Kafka cluster setup. 
 
-In the future, all steps (besides account creation), will be automated and managed by operations in this repository. Until there there are some setup steps to make the application function properly.
+In the future, all steps (besides account creation), will be automated and managed by operations in this repository. Until then, there are some setup steps to make the application function properly.
 
-TOOD: Link to Docs for setting up ccloud and environment properly
+TOOD: Link to Docs for setting up ccloud and environment properly until automated...
 
 # Usage 
 
@@ -52,7 +56,7 @@ TOOD: Link to Docs for setting up ccloud and environment properly
   * `REPO_GIT_USER=rspurgeon` Update to your git username
   * `REPO_GIT_EMAIL=rspurgeon@confluent.io` Update to your git email
 
-3.  To install all dependencies on a Mac. This command uses a combination of `sudo` to download and install binaries to `/usr/local/bin` and Homebrew to install the dependency software.  You can skip this step if you'd like to install them manually.
+3.  To install all dependencies on a Mac. This command uses a combination of manual installations by downloading and install binaries to `/usr/local/bin` and Homebrew. You will be prompted for your adminstrative passwod to install files to `/usr/local/bin`.  You can skip this step if you'd like to install the dependencies manually.
 
 		make install-deps 
 
