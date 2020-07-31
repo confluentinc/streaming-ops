@@ -128,6 +128,10 @@ TOOD: Link to Docs for setting up ccloud and environment properly until automate
 
 		kubectl get all
 
+## Info
+
+	* Flux is configured to sync with the repository once per minute, you can force a syncronization with the script: `./scripts/flux-sync.sh`
+
 ## Credits
 Significant portions of the repository are based on the work of Steven Wade @ https://github.com/swade1987
 
