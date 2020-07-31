@@ -43,7 +43,7 @@ TOOD: Link to Docs for setting up ccloud and environment properly
 
 2.  Update the following variables in `scripts\flux-init.sh`
 
-  * `ENVIRONMENT=dev` You'll complete this process for each environment
+  * `ENVIRONMENT=dev` You'll complete this process for each environment you want.
   * `REPO_URL=git@github.com:confluentinc/kafka-devops` Update to match your git remote URL
   * `REPO_GIT_USER=rspurgeon` Update to your git username
   * `REPO_GIT_EMAIL=rspurgeon@confluent.io` Update to your git email
@@ -59,6 +59,7 @@ TOOD: Link to Docs for setting up ccloud and environment properly
 	Verify the cluster is ready:
 
 		kubectl get nodes
+
 		NAME                        STATUS   ROLES    AGE   VERSION
 		k3d-kafka-gitops-server-0   Ready    master   24s   v1.18.4+k3s1
 		k3d-kafka-gitops-server-1   Ready    master   15s   v1.18.4+k3s1
