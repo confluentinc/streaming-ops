@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-properties
+data:
+  kafka.properties: |
+		bootstrap.servers=
+		security.protocol=SASL_SSL
+		sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username="" password="";
+		ssl.endpoint.identification.algorithm=https
+		sasl.mechanism=PLAIN
+		schema.registry.url=
+		basic.auth.credentials.source=USER_INFO
+		schema.registry.basic.auth.user.info=:
+
