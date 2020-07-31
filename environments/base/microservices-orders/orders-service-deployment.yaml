@@ -20,7 +20,7 @@ spec:
             valueFrom:
               secretKeyRef:
                 name: kafka-secrets
-                key: bootstrap.servers
+                key: kafka.bootstrap.servers
           - name: SCHEMA_REGISTRY_URL
             valueFrom:
               secretKeyRef:
