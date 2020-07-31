@@ -15,9 +15,18 @@ spec:
       containers:
       - name: orders-service
         image: cnfldemos/kafka-streams-examples:5.5.1-DEVX-1881-PR346
+        env:
+          - name: BOOTSTRAP_SERVERS
+            valueFrom:
+              name: kafka-secrets
+              key: bootstrap.servers
+          - name: SCHEMA_REGISTRY_URL
+            valueFrom:
+              name: kafka-secrets
+              key: schema.registry.url
         ports:
         - containerPort: 18894
         command: [ "java" ]
-        args: [ "-cp","/usr/share/java/kafka-streams-examples/kafka-streams-examples-5.5.1-standalone.jar","io.confluent.examples.streams.microservices.OrdersService","--bootstrap-servers","$(BOOTSTRAP_SERVERS)", "--schema-registry","$(SCHEMA_REGISTRY_URL)","--port","$(RESTPORT)" ]
+        args: [ "-cp","/usr/share/java/kafka-streams-examples/kafka-streams-examples-5.5.1-standalone.jar","io.confluent.examples.streams.microservices.OrdersService","--bootstrap-servers","$(BOOTSTRAP_SERVERS)", "--schema-registry","$(SCHEMA_REGISTRY_URL)","--port","18894" ]
 
 
