@@ -50,13 +50,15 @@ TOOD: Link to Docs for setting up ccloud and environment properly
 
 3.  To install all dependencies on a Mac (uses `sudo` to install binaries to `/usr/local/bin`, so you will be prompted for pwd).
 
-  `make init`
-
-  (Linux instructions to come)
+  ```
+  make init
+  ```
 
 4. To create a local test cluster on Docker using k3d
 
-  `make cluster`
+  ```
+  make cluster
+  ```
 
   Verify the cluster is ready:
   ```
@@ -70,7 +72,9 @@ TOOD: Link to Docs for setting up ccloud and environment properly
 
 5. Install Bitnami Sealed Secrets Controller into the cluster
 
-  `make install-bitnami-secret-controller`
+  ```
+  make install-bitnami-secret-controller
+  ```
   
   Verify the controller is ready (1 available replica):
 
