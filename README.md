@@ -76,7 +76,7 @@ TOOD: Link to Docs for setting up ccloud and environment properly until automate
 		k3d-kafka-gitops-server-2   Ready    master   12s   v1.18.4+k3s1
 		k3d-kafka-gitops-server-3   Ready    master   10s   v1.18.4+k3s1 
 
-5. Install Bitnami Sealed Secrets Controller into the cluster
+5. Install Bitnami Sealed Secret Controller into the cluster
 
 		make install-bitnami-secret-controller
 
@@ -84,13 +84,13 @@ TOOD: Link to Docs for setting up ccloud and environment properly until automate
 
 		kubectl get -n kube-system deployment/sealed-secrets-controller -o json | jq '.status.availableReplicas'
 
-6. Retrieve the secrets controller public key for this environment. The public key is stored in `secrets/keys/<environment>.crt`, _but not checked into the repository_.  See the Bitnami docs for long term management of secrets.
+6. Retrieve the secret controller's public key for this environment. The public key is stored in `secrets/keys/<environment>.crt`, _but not checked into the repository_.  See the Bitnami docs for long term management of secrets.
 
 		make get-public-key ENV=dev
 
-7. Create and deploy the sealed secrets 4 steps:
+7. Create and deploy the sealed secrets in 4 steps:
 
-  * Create your secret file, like the example `secrets/example.secret` containing your endpoints and secret values. We are going to store the entire properties file we pass to Kafka clients as a secret. This allows us to mount the entire properties file as a volume on Pods, making configuring applications in Kubernetes easier. You can obtain this properties file, along with your secret values, from the Confluent Cloud web console under "Tools & client config", or from the `ccloud` cli.  In the future these steps will be automated within this repository to support creating environments.
+  * Create your secret file which should look like the example `secrets/example.secret` containing your endpoints and secret values. We are going to store the entire properties file we pass to Kafka clients as a secret. This allows us to mount the entire properties file as a volume on Pods, making configuring applications in Kubernetes easier. You can obtain this properties file, along with your secret values, from the Confluent Cloud web console under "Tools & client config", or from the `ccloud` cli.  In the future these steps will be automated within this repository to support creating environments.
   
   * Use `kubectl` to create a generic secret file from your properties file and put it into a staging area (`secrets/local-toseal`). _The namespace, secret name, and generic secret file name are related in this command, do not change them without understanding the seal script, executed next_.
 
