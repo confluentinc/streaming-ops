@@ -25,6 +25,6 @@ spec:
           readOnly: true
         ports:
         - containerPort: 18894
-        command: ["cat"]
-        args: ["/opt/docker/kafka.properties"]
+        command: ["sleep"]
+        args: ["600"]
 
