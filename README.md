@@ -67,19 +67,15 @@ TOOD: Link to Docs for setting up ccloud and environment properly
 
 5. Install Bitnami Sealed Secrets Controller into the cluster
 
-  ```
-  make install-bitnami-secret-controller
-  ```
-  
-  Verify the controller is ready (1 available replica):
+		make install-bitnami-secret-controller
 
-  ```
-  kubectl get -n kube-system deployment/sealed-secrets-controller -o json | jq '.status.availableReplicas'
-  ```
+	Verify the controller is ready (1 available replica):
+
+		kubectl get -n kube-system deployment/sealed-secrets-controller -o json | jq '.status.availableReplicas'
 
 6. Retrieve the secrets controller public key for this environment. The public key is stored in `secrets/keys/<environment>.crt`, _but not checked into the repository_.  See the Bitnami docs for long term management of secrets.
 
-   `make get-public-key ENV=dev`
+		make get-public-key ENV=dev
 
 7. Create and deploy the sealed secrets 4 steps:
 
@@ -87,39 +83,36 @@ TOOD: Link to Docs for setting up ccloud and environment properly
   
   * Use `kubectl` to create a generic secret file from your properties file and put it into a staging area (`secrets/local-toseal`). _The namespace, secret name, and generic secret file name are related in this command, do not change them without understanding the seal script, executed next_.
 
-    `kubectl create secret generic kafka-secrets --namespace=default --from-file=kafka.properties=secrets/example.secret --dry-run=client -o yaml > secrets/local-toseal/dev/default-kafka-secrets.yaml`
+			`kubectl create secret generic kafka-secrets --namespace=default --from-file=kafka.properties=secrets/example.secret --dry-run=client -o yaml > secrets/local-toseal/dev/default-kafka-secrets.yaml`
 
   * Seal the secrets, for the `dev` environment, with the following helper command which uses the `scripts/seal-secrets.sh` script. This command will place the sealed secret in `secrets/sealed/dev`, and this is the file which is safe to commit to the repository.
 
-    `make seal-dev`
+			make seal-dev
 
   * Commit the sealed secret to the repository so that Flux can sync it to the K8s cluster:
 
-    ```
-    git add secrets/sealed/dev/default-kafka-secrets.yaml
-    git commit -m 'New secrets!'
-    git push origin master # (or to the appropriate branch if you are doing GitOps by PR already!)
-    ```
+			git add secrets/sealed/dev/default-kafka-secrets.yaml
+			git commit -m 'New secrets!'
+			git push origin master # (or to the appropriate branch if you are doing GitOps by PR already!)
 
 8. Install Flux, the GitOps operator, into the cluster
 
-  `make install-flux`
+		make install-flux
 
   The script will install Flux into the cluster and then wait for you to add the shown key to your repository in the Settings->Deploy Keys section. Write access is required for Flux to manage Tags to control the syncronized state.  See the Flux documentation for more details.
 
 9. Verify secrets are available
 
-  `kubectl get sealedsecrets.bitnami.com`
+		kubectl get sealedsecrets.bitnami.com
+		kubectl get secrets
 
-  `kubectl get secrets`
+	Combining `kubectl`, `jq`, and `base64`, you can decode the secret file to ensure it has been properly set:
 
-  Combining `kubectl`, `jq`, and `base64`, you can decode the secret file to ensure it has been properly set:
-
-  `kubectl get secrets/kafka-secrets -o json | jq -r '.data."kafka.properties"' | base64 --decode`
+		kubectl get secrets/kafka-secrets -o json | jq -r '.data."kafka.properties"' | base64 --decode
 
 10. Verify the system is deployed
 
-   `kubectl get all`
+		kubectl get all
 
 ## Credits
 Significant portions of the repository are based on the work of Steven Wade @ https://github.com/swade1987
