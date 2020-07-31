@@ -3,7 +3,9 @@
 Simulated production environment running a streaming application targeting Apache Kafka on Confluent Cloud.
 Applications and resources are managed by declarative infrastructure and GitOps.
 
-For the full documentation on the the project see the documenation on https://docs.confluent.io (TODO: confluent docs, link here). For basic usage instructions, read on.
+For the full documentation on the the project see https://docs.confluent.io (TODO: real confluent docs link here).
+
+For basic usage instructions on how to use this project, read on.
 
 # Tool prerequisites
 
