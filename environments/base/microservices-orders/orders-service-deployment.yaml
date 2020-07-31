@@ -18,12 +18,14 @@ spec:
         env:
           - name: BOOTSTRAP_SERVERS
             valueFrom:
-              name: kafka-secrets
-              key: bootstrap.servers
+              secretKeyRef:
+                name: kafka-secrets
+                key: bootstrap.servers
           - name: SCHEMA_REGISTRY_URL
             valueFrom:
-              name: kafka-secrets
-              key: schema.registry.url
+              secretKeyRef:
+                name: kafka-secrets
+                key: schema.registry.url
         ports:
         - containerPort: 18894
         command: [ "java" ]
