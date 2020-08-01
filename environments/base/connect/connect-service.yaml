@@ -35,5 +35,8 @@ spec:
         image: cnfldemos/microservices-orders-connect:5.5.1-0.0.1
         ports:
         - containerPort: 8083
-
+        volumeMounts:
+        - name: kafka-properties-volume
+          mountPath: /etc/kafka/
+          readOnly: true
 
