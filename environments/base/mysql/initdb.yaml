@@ -4,8 +4,8 @@ metadata:
   name: mysql-initdb-config
 data:
   initdb.sql: |
-    CREATE DATABASE IF NOT EXISTS microservices-orders;
-    USE microservices-orders;
+    CREATE DATABASE IF NOT EXISTS `microservices-orders`;
+    USE `microservices-orders`;
     CREATE TABLE customers IF NOT EXISTS (id INTEGER KEY NOT NULL, firstName VARCHAR(255), lastName VARCHAR(255), email VARCHAR(255), address VARCHAR(255), level VARCHAR(255));
     INSERT IGNORE INTO customers (id, firstName, lastName, email, address, level) VALUES (1,Jay,Kreps,devnull@confluent.io,"101 Street Name, Anytown, State",platinum);
     INSERT IGNORE INTO customers (id, firstName, lastName, email, address, level) VALUES (2,Neha,Narkhede,devnull@confluent.io,"101 Street Name, Anytown, State",platinum);
