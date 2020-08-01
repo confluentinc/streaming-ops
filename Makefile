@@ -47,6 +47,9 @@ ifndef ENV
 endif
 	kubeseal --fetch-cert > secrets/keys/$(ENV).crt
 
+util:
+	@kubectl run --tty -i --rm util --image=cnfldemos/util:0.0.1 --restart=Never
+
 test-%:
 	kustomize build environments/$* > .test/$*.yaml
 	@echo
