@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: connect-service
+  labels:
+    app: connect-service
+spec:
+  selector:
+    app: connect-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8083
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: connect-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: connect-service
+  template:
+    metadata:
+      labels:
+        app: connect-service
+    spec:
+      volumes:
+      - name: kafka-properties-volume
+        secret:
+          secretName: kafka-secrets
+      containers:
+      - name: connect-service
+        image: confluentinc/cp-server-connect:5.5.1
+        volumeMounts:
+        - name: kafka-properties-volume
+          mountPath: /etc/kafka/
+          readOnly: true
+        ports:
+        - containerPort: 8083
