@@ -26,8 +26,14 @@ spec:
       labels:
         app: connect-service
     spec:
+      volumes:
+      - name: kafka-properties-volume
+        secret:
+          secretName: kafka-secrets
       containers:
       - name: connect-service
         image: cnfldemos/microservices-orders-connect:5.5.1-0.0.1
         ports:
         - containerPort: 8083
+
+
