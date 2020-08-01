@@ -35,6 +35,9 @@ spec:
         image: cnfldemos/microservices-orders-connect:5.5.1-0.0.1
         ports:
         - containerPort: 8083
+        env:
+        - name: CONFIG_FILE
+          value: /opt/kafka/kafka.properties
         volumeMounts:
         - name: kafka-properties-volume
           mountPath: /opt/kafka/
