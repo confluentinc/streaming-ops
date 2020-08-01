@@ -32,7 +32,7 @@ spec:
           secretName: kafka-secrets
       containers:
       - name: connect-service
-        image: cnfldemos/microservices-orders-connect:5.5.1-0.0.1
+        image: cnfldemos/microservices-orders-connect:5.5.1-0.0.2
         ports:
         - containerPort: 8083
         env:
