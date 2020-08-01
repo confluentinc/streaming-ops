@@ -37,6 +37,6 @@ spec:
         - containerPort: 8083
         volumeMounts:
         - name: kafka-properties-volume
-          mountPath: /etc/kafka/
+          mountPath: /opt/kafka/
           readOnly: true
 
