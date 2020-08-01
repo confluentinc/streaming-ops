@@ -3,4 +3,5 @@ kind: Kustomization
 resources:
 - pv.yaml 
 - mysql-service.yaml
+- initdb.yaml
 
