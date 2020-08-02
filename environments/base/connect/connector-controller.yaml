@@ -1,0 +1,19 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: connector-controller # A "budget" controller concept
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: connector-controller-runner
+            image: cnfldemos/util:0.0.4
+            command: [ "sleep" ]
+            args:
+            - "240"
+          restartPolicy: OnFailure
+          serviceAccountName: connect-admin-sa
+
