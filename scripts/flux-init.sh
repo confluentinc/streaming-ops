@@ -26,6 +26,7 @@ REPO_GIT_INIT_PATHS="environments/${ENVIRONMENT}\,secrets/sealed/${ENVIRONMENT}"
 REPO_BRANCH=master
 REPO_ROOT=$(git rev-parse --show-toplevel)
 TEMP=${REPO_ROOT}/.temp
+WAIT_FOR_DEPLOY=${WAIT_FOR_DEPLOY:-true}
 
 rm -rf ${TEMP} && mkdir ${TEMP}
 
@@ -46,15 +47,17 @@ helm upgrade -i flux fluxcd/flux --wait \
 --set syncGarbageCollection.enabled=true \
 --namespace flux
 
-echo ">>> GitHub deploy key"
-kubectl -n flux logs deployment/flux | grep identity.pub | cut -d '"' -f2
-
-# wait until flux is able to sync with repo
-echo ">>> Waiting on user to add above deploy key to Github with write access"
-until kubectl logs -n flux deployment/flux | grep event=refreshed
-do
-  sleep 5
-done
-echo ">>> Github deploy key is ready"
-
-echo ">>> Cluster bootstrap done!"
+if [ "$WAIT_FOR_DEPLOY" == "true" ]; then
+	echo ">>> GitHub deploy key"
+	kubectl -n flux logs deployment/flux | grep identity.pub | cut -d '"' -f2
+	
+	# wait until flux is able to sync with repo
+	echo ">>> Waiting on user to add above deploy key to Github with write access"
+	until kubectl logs -n flux deployment/flux | grep event=refreshed
+	do
+	  sleep 5
+	done
+	echo ">>> Github deploy key is ready"
+	
+	echo ">>> Cluster bootstrap done!"
+fi
