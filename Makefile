@@ -1,4 +1,7 @@
 CURRENT_WORKING_DIR=$(shell pwd)
+WHO_AM_I=$(shell whoami)
+TIMESTAMP=$(shell date)
+
 KUBESEAL_VERSION = v0.12.1
 YQ_VERSION = 3.3.2
 
@@ -73,10 +76,11 @@ endif
 	@kubectl create secret generic kafka-secrets --namespace=default --from-file=kafka.properties=$(SECRET_FILE) --dry-run=client -o yaml > secrets/local-toseal/dev/default-kafka-secrets.yaml
 	@make --no-print-directory seal-dev
 	@git add secrets/sealed/dev/default-kafka-secrets.yaml
-	@git commit -m 'New secrets!'
+	@git commit -m "dev-demo: $(WHO_AM_I): $(TIMESTAMP)"
 	@git push origin master
 	@make --no-print-directory install-flux WAIT_FOR_DEPLOY=false
 	@make --no-print-directory gh-deploy-key
+	@fluxctl sync --k8s-fwd-ns flux
 
 util:
 	@kubectl run --tty -i --rm util --image=cnfldemos/util:0.0.1 --restart=Never

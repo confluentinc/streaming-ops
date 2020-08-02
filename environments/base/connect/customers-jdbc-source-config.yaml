@@ -3,7 +3,6 @@ kind: ConfigMap
 metadata:
   name: customers-jdbc-source-connector
 data:
-mode=incrementing
   customers-jdbc-source-connector: |-
     {
       "name": "jdbc-customers",
