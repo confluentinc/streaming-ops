@@ -14,6 +14,15 @@ spec:
             command: [ "sleep" ]
             args:
             - "240"
+            volumeMounts:
+            - name: customers-jdbc-source-connector
+              mountPath: /etc/config/connectors/customers-jdbc-source-connector.json
+              subPath: customers-jdbc-source-connector.json
+              readOnly: true
           restartPolicy: OnFailure
           serviceAccountName: connect-admin-sa
+          volumes:
+          - name: customers-jdbc-source-connector-volume
+            configMap:
+              name: customers-jdbc-source-connector
 

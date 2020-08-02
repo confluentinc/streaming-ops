@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: customers-jdbc-source-connector
 data:
-  customers-jdbc-source-connector: |-
+  customers-jdbc-source-connector.json: |-
     {
       "name": "jdbc-customers",
       "config": {
