@@ -37,9 +37,9 @@ spec:
         - containerPort: 8083
         env:
         - name: CONFIG_FILE
-          value: /opt/kafka/kafka.properties
+          value: /etc/config/kafka/kafka.properties
         volumeMounts:
         - name: kafka-properties-volume
-          mountPath: /opt/kafka/
+          mountPath: /etc/config/kafka/
           readOnly: true
 

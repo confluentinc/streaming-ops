@@ -21,7 +21,7 @@ spec:
               readOnly: true
             volumeMounts:
             - name: kafka-properties-volume
-              mountPath: /opt/kafka/
+              mountPath: /etc/config/kafka/
               readOnly: true
           restartPolicy: OnFailure
           serviceAccountName: connect-admin-sa
