@@ -83,7 +83,7 @@ endif
 	@fluxctl sync --k8s-fwd-ns flux
 
 util:
-	@kubectl run --tty -i --rm util --image=cnfldemos/util:0.0.3 --restart=Never --serviceaccount=in-cluster-sa --namespace=default
+	@kubectl run --tty -i --rm util --image=cnfldemos/util:0.0.4 --restart=Never --serviceaccount=in-cluster-sa --namespace=default
 
 test-%:
 	kustomize build environments/$* > .test/$*.yaml

@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: connect-admin-sa
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: Role
+metadata:
+  namespace: default
+  name: connect-admin-role 
+rules:
+- apiGroups: [""]
+  resources: ["configmap"]
+  resourceNames: ["customers-jdbc-source-connector"]
+  verbs: ["get","watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: RoleBinding
+metadata:
+  name: connect-admin-role_to_connect-admin_sa
+  namespace: default
+roleRef:
+  kind: Role
+  name: connect-admin-role
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+- kind: ServiceAccount
+  name: connect-admin-sa
+  namespace: default
