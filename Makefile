@@ -80,6 +80,7 @@ endif
 	@git push origin master
 	@make --no-print-directory install-flux WAIT_FOR_DEPLOY=false
 	@make --no-print-directory gh-deploy-key
+	@sleep 15 #TODO: deterministic wait
 	@fluxctl sync --k8s-fwd-ns flux
 
 util:
