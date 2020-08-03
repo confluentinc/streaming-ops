@@ -12,10 +12,13 @@ spec:
         spec:
           containers:
           - name: connector-controller-runner
-            image: cnfldemos/util:0.0.4
+            image: cnfldemos/connect-controller:0.0.1
             command: [ "sleep" ]
             args:
             - "240"
+            env:
+            - name: CONNECTORS_PATH
+              value: /etc/config/connectors
             volumeMounts:
             - name: customers-jdbc-source-connector-volume
               mountPath: /etc/config/connectors/customers-jdbc-source-connector.json
