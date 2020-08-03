@@ -2,8 +2,8 @@
 
 : "${CONNECTORS_PATH?Need to set CONNECTORS_PATH}"
 
-FILES="$CONNECTORS_PATH/*.json"
-for f in $FILES
+for FILE in $CONNECTORS_PATH;
 do
-  echo $f
+  echo "connector found----"
+  cat $FILE;
 done
