@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CONFIG_FILE=${CONFIG_FILE:-/etc/kafka/kafka.properties}
+CONFIG_FILE=${CONFIG_FILE:-/etc/config/kafka/kafka.properties}
 
 BOOTSTRAP_SERVERS=$(grep "bootstrap.servers" $CONFIG_FILE | cut -d= -f2)
 SCHEMA_REGISTRY_URL=$(grep "schema.registry.url" $CONFIG_FILE | cut -d= -f2)
