@@ -32,14 +32,14 @@ spec:
           secretName: kafka-secrets
       containers:
       - name: connect-service
-        image: cnfldemos/microservices-orders-connect:5.5.1-0.0.3
+        image: cnfldemos/microservices-orders-connect:5.5.1-0.0.4
         ports:
         - containerPort: 8083
         env:
         - name: CONFIG_FILE
-          value: /etc/config/kafka/kafka.properties
+          value: /etc/config/connect/kafka.properties
         volumeMounts:
         - name: kafka-properties-volume
-          mountPath: /etc/config/kafka/
+          mountPath: /etc/config/connect/
           readOnly: true
 

@@ -3,7 +3,7 @@
 set -a
 
 STARTUP_DELAY=${STARTUP_DELAY:-0}
-CONFIG_FILE=${CONFIG_FILE:-"/etc/config/kafka/kafka.properties"}
+CONFIG_FILE=${CONFIG_FILE:-"/etc/config/connect/kafka.properties"}
 
 BOOTSTRAP_SERVERS=$(grep "bootstrap.servers" $CONFIG_FILE | cut -d= -f2)
 SECURITY_PROTOCOL=$(grep "security.protocol" $CONFIG_FILE | cut -d= -f2)

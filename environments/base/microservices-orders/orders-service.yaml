@@ -35,7 +35,7 @@ spec:
         image: cnfldemos/orders-service:5.5.1-0.0.4
         volumeMounts:
         - name: kafka-properties-volume
-          mountPath: /etc/config/kafka/
+          mountPath: /etc/config/orders-service/
           readOnly: true
         ports:
         - containerPort: 18894
