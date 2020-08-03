@@ -10,22 +10,24 @@ kubeseal:
 	sudo install -m 755 kubeseal-darwin-amd64 /usr/local/bin/kubeseal
 	rm -f kubeseal-darwin-amd64
 
-k3d:
-	brew install k3d
-
-jq:
-	brew install jq
-
 yq:
 	wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_darwin_amd64
 	sudo install -m 755 yq_darwin_amd64 /usr/local/bin/yq
 	rm -f yq_darwin_amd64
 
+# Homebrew isn't great with installing specific version, so I'm using a direct git commit URL to pin to specific versions
+
+k3d:
+	brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/5fb0385f36ad62ffb051eb3256dceec9f3dbfdd2/Formula/k3d.rb
+
+jq:
+	brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/81e08b0d9ae47a9968fabde84378faab1f67e557/Formula/jq.rb 
+
 kustomize:
-	brew install kustomize
+	brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/143e1af7c5a7fffc8e9ffa9be19396f24929a996/Formula/kustomize.rb 
 
 helm:
-	brew install helm
+	brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/6796c57c9ea504e74e26a32a14ab8c5758bf6750/Formula/helm.rb 
 
 install-deps: k3d kubeseal jq yq kustomize helm
 
