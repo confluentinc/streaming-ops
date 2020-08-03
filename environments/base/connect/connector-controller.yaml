@@ -18,13 +18,11 @@ spec:
             - "240"
             volumeMounts:
             - name: customers-jdbc-source-connector-volume
-              mountPath: /connectors/customers-jdbc-source-connector.json
+              mountPath: /etc/config/connectors/customers-jdbc-source-connector.json
               subPath: customers-jdbc-source-connector.json
               readOnly: true
-            volumeMounts:
             - name: kafka-properties-volume
               mountPath: /etc/config/kafka/
-              subPath: kafka.properties 
               readOnly: true
           restartPolicy: OnFailure
           serviceAccountName: connect-admin-sa
