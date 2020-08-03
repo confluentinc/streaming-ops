@@ -18,7 +18,7 @@ spec:
             - "240"
             volumeMounts:
             - name: customers-jdbc-source-connector-volume
-              mountPath: /etc/config/connectors/customers-jdbc-source-connector.json
+              mountPath: /connectors/customers-jdbc-source-connector.json
               subPath: customers-jdbc-source-connector.json
               readOnly: true
             volumeMounts:

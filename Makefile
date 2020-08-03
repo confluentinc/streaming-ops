@@ -63,6 +63,9 @@ ifndef GH_TOKEN
 endif
 	@KEY="$(FLUX_KEY)" NAME="kafka-devops-flux" ./scripts/create-deploy-key.sh
 
+sync:
+	@fluxctl sync --k8s-fwd-ns flux
+
 dev-demo:
 ifndef SECRET_FILE
 	$(error SECRET_FILE is not set)
@@ -83,7 +86,7 @@ endif
 	@make --no-print-directory install-flux WAIT_FOR_DEPLOY=false
 	@make --no-print-directory gh-deploy-key
 	@sleep 15 #TODO: deterministic wait
-	@fluxctl sync --k8s-fwd-ns flux
+	@make --no-print-directory make sync
 
 util:
 	@kubectl run --tty -i --rm util --image=cnfldemos/util:0.0.4 --restart=Never --serviceaccount=in-cluster-sa --namespace=default
