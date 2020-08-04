@@ -86,7 +86,7 @@ endif
 	@make --no-print-directory install-flux WAIT_FOR_DEPLOY=false
 	@make --no-print-directory gh-deploy-key
 	@sleep 15 #TODO: deterministic wait
-	@make --no-print-directory make sync
+	@make --no-print-directory sync
 
 util:
 	@kubectl run --tty -i --rm util --image=cnfldemos/util:0.0.4 --restart=Never --serviceaccount=in-cluster-sa --namespace=default

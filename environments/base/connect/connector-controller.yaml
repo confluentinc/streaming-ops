@@ -13,9 +13,6 @@ spec:
           containers:
           - name: connector-controller-runner
             image: cnfldemos/connect-controller:0.0.3
-            command: [ "sleep" ]
-            args:
-            - "240"
             env:
             - name: CONNECTORS_PATH
               value: "/etc/config/connectors/*.json"
