@@ -23,8 +23,11 @@ do
 	}
 done < $CONFIG_FILE_PATH)
 
-echo "jq -n $data"
+
+
 for FILE in $CONNECTORS_PATH;
 do
-  echo "templating connector @ $FILE"
+  JQ="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $FILE"
+  CONNECTOR_CONFIG=$(eval $JQ)
+  curl -X POST -H "Content-Type: application/json" --data "$CONNECTOR_CONFIG" http://connect/connectors
 done
