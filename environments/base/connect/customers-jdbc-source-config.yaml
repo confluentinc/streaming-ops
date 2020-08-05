@@ -8,7 +8,7 @@ data:
       "name": "jdbc-customers",
       "config": {
         "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
-        "connection.url": "jdbc:mysql://mysql",
+        "connection.url": "jdbc:mysql://mysql:3306",
         "connection.user": env.MYSQL_CONNECTION_USER,
         "connection.password": env.MYSQL_CONNECTION_PASSWORD,
         "mode": "incrementing",
