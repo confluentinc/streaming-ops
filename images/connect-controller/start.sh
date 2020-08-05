@@ -28,5 +28,5 @@ do
   JQ="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $FILE"
   CONNECTOR_CONFIG=$(eval $JQ)
   echo "POSTING $CONNECTOR_CONFIG"
-  curl -s -X POST -H "Content-Type: application/json" --data "$CONNECTOR_CONFIG" http://connect/connectors
+  curl -vvv -s -X POST -H "Content-Type: application/json" --data "$CONNECTOR_CONFIG" http://connect/connectors
 done

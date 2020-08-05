@@ -12,7 +12,7 @@ spec:
         spec:
           containers:
           - name: connector-controller-runner
-            image: cnfldemos/connect-controller:0.0.5
+            image: cnfldemos/connect-controller:0.0.6
             env:
             - name: CONNECTORS_PATH
               value: "/etc/config/connectors/*.json"
