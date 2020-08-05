@@ -28,7 +28,6 @@ for FILE in $CONNECTORS_PATH;
 do
   JQ="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $FILE"
   CONNECTOR_CONFIG=$(eval $JQ)
-  echo "POSTING $CONNECTOR_CONFIG"
-  curl -vvv -i -s -X POST -H "Content-Type: application/json" --data "$CONNECTOR_CONFIG" $URL 
+  curl -X POST -H "Content-Type: application/json" --data "$CONNECTOR_CONFIG" $URL 
 done
 
