@@ -16,6 +16,8 @@ spec:
             env:
             - name: CONNECTORS_PATH
               value: "/etc/config/connectors/*.json"
+            - name: CONFIG_FILE_PATH
+              value: /etc/config/kafka/kafka.properties
             envFrom:
             - secretRef:
                 name: connector-controller-secrets
