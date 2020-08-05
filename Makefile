@@ -48,14 +48,15 @@ install-flux:
 
 FLUX_KEY=$(shell fluxctl identity --k8s-fwd-ns flux)
 
-seal-%:
+create-secrets-%:
+	@kubectl create secret generic kafka-secrets --namespace=default --from-file=kafka.properties=$(SECRET_FILE) --dry-run=client -o yaml > secrets/local-toseal/$*/default-kafka-secrets.yaml && echo "ready to seal: secrets/local-toseal/$*/default-kafka-secrets.yaml"
+	@kubectl create secret generic mysql-db-secrets --namespace=default --from-env-file=./secrets/example-mysql-db-secrets.props --dry-run=client -o yaml > secrets/local-toseal/$*/default-mysql-db-secrets.yaml && echo "ready to seal: secrets/local-toseal/$*/default-mysql-db-secrets.yaml"
+
+seal-secrets-%:
 	./scripts/seal-secrets.sh $*
 
-get-public-key:
-ifndef ENV
-	$(error ENV is not set.  Set it to indicate which environment to generate a key for)
-endif
-	kubeseal --fetch-cert > secrets/keys/$(ENV).crt
+get-public-key-%:
+	kubeseal --fetch-cert > secrets/keys/$*.crt
 
 gh-deploy-key:
 ifndef GH_TOKEN
@@ -66,7 +67,7 @@ endif
 sync:
 	@fluxctl sync --k8s-fwd-ns flux
 
-dev-demo:
+demo-%:
 ifndef SECRET_FILE
 	$(error SECRET_FILE is not set)
 endif
@@ -77,11 +78,11 @@ endif
 	@make --no-print-directory cluster
 	@make --no-print-directory install-bitnami-secret-controller
 	@make --no-print-directory wait-for-secret-controller
-	@make --no-print-directory get-public-key ENV=dev
-	@kubectl create secret generic kafka-secrets --namespace=default --from-file=kafka.properties=$(SECRET_FILE) --dry-run=client -o yaml > secrets/local-toseal/dev/default-kafka-secrets.yaml
-	@make --no-print-directory seal-dev
-	@git add secrets/sealed/dev/default-kafka-secrets.yaml
-	@git commit -m "dev-demo: $(WHO_AM_I): $(TIMESTAMP)"
+	@make --no-print-directory get-public-key-$*
+	@make --no-print-directory create-secrets-$*
+	@make --no-print-directory seal-secrets-$*
+	@git add secrets/sealed/$*/default-kafka-secrets.yaml
+	@git commit -m "demo-$*: $(WHO_AM_I): $(TIMESTAMP)"
 	@git push origin master
 	@make --no-print-directory install-flux WAIT_FOR_DEPLOY=false
 	@make --no-print-directory gh-deploy-key

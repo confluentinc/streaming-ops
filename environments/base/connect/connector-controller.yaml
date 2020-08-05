@@ -16,6 +16,9 @@ spec:
             env:
             - name: CONNECTORS_PATH
               value: "/etc/config/connectors/*.json"
+            envFrom:
+            - secretRef:
+              name: connector-controller-secrets
             volumeMounts:
             - name: customers-jdbc-source-connector-volume
               mountPath: /etc/config/connectors/customers-jdbc-source-connector.json
