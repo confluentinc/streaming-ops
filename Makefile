@@ -5,6 +5,16 @@ TIMESTAMP=$(shell date)
 KUBESEAL_VERSION = v0.12.1
 YQ_VERSION = 3.3.2
 
+pad=$(printf '%0.1s' "-"{1..80})
+
+define print-prompt =
+printf "\e[96m➜ \e[0m"
+endef
+
+define print-header =
+printf "\n%-50s\n" $1 | tr ' ~' '- '
+endef
+
 kubeseal:
 	wget https://github.com/bitnami-labs/sealed-secrets/releases/download/${KUBESEAL_VERSION}/kubeseal-darwin-amd64
 	sudo install -m 755 kubeseal-darwin-amd64 /usr/local/bin/kubeseal
@@ -32,40 +42,61 @@ helm:
 install-deps: k3d kubeseal jq yq kustomize helm
 
 cluster:
+	@$(call print-header,"creating new k3d cluster")
+	@$(call print-prompt)
 	k3d cluster create kafka-gitops --servers 4 --volume $(PWD)/.data:/var/lib/host --wait
 
-destroy:
+destroy-cluster:
+	@$(call print-header,"deleting k3d cluster")
+	@$(call print-prompt)
 	k3d cluster delete kafka-gitops
 
 install-bitnami-secret-controller:
-	@kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.12.4/controller.yaml
+	@$(call print-header,"Installing bitnami secret controller")
+	@$(call print-prompt)
+	kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.12.4/controller.yaml
 
 wait-for-secret-controller:
-	@./scripts/wait-for-secret-controller.sh
+	@$(call print-header,"Waiting for secret controller")
+	@$(call print-prompt)
+	./scripts/wait-for-secret-controller.sh
 
 install-flux: 
+	@$(call print-header,"Installing flux")
+	@$(call print-prompt)
 	./scripts/flux-init.sh
 
 FLUX_KEY=$(shell fluxctl identity --k8s-fwd-ns flux)
 
 create-secrets-%:
-	@kubectl create secret generic kafka-secrets --namespace=default --from-file=kafka.properties=$(SECRET_FILE) --dry-run=client -o yaml > secrets/local-toseal/$*/default-kafka-secrets.yaml && echo "ready to seal: secrets/local-toseal/$*/default-kafka-secrets.yaml"
-	@kubectl create secret generic mysql-db-secrets --namespace=default --from-env-file=./secrets/example-mysql-db-secrets.props --dry-run=client -o yaml > secrets/local-toseal/$*/default-mysql-db-secrets.yaml && echo "ready to seal: secrets/local-toseal/$*/default-mysql-db-secrets.yaml"
+	@$(call print-header,"Creating secrets")
+	@$(call print-prompt)
+	kubectl create secret generic kafka-secrets --namespace=default --from-file=kafka.properties=$(SECRET_FILE) --dry-run=client -o yaml > secrets/local-toseal/$*/default-kafka-secrets.yaml && echo "ready to seal: secrets/local-toseal/$*/default-kafka-secrets.yaml"
+	@$(call print-prompt)
+	kubectl create secret generic mysql-db-secrets --namespace=default --from-env-file=./secrets/example-mysql-db-secrets.props --dry-run=client -o yaml > secrets/local-toseal/$*/default-mysql-db-secrets.yaml && echo "ready to seal: secrets/local-toseal/$*/default-mysql-db-secrets.yaml"
 
 seal-secrets-%:
+	@$(call print-header,"Sealing secrets")
+	@$(call print-prompt)
 	./scripts/seal-secrets.sh $*
 
 get-public-key-%:
+	@$(call print-header,"Fetching bitnami controller public key")
+	@$(call print-prompt)
 	kubeseal --fetch-cert > secrets/keys/$*.crt
 
 gh-deploy-key:
 ifndef GH_TOKEN
 	$(error GH_TOKEN is not set)
 endif
+	@$(call print-header,"deploying flux deploy key to GitHub")
+	@$(call print-prompt)
 	@KEY="$(FLUX_KEY)" NAME="kafka-devops-flux" ./scripts/create-deploy-key.sh
 
 sync:
-	@fluxctl sync --k8s-fwd-ns flux
+	@$(call print-header,"Flux sync")
+	@$(call print-prompt)
+	fluxctl sync --k8s-fwd-ns flux
 
 demo-%:
 ifndef SECRET_FILE
@@ -74,13 +105,14 @@ endif
 ifndef GH_TOKEN
 	$(error GH_TOKEN is not set)
 endif
-	@-make --no-print-directory destroy
+	@-make --no-print-directory destroy-cluster
 	@make --no-print-directory cluster
 	@make --no-print-directory install-bitnami-secret-controller
 	@make --no-print-directory wait-for-secret-controller
 	@make --no-print-directory get-public-key-$*
 	@make --no-print-directory create-secrets-$*
 	@make --no-print-directory seal-secrets-$*
+	@$(call print-header,"pushing new secrets to git repo")
 	@git add secrets/sealed/$*/default-kafka-secrets.yaml
 	@git commit -m "demo-$*: $(WHO_AM_I): $(TIMESTAMP)"
 	@git push origin master
@@ -90,9 +122,13 @@ endif
 	@make --no-print-directory sync
 
 util:
-	@kubectl run --tty -i --rm util --image=cnfldemos/util:0.0.4 --restart=Never --serviceaccount=in-cluster-sa --namespace=default
+	@$(call print-header,"Launching util pod")
+	@$(call print-prompt)
+	kubectl run --tty -i --rm util --image=cnfldemos/util:0.0.4 --restart=Never --serviceaccount=in-cluster-sa --namespace=default
 
 test-%:
+	@$(call print-header,"Testing $* with Kustomize")
+	@$(call print-prompt)
 	kustomize build environments/$* > .test/$*.yaml
 	@echo
 	@echo The output can be found at .test/$*.yaml

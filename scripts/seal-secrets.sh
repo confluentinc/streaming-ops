@@ -125,4 +125,3 @@ for environment in ${environments}; do
     seal_secrets
 done
 
-echo "All environments completed"

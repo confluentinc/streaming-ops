@@ -17,7 +17,7 @@ if [[ ! -x "$(command -v fluxctl)" ]]; then
     exit 1
 fi
 
-ENVIRONMENT=dev
+ENVIRONMENT=${ENVIRONMENT:-dev}
 REPO_URL=git@github.com:confluentinc/kafka-devops
 REPO_GIT_USER=rspurgeon
 REPO_GIT_EMAIL=rspurgeon@confluent.io
@@ -40,6 +40,7 @@ helm upgrade -i flux fluxcd/flux --wait \
 --set git.email=${REPO_GIT_EMAIL} \
 --set git.branch=${REPO_BRANCH} \
 --set git.path=${REPO_GIT_INIT_PATHS} \
+--set git.label="flux-stamp-${ENVIRONMENT}" \
 --set git.pollInterval=1m \
 --set manifestGeneration=true \
 --set registry.pollInterval=1m \
