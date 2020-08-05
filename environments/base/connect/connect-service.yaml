@@ -38,6 +38,8 @@ spec:
         env:
         - name: CONFIG_FILE
           value: /etc/config/connect/kafka.properties
+        - name: CLASSPATH
+          value: /usr/share/java/kafka-connect-jdbc/mysql-connector-java-8.0.21.jar
         volumeMounts:
         - name: kafka-properties-volume
           mountPath: /etc/config/connect/
