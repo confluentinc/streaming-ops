@@ -13,6 +13,7 @@
 #     then either POST to /connector
 #     or PUT to /connectors/<name>/config
 
+URL=${URL:-http://connect/connectors}
 JQ_ARGS_FROM_CONFIG_FILE=$(
 while read line
 do
@@ -28,5 +29,6 @@ do
   JQ="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $FILE"
   CONNECTOR_CONFIG=$(eval $JQ)
   echo "POSTING $CONNECTOR_CONFIG"
-  curl -vvv -s -X POST -H "Content-Type: application/json" --data "$CONNECTOR_CONFIG" http://connect/connectors
+  curl -vvv -i -s -X POST -H "Content-Type: application/json" --data "$CONNECTOR_CONFIG" $URL 
 done
+
