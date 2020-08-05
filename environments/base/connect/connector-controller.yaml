@@ -4,8 +4,8 @@ metadata:
   name: connector-controller # A "budget" controller concept
 spec:
   schedule: "*/5 * * * *"
-  successfulJobsHistoryLimit: 3
-  failedJobsHistoryLimit: 3
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
   jobTemplate:
     spec:
       template:
