@@ -125,10 +125,10 @@ endif
 	@sleep 15 #TODO: deterministic wait
 	@make --no-print-directory sync
 
-util:
+prompt:
 	@$(call print-header,"Launching util pod")
 	@$(call print-prompt)
-	kubectl run --tty -i --rm util --image=cnfldemos/util:0.0.4 --restart=Never --serviceaccount=in-cluster-sa --namespace=default
+	kubectl run --tty -i --rm util --image=cnfldemos/util:0.0.5 --restart=Never --serviceaccount=in-cluster-sa --namespace=default
 
 test-%:
 	@$(call print-header,"Testing $* with Kustomize")
