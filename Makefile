@@ -49,7 +49,7 @@ cluster:
 destroy-cluster:
 	@$(call print-header,"deleting k3d cluster")
 	@$(call print-prompt)
-	k3d cluster delete kafka-gitops
+	-(k3d cluster list | grep kafka-gitops) && k3d cluster delete kafka-gitops
 
 install-bitnami-secret-controller:
 	@$(call print-header,"Installing bitnami secret controller")
@@ -117,13 +117,11 @@ endif
 	@make --no-print-directory create-secrets-$*
 	@make --no-print-directory seal-secrets-$*
 	@$(call print-header,"pushing new secrets to git repo")
-	@git add secrets/sealed/$*/default-kafka-secrets.yaml
-	@git commit -m "demo-$*: $(WHO_AM_I): $(TIMESTAMP)"
-	@git push origin master
+	git add secrets/sealed/$*/default-kafka-secrets.yaml
+	git commit -m "demo-$*: $(WHO_AM_I): $(TIMESTAMP)"
+	git push origin master
 	@make --no-print-directory install-flux WAIT_FOR_DEPLOY=false
 	@make --no-print-directory gh-deploy-key
-	@sleep 15 #TODO: deterministic wait
-	@make --no-print-directory sync
 
 prompt:
 	@$(call print-header,"Launching util pod")
