@@ -19,7 +19,7 @@ spec:
         spec:
           containers:
           - name: add-inventory-runner
-            image: cnfldemos/add-inventory:5.5.1-0.0.1
+            image: cnfldemos/add-inventory:5.5.1-0.0.2
             volumeMounts:
             - name: kafka-properties-volume
               mountPath: /etc/config/kafka/
