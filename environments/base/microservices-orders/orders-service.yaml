@@ -4,6 +4,7 @@ metadata:
   name: orders-service
   labels:
     app: orders-service
+    app-group: microservices-orders
 spec:
   selector:
     app: orders-service
@@ -21,6 +22,7 @@ spec:
   selector:
     matchLabels:
       app: orders-service
+      app-group: microservices-orders
   template:
     metadata:
       labels:
@@ -32,10 +34,10 @@ spec:
           secretName: kafka-secrets
       containers:
       - name: orders-service
-        image: cnfldemos/orders-service:5.5.1-0.0.4
+        image: cnfldemos/orders-service:5.5.1-0.0.5
         volumeMounts:
         - name: kafka-properties-volume
-          mountPath: /etc/config/orders-service/
+          mountPath: /etc/config/kafka/
           readOnly: true
         ports:
         - containerPort: 18894

@@ -1,0 +1,33 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: add-inventory 
+  labels: 
+    app: add-inventory
+    app-group: microservices-orders
+spec:
+  schedule: "*/5 * * * *"
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: add-inventory
+            app-group: microservices-orders
+        spec:
+          containers:
+          - name: add-inventory-runner
+            image: cnfldemos/add-inventory:5.5.1-0.0.1
+            volumeMounts:
+            - name: kafka-properties-volume
+              mountPath: /etc/config/kafka/
+              readOnly: true
+          restartPolicy: OnFailure
+          serviceAccountName: connect-admin-sa
+          volumes:
+          - name: kafka-properties-volume
+            secret:
+              secretName: kafka-secrets
+
