@@ -25,7 +25,8 @@ do
 
   [[ "$CONNECTOR_EXISTS_RESULT" == "200" ]] && {
     echo "updating existing connector config: $CONNECTOR_NAME"
-    curl -s -i -X PUT -H "Content-Type: application/json" --data "$CONNECTOR_CONFIG" "$BASE_URL/connectors/$CONNECTOR_NAME/config"
+    CONNECTOR_CONFIG_CONFIG=$(echo "$CONNECTOR_CONFIG" | jq -r -c '.config')
+    curl -s -i -X PUT -H "Content-Type: application/json" --data "$CONNECTOR_CONFIG_CONFIG" "$BASE_URL/connectors/$CONNECTOR_NAME/config"
   } || {
     echo "creating new connector: $CONNECTOR_NAME"
     curl -s -i -X POST -H "Content-Type: application/json" --data "$CONNECTOR_CONFIG" "$BASE_URL/connectors"
