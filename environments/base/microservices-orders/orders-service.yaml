@@ -22,11 +22,11 @@ spec:
   selector:
     matchLabels:
       app: orders-service
-      app-group: microservices-orders
   template:
     metadata:
       labels:
         app: orders-service
+        app-group: microservices-orders
     spec:
       volumes:
       - name: kafka-properties-volume
