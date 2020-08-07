@@ -1,16 +1,16 @@
-name: Release fraud-service Image
+name: Release validations-aggregator-service Image
 
 on:
   push:
     branches:
     - master
     paths:
-    - 'images/microservices-orders/fraud-service/**'
+    - 'images/microservices-orders/validations-aggregator-service/**'
   workflow_dispatch:
 
 jobs:
   build:
-    name: Release fraud-service Image
+    name: Release validations-aggregator-service Image
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -21,9 +21,9 @@ jobs:
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
-          repository: cnfldemos/inventory-service
+          repository: cnfldemos/validations-aggregator-service
           tag_with_ref: true
           tag_with_sha: true
-          path: images/microservices-orders/fraud-service/
-          dockerfile: images/microservices-orders/fraud-service/Dockerfile 
+          path: images/microservices-orders/validations-aggregator-service/
+          dockerfile: images/microservices-orders/validations-aggregator-service/Dockerfile 
       
