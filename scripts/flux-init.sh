@@ -25,10 +25,7 @@ REPO_GIT_EMAIL=rspurgeon@confluent.io
 REPO_GIT_INIT_PATHS="environments/${ENVIRONMENT}\,secrets/sealed/${ENVIRONMENT}"
 REPO_BRANCH=master
 REPO_ROOT=$(git rev-parse --show-toplevel)
-TEMP=${REPO_ROOT}/.temp
 WAIT_FOR_DEPLOY=${WAIT_FOR_DEPLOY:-true}
-
-rm -rf ${TEMP} && mkdir ${TEMP}
 
 helm repo add fluxcd https://charts.fluxcd.io
 
@@ -46,6 +43,7 @@ helm upgrade -i flux fluxcd/flux --wait \
 --set registry.pollInterval=1m \
 --set sync.state=secret \
 --set syncGarbageCollection.enabled=true \
+--set registry.disableScanning=true \
 --namespace flux \
 --create-namespace
 

@@ -61,10 +61,10 @@ wait-for-secret-controller:
 	@$(call print-prompt)
 	./scripts/wait-for-secret-controller.sh
 
-install-flux: 
+install-flux-%: 
 	@$(call print-header,"Installing flux")
 	@$(call print-prompt)
-	./scripts/flux-init.sh
+	ENVIRONMENT=$* ./scripts/flux-init.sh
 
 FLUX_KEY=$(shell fluxctl identity --k8s-fwd-ns flux)
 
