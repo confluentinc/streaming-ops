@@ -33,7 +33,6 @@ rm -rf ${TEMP} && mkdir ${TEMP}
 helm repo add fluxcd https://charts.fluxcd.io
 
 echo ">>> Installing Flux for ${REPO_URL} only watching the ${REPO_GIT_INIT_PATHS} directory"
-kubectl create ns flux || true
 helm upgrade -i flux fluxcd/flux --wait \
 --set git.url=${REPO_URL} \
 --set git.user=${REPO_GIT_USER} \
@@ -42,12 +41,13 @@ helm upgrade -i flux fluxcd/flux --wait \
 --set git.path=${REPO_GIT_INIT_PATHS} \
 --set git.label="flux-stamp-${ENVIRONMENT}" \
 --set git.pollInterval=1m \
---set git.ci.skip="true" \
+--set git.ciSkip="true" \
 --set manifestGeneration=true \
 --set registry.pollInterval=1m \
 --set sync.state=secret \
 --set syncGarbageCollection.enabled=true \
---namespace flux
+--namespace flux \
+--create-namespace
 
 if [ "$WAIT_FOR_DEPLOY" == "true" ]; then
 	echo ">>> GitHub deploy key"
