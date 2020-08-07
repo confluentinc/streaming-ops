@@ -7,3 +7,4 @@ resources:
 - fraud-service.yaml
 - order-details-service.yaml
 - validations-aggregator-service.yaml
+- email-service.yaml
