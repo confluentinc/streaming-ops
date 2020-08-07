@@ -2,6 +2,8 @@ name: Release connect-controller Image
 
 on:
   push:
+    branches:
+    - master
     paths:
     - 'images/connect-controller/**'
 

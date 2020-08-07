@@ -2,6 +2,8 @@ name: Release orders-service Image
 
 on:
   push:
+    branches:
+    - master
     paths:
     - 'images/microservices-orders/orders-service/**'
 
