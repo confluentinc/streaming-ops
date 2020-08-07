@@ -5,3 +5,4 @@ resources:
 - add-inventory-cronjob.yaml
 - inventory-service.yaml
 - fraud-service.yaml
+- order-details-service.yaml

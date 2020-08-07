@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-details-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-details-service
+  template:
+    metadata:
+      labels:
+        app: order-details-service
+        app-group: microservices-orders
+    spec:
+      volumes:
+      - name: kafka-properties-volume
+        secret:
+          secretName: kafka-secrets
+      containers:
+      - name: order-details-service
+        image: cnfldemos/order-details-service:sha-ec361df
+        volumeMounts:
+        - name: kafka-properties-volume
+          mountPath: /etc/config/kafka/
+          readOnly: true
+        ports:
+        - containerPort: 18894
+
