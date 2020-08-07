@@ -19,7 +19,7 @@ spec:
           secretName: kafka-secrets
       containers:
       - name: validations-aggregator-service
-        image: cnfldemos/validations-aggregator-service:sha-47f208b
+        image: cnfldemos/validations-aggregator-service:sha-19c5c21
         volumeMounts:
         - name: kafka-properties-volume
           mountPath: /etc/config/kafka/
