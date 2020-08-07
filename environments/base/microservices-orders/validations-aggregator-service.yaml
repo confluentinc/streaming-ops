@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: validations-aggregator-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: validations-aggregator-service
+  template:
+    metadata:
+      labels:
+        app: validations-aggregator-service
+        app-group: microservices-orders
+    spec:
+      volumes:
+      - name: kafka-properties-volume
+        secret:
+          secretName: kafka-secrets
+      containers:
+      - name: validations-aggregator-service
+        image: cnfldemos/validations-aggregator-service:sha-47f208b
+        volumeMounts:
+        - name: kafka-properties-volume
+          mountPath: /etc/config/kafka/
+          readOnly: true
+
