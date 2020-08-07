@@ -19,7 +19,7 @@ spec:
           secretName: kafka-secrets
       containers:
       - name: email-service
-        image: cnfldemos/email-service:sha-56c8edf
+        image: cnfldemos/email-service:sha-4230ab7
         volumeMounts:
         - name: kafka-properties-volume
           mountPath: /etc/config/kafka/
