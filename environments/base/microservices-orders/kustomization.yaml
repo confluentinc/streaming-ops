@@ -8,3 +8,4 @@ resources:
 - order-details-service.yaml
 - validations-aggregator-service.yaml
 - email-service.yaml
+- orders-and-payments-simulator.yaml

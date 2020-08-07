@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: orders-and-payments-simulator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orders-and-payments-simulator
+  template:
+    metadata:
+      labels:
+        app: orders-and-payments-simulator
+        app-group: microservices-orders
+    spec:
+      volumes:
+      - name: kafka-properties-volume
+        secret:
+          secretName: kafka-secrets
+      containers:
+      - name: orders-and-payments-simulator
+        image: cnfldemos/orders-and-payments-simulator:sha-fe83a8d
+        volumeMounts:
+        - name: kafka-properties-volume
+          mountPath: /etc/config/kafka/
+          readOnly: true
+
