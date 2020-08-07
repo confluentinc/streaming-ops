@@ -135,10 +135,3 @@ test-%:
 	@echo
 	@echo The output can be found at .test/$*.yaml
 
-ORDERS_SERVICE_IMAGE="cnfldemos/orders-service:5.5.1-$(shell cat images/microservices-orders/orders-service/version)"
-build-orders-service:
-	docker build -t $(ORDERS_SERVICE_IMAGE) images/microservices-orders/orders-service
-push-orders-service: build-orders-service
-	docker push $(ORDERS_SERVICE_IMAGE)
-
-
