@@ -6,6 +6,7 @@ on:
     - master
     paths:
     - 'images/microservices-orders/orders-service/**'
+  workflow_dispatch:
 
 jobs:
   build:
