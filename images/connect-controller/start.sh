@@ -31,11 +31,7 @@ do
   [[ "$CONNECTOR_EXISTS_RESULT" == "200" ]] && {
    	 
     DESIRED_CONNECTOR_CONFIG=$(echo "$CONNECTOR_CONFIG" | jq -r -c '.config')
-		echo $DESIRED_CONNECTOR_CONFIG | jq -S .
-
-		echo "vvvvvvvvvvvvvvvvvvvvvvv"
 		CURRENT_CONNECTOR_CONFIG=$(curl -s -X GET -H "Content-Type: application/json" "$BASE_URL/connectors/$CONNECTOR_NAME/config")
-		echo $CURRENT_CONNECTOR_CONFIG | jq -S .
 
 		if diff <(echo $DESIRED_CONNECTOR_CONFIG | jq -S .) <(echo $CURRENT_CONNECTOR_CONFIG | jq -S .); then
 			echo "No config changes for $CONNECTOR_NAME"
