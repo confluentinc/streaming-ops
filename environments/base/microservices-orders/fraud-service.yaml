@@ -19,7 +19,7 @@ spec:
           secretName: kafka-secrets
       containers:
       - name: fraud-service
-        image: cnfldemos/fraud-service:sha-
+        image: cnfldemos/fraud-service:sha-7cbea37
         volumeMounts:
         - name: kafka-properties-volume
           mountPath: /etc/config/kafka/
