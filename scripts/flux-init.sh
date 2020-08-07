@@ -42,6 +42,7 @@ helm upgrade -i flux fluxcd/flux --wait \
 --set git.path=${REPO_GIT_INIT_PATHS} \
 --set git.label="flux-stamp-${ENVIRONMENT}" \
 --set git.pollInterval=1m \
+--set git.ci.skip="true" \
 --set manifestGeneration=true \
 --set registry.pollInterval=1m \
 --set sync.state=secret \
