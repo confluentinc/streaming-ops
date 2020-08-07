@@ -1,0 +1,44 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fraud-service
+  labels:
+    app: fraud-service
+    app-group: microservices-orders
+spec:
+  selector:
+    app: fraud-service
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 18894
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fraud-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fraud-service
+  template:
+    metadata:
+      labels:
+        app: fraud-service
+        app-group: microservices-orders
+    spec:
+      volumes:
+      - name: kafka-properties-volume
+        secret:
+          secretName: kafka-secrets
+      containers:
+      - name: fraud-service
+        image: cnfldemos/fraud-service:sha-90109ed
+        volumeMounts:
+        - name: kafka-properties-volume
+          mountPath: /etc/config/kafka/
+          readOnly: true
+        ports:
+        - containerPort: 18894
+
