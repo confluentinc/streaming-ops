@@ -117,7 +117,7 @@ endif
 	@make --no-print-directory create-secrets-$*
 	@make --no-print-directory seal-secrets-$*
 	@$(call print-header,"pushing new secrets to git repo")
-	git add secrets/sealed/$*/default-kafka-secrets.yaml
+	git add secrets/sealed/$*/.
 	git commit -m "demo-$*: $(WHO_AM_I): $(TIMESTAMP)"
 	git push origin master
 	@make --no-print-directory install-flux WAIT_FOR_DEPLOY=false
