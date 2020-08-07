@@ -19,7 +19,7 @@ spec:
           secretName: kafka-secrets
       containers:
       - name: inventory-service
-        image: cnfldemos/inventory-service:sha-a0ec69e
+        image: cnfldemos/inventory-service:sha-cb1f046
         volumeMounts:
         - name: kafka-properties-volume
           mountPath: /etc/config/kafka/
