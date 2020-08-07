@@ -24,6 +24,4 @@ spec:
         - name: kafka-properties-volume
           mountPath: /etc/config/kafka/
           readOnly: true
-        ports:
-        - containerPort: 18894
 
