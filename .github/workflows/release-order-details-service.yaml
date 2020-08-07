@@ -1,0 +1,29 @@
+name: Release order-details-service Image
+
+on:
+  push:
+    branches:
+    - master
+    paths:
+    - 'images/microservices-orders/order-details-service/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Release order-details-service Image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: cnfldemos/order-details-service
+          tag_with_ref: true
+          tag_with_sha: true
+          path: images/microservices-orders/order-details-service/
+          dockerfile: images/microservices-orders/order-details-service/Dockerfile 
+      
