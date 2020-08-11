@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: connect-operator
+spec:
+  containers:
+  - name: connect-operator
+    image: cnfldemos/connect-operator:0.0.26
+  serviceAccountName: connect-admin-sa
+

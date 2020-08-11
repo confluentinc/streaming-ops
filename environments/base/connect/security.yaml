@@ -4,25 +4,22 @@ metadata:
   name: connect-admin-sa
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: Role
+kind: ClusterRole
 metadata:
-  namespace: default
-  name: connect-admin-role 
+  name: monitor-configmaps
 rules:
 - apiGroups: [""]
-  resources: ["configmap"]
-  resourceNames: ["customers-jdbc-source-connector"]
-  verbs: ["get","watch"]
+  resources: ["configmaps"]
+  verbs: ["get","watch","list"]
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: RoleBinding
+kind: ClusterRoleBinding
 metadata:
-  name: connect-admin-role_to_connect-admin_sa
-  namespace: default
+  name: monitor-configmaps_connect-admin-sa
 roleRef:
-  kind: Role
-  name: connect-admin-role
   apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: monitor-configmaps 
 subjects:
 - kind: ServiceAccount
   name: connect-admin-sa

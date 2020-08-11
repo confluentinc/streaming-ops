@@ -4,4 +4,4 @@ resources:
 - connect-service.yaml
 - customers-jdbc-source-config.yaml
 - security.yaml
-- connector-controller.yaml
+- connect-operator.yaml
