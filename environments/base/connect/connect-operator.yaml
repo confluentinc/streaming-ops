@@ -6,5 +6,20 @@ spec:
   containers:
   - name: connect-operator
     image: cnfldemos/connect-operator:0.0.26
+    env:
+    - name: CONFIG_FILE_PATH
+      value: /etc/config/kafka/kafka.properties
+    envFrom:
+    - secretRef:
+        name: connector-controller-secrets
+    volumeMounts:
+    - name: kafka-properties-volume
+      mountPath: /etc/config/kafka/
+      readOnly: true
   serviceAccountName: connect-admin-sa
+  restartPolicy: OnFailure
+  volumes:
+  - name: kafka-properties-volume
+    secret:
+      secretName: kafka-secrets
 
