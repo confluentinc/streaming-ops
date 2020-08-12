@@ -33,7 +33,7 @@ function apply_connector() {
 
   [[ "$CONNECTOR_EXISTS_RESULT" == "200" ]] && {
 		CURRENT_CONNECTOR_CONFIG=$(curl -s -X GET -H "Content-Type: application/json" "$BASE_URL/connectors/$CONNECTOR_NAME/config")
-		if diff <(echo $DESIRED_CONNECTOR_CONFIG | jq -S -c .) <(echo $CURRENT_CONNECTOR_CONFIG | jq -S -c .); then
+		if cmp -s <(echo $DESIRED_CONNECTOR_CONFIG | jq -S -c .) <(echo $CURRENT_CONNECTOR_CONFIG | jq -S -c .); then
 			echo "No config changes for $CONNECTOR_NAME"
 		else		
 			echo "Updating existing connector config: $CONNECTOR_NAME"
