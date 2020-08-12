@@ -1,4 +1,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namePrefix: dev-
+commonLabels:
+  variant: dev
 resources:
 - ../base/
+patchesStrategicMerge:
+- connect/connect-service.yaml
