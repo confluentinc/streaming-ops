@@ -45,7 +45,7 @@ This demo utilizes Confluent Cloud for Kafka, Schema Registry, ksqlDB services. 
 
 In the future, all steps (besides account creation), will be automated and managed by operations in this repository. Until then, there are some setup steps to make the application function properly.
 
-TOOD: Link to Docs for setting up ccloud and environment properly until automated...
+_*TODO*_: Link to Docs for setting up ccloud and environment properly until automated...
 
 # Usage 
 
@@ -132,8 +132,9 @@ TOOD: Link to Docs for setting up ccloud and environment properly until automate
 
 ## Info
 
-* Flux is configured to sync with the repository once per minute, you can force a syncronization with the script: `./scripts/flux-sync.sh`
+* Flux is configured to sync with the repository once per minute, you can force a syncronization with the script: `make sync`
 
-## Credits
-Significant portions of the repository are based on the work of Steven Wade @ https://github.com/swade1987
+## Credits / Links
+* Significant portions of the repository are based on the work of Steven Wade @ https://github.com/swade1987
+* The script based Operator patterns in this repository are based on the shell-operator project @ https://github.com/flant/shell-operator
 
