@@ -34,7 +34,7 @@ data:
         "transforms.SetValueSchema.type": "org.apache.kafka.connect.transforms.SetSchemaMetadata$Value",
         "transforms.SetValueSchema.schema.name": "io.confluent.examples.streams.avro.microservices.Customer",
         "transforms.SetValueSchema.schema.version": "4",
-        "tasks.max": "2"
+        "tasks.max": "1"
       }
     }
 
