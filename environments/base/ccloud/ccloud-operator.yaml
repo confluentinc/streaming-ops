@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: ccloud-operator
+spec:
+  containers:
+  - name: ccloud-operator
+    image: cnfldemos/ccloud-operator:sha-fe33c8f
+  restartPolicy: OnFailure
+
