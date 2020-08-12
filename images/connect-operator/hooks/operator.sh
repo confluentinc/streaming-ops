@@ -17,7 +17,16 @@ function load_configs() {
 }
 
 function delete_connector() {
-	curl -s -o /dev/null -X DELETE -H "Content-Type: application/json" "$BASE_URL/connectors/$1"
+	trap 'rm -f "$TMPFILE"' EXIT
+	TMPFILE=$(mktemp) || exit 1
+  echo $1 > $TMPFILE
+ 
+	TEMPLATE_COMMAND="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $TMPFILE"
+
+  DESIRED_CONNECTOR_CONFIG=$(eval $TEMPLATE_COMMAND | jq -c '.config')
+  CONNECTOR_NAME=$(echo $DESIRED_CONNECTOR_CONFIG | jq -r '.name')
+  echo "deleting connector $CONNECTOR_NAME"
+	curl -s -o /dev/null -XDELETE "$BASE_URL/connectors/$CONNECTOR_NAME"
 }
 
 function apply_connector() {
@@ -27,21 +36,22 @@ function apply_connector() {
  
 	TEMPLATE_COMMAND="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $TMPFILE"
 
-  DESIRED_CONNECTOR_CONFIG=$(eval $TEMPLATE_COMMAND | jq -c '.config')
+  DESIRED_CONNECTOR_CONFIG=$(eval $TEMPLATE_COMMAND)
   CONNECTOR_NAME=$(echo $DESIRED_CONNECTOR_CONFIG | jq -r '.name')
 	CONNECTOR_EXISTS_RESULT=$(curl -s -o /dev/null -I -w "%{http_code}" -XGET -H "Accpet: application/json" "$BASE_URL/connectors/$CONNECTOR_NAME")
 
   [[ "$CONNECTOR_EXISTS_RESULT" == "200" ]] && {
-		CURRENT_CONNECTOR_CONFIG=$(curl -s -X GET -H "Content-Type: application/json" "$BASE_URL/connectors/$CONNECTOR_NAME/config")
+		CURRENT_CONNECTOR_CONFIG=$(curl -s -XGET -H "Content-Type: application/json" "$BASE_URL/connectors/$CONNECTOR_NAME/config")
 		if cmp -s <(echo $DESIRED_CONNECTOR_CONFIG | jq -S -c .) <(echo $CURRENT_CONNECTOR_CONFIG | jq -S -c .); then
 			echo "No config changes for $CONNECTOR_NAME"
 		else		
 			echo "Updating existing connector config: $CONNECTOR_NAME"
-    	curl -s -o /dev/null -X PUT -H "Content-Type: application/json" --data "$DESIRED_CONNECTOR_CONFIG" "$BASE_URL/connectors/$CONNECTOR_NAME/config"
+      DESIRED_CONNECTOR_CONFIG=$(echo $DESIRED_CONNECTOR_CONFIG | jq -S -c '.config')
+    	curl -s -o /dev/null -XPUT -H "Content-Type: application/json" --data "$DESIRED_CONNECTOR_CONFIG" "$BASE_URL/connectors/$CONNECTOR_NAME/config"
 		fi
   } || {
     echo "creating new connector: $CONNECTOR_NAME"
-    curl -s -o /dev/null -X POST -H "Content-Type: application/json" --data "$CONNECTOR_CONFIG" "$BASE_URL/connectors"
+    curl -s -o /dev/null -XPOST -H "Content-Type: application/json" --data "$DESIRED_CONNECTOR_CONFIG" "$BASE_URL/connectors"
   }
 }
 
