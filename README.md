@@ -153,6 +153,7 @@ _*TODO*_: Link to Docs for setting up ccloud and environment properly until auto
 ## Info
 
 * Flux is configured to sync with the repository once per minute, you can force a syncronization with the command: `make sync`
+* You can open a terminal on the cluster with some dev tools available with: `make prompt`
 
 ## Credits / Links
 * Significant portions of the repository are based on the work of Steven Wade @ https://github.com/swade1987
