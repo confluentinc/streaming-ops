@@ -95,6 +95,7 @@ _*TODO*_: Link to Docs for setting up ccloud and environment properly until auto
   * Use `kubectl` to create a generic secret file from your properties file and put it into a staging area (`secrets/local-toseal`). _The namespace, secret name, and generic secret file name are related in this command, do not change them without understanding the seal script, executed next_.
 
     kubectl create secret generic kafka-secrets --namespace=default --from-file=kafka.properties=secrets/example-kafka-secrets.props --dry-run=client -o yaml > secrets/local-toseal/dev/default-kafka-secrets.yaml
+
     kubectl create secret generic connect-operator-secrets --namespace=default --from-env-file=./secrets/example-connect-operator-secrets.props --dry-run=client -o yaml > secrets/local-toseal/dev/default-connect-operator-secrets.yaml && echo "ready to seal: secrets/local-toseal/dev/default-connect-operator-secrets.yaml"
 
   * Seal the secrets, for the `dev` environment, with the following helper command which uses the `scripts/seal-secrets.sh` script. This command will place the sealed secret in `secrets/sealed/dev`, and this is the file which is safe to commit to the repository.
