@@ -7,4 +7,5 @@ spec:
   - name: ccloud-operator
     image: cnfldemos/ccloud-operator:sha-3341211
   restartPolicy: OnFailure
+  serviceAccountName: ccloud-admin-sa
 
