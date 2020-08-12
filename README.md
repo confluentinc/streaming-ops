@@ -60,14 +60,19 @@ _*TODO*_: Link to Docs for setting up ccloud and environment properly until auto
 
 3.  To install all dependencies on a Mac. This command uses a combination of manual installations by downloading and install binaries to `/usr/local/bin` and Homebrew. You will be prompted for your adminstrative passwod to install files to `/usr/local/bin`.  You can skip this step if you'd like to install the dependencies manually.
 
+    ```
     make install-deps 
+    ```
 
 4. To create a local test cluster on Docker using k3d
 
+    ```
     make cluster
+    ```
 
   Verify the cluster is ready:
 
+    ```
     kubectl get nodes
 
     NAME                        STATUS   ROLES    AGE   VERSION
@@ -75,14 +80,19 @@ _*TODO*_: Link to Docs for setting up ccloud and environment properly until auto
     k3d-kafka-gitops-server-1   Ready    master   15s   v1.18.4+k3s1
     k3d-kafka-gitops-server-2   Ready    master   12s   v1.18.4+k3s1
     k3d-kafka-gitops-server-3   Ready    master   10s   v1.18.4+k3s1 
+    ```
 
 5. Install Bitnami Sealed Secret Controller into the cluster
 
+    ```
     make install-bitnami-secret-controller
+    ```
 
   Wait for the controller to be ready. This will transition from `null` to `1` (available replica):
 
+    ```
     kubectl get -n kube-system deployment/sealed-secrets-controller -o json | jq '.status.availableReplicas'
+    ```
 
 6. Retrieve the secret controller's public key for this environment. The public key is stored in `secrets/keys/<environment>.crt`, _but not checked into the repository_.  See the Bitnami docs for long term management of secrets.
 
