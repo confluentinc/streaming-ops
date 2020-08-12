@@ -5,13 +5,13 @@ metadata:
 spec:
   containers:
   - name: connect-operator
-    image: cnfldemos/connect-operator:sha-be8a720
+    image: cnfldemos/connect-operator:sha-fe33c8f
     env:
     - name: CONFIG_FILE_PATH
       value: /etc/config/kafka/kafka.properties
     envFrom:
     - secretRef:
-        name: connector-controller-secrets
+        name: connector-operator-secrets
     volumeMounts:
     - name: kafka-properties-volume
       mountPath: /etc/config/kafka/

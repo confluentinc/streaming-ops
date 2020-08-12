@@ -77,7 +77,7 @@ endif
 	kubectl create secret generic kafka-secrets --namespace=default --from-file=kafka.properties=$(KAFKA_SECRET_FILE) --dry-run=client -o yaml > secrets/local-toseal/$*/default-kafka-secrets.yaml && echo "ready to seal: secrets/local-toseal/$*/default-kafka-secrets.yaml"
 	@printf "\n"
 	@$(call print-prompt)
-	kubectl create secret generic connector-controller-secrets --namespace=default --from-env-file=./secrets/example-connector-controller-secrets.props --dry-run=client -o yaml > secrets/local-toseal/$*/default-connector-controller-secrets.yaml && echo "ready to seal: secrets/local-toseal/$*/default-connector-controller-secrets.yaml"
+	kubectl create secret generic connector-operator-secrets --namespace=default --from-env-file=./secrets/example-connector-operator-secrets.props --dry-run=client -o yaml > secrets/local-toseal/$*/default-connector-operator-secrets.yaml && echo "ready to seal: secrets/local-toseal/$*/default-connector-operator-secrets.yaml"
 
 seal-secrets-%:
 	@$(call print-header,"Sealing secrets")
