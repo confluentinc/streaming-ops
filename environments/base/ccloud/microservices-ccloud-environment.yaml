@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: microservices-ccloud-environment
+  labels:
+    destination: ccloud
+data:
+  environment: |
+    name: null
+    kafka:
+      cluster:
+        name: microservices-orders
+        cloud: gcp
+        region: us-central1
+        type: basic
+
