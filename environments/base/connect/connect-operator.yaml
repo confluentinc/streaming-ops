@@ -11,7 +11,7 @@ spec:
       value: /etc/config/kafka/kafka.properties
     envFrom:
     - secretRef:
-        name: connector-operator-secrets
+        name: connect-operator-secrets
     volumeMounts:
     - name: kafka-properties-volume
       mountPath: /etc/config/kafka/
