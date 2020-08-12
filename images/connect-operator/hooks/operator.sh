@@ -37,11 +37,11 @@ function apply_connector() {
 			echo "No config changes for $CONNECTOR_NAME"
 		else		
 			echo "Updating existing connector config: $CONNECTOR_NAME"
-    	curl -s -i -X PUT -H "Content-Type: application/json" --data "$DESIRED_CONNECTOR_CONFIG" "$BASE_URL/connectors/$CONNECTOR_NAME/config"
+    	curl -s -X PUT -H "Content-Type: application/json" --data "$DESIRED_CONNECTOR_CONFIG" "$BASE_URL/connectors/$CONNECTOR_NAME/config"
 		fi
   } || {
     echo "creating new connector: $CONNECTOR_NAME"
-    curl -s -i -X POST -H "Content-Type: application/json" --data "$CONNECTOR_CONFIG" "$BASE_URL/connectors"
+    curl -s -X POST -H "Content-Type: application/json" --data "$CONNECTOR_CONFIG" "$BASE_URL/connectors"
   }
 }
 

@@ -5,7 +5,7 @@ metadata:
 spec:
   containers:
   - name: connect-operator
-    image: cnfldemos/connect-operator:0.0.28
+    image: cnfldemos/connect-operator:0.0.29
     env:
     - name: CONFIG_FILE_PATH
       value: /etc/config/kafka/kafka.properties
