@@ -88,7 +88,7 @@ _*TODO*_: Link to Docs for setting up ccloud and environment properly until auto
     make install-bitnami-secret-controller
     ```
 
-  Wait for the controller to be ready. This will transition from `null` to `1` (available replica):
+    Wait for the controller to be ready. This will transition from `null` to `1` (available replica):
 
     ```
     kubectl get -n kube-system deployment/sealed-secrets-controller -o json | jq '.status.availableReplicas'
