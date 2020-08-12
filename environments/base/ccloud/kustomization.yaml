@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
 - ccloud-operator.yaml
 - security.yaml
+- microservices-ccloud-environment.yaml 
