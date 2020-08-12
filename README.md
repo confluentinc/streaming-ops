@@ -86,7 +86,9 @@ _*TODO*_: Link to Docs for setting up ccloud and environment properly until auto
 
 6. Retrieve the secret controller's public key for this environment. The public key is stored in `secrets/keys/<environment>.crt`, _but not checked into the repository_.  See the Bitnami docs for long term management of secrets.
 
+    ```
     make get-public-key ENV=dev
+    ```
 
 7. Create and deploy the sealed secrets in 4 steps:
 
@@ -104,37 +106,51 @@ _*TODO*_: Link to Docs for setting up ccloud and environment properly until auto
 
   * Seal the secrets, for the `dev` environment, with the following helper command which uses the `scripts/seal-secrets.sh` script. This command will place the sealed secret in `secrets/sealed/dev`, and this is the file which is safe to commit to the repository.
 
+    ```
     make seal-dev
+    ```
 
   * Commit the sealed secret to the repository so that Flux can sync it to the K8s cluster:
 
+    ```
     git add secrets/sealed/dev/.
     git commit -m 'New secrets!'
     git push origin master # (or to the appropriate branch if you are doing GitOps by PR already!)
+    ```
 
 8. Install Flux, the GitOps operator, into the cluster
 
+    ```
     make install-flux
+    ```
 
   * The script will install Flux into the cluster and then wait for you to add the shown key to your repository in the Settings->Deploy Keys section. Write access is required for Flux to manage Tags to control the syncronized state.  See the Flux documentation for more details.
 
   * You will see the following if the syncronization between Flux and the repository is setup properly:
 
+      ```
       >>> Github deploy key is ready
       >>> Cluster bootstrap done!
+      ```
 
 9. Verify secrets are available
 
+    ```
     kubectl get sealedsecrets.bitnami.com
     kubectl get secrets
+    ```
 
   Combining `kubectl`, `jq`, and `base64`, you can decode the secret file to ensure it has been properly set. This should match the original properties file you created. It's controlled by the GitOps process in the same way the other K8s manifests are, however it's not exposed in the code repository.
 
+    ```
     kubectl get secrets/kafka-secrets -o json | jq -r '.data."kafka.properties"' | base64 --decode
+    ```
 
 10. Verify the system is deployed
 
+    ```
     kubectl get all
+    ```
 
 ## Info
 
