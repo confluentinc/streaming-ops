@@ -70,7 +70,7 @@ _*TODO*_: Link to Docs for setting up ccloud and environment properly until auto
     make cluster
     ```
 
-  Verify the cluster is ready:
+    Verify the cluster is ready:
 
     ```
     kubectl get nodes
