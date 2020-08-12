@@ -17,7 +17,7 @@ function load_configs() {
 }
 
 function delete_connector() {
-	curl -s -i -X DELETE -H "Content-Type: application/json" "$BASE_URL/connectors/$1"
+	curl -s -o /dev/null -X DELETE -H "Content-Type: application/json" "$BASE_URL/connectors/$1"
 }
 
 function apply_connector() {

@@ -3,4 +3,3 @@ kind: Kustomization
 resources:
 - connect-service.yaml
 - security.yaml
-- connect-operator.yaml
