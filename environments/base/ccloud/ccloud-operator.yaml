@@ -5,6 +5,6 @@ metadata:
 spec:
   containers:
   - name: ccloud-operator
-    image: cnfldemos/ccloud-operator:sha-fe33c8f
+    image: cnfldemos/ccloud-operator:sha-3341211
   restartPolicy: OnFailure
 
