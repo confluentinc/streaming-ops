@@ -27,6 +27,9 @@ yq:
 
 # Homebrew isn't great with installing specific version, so I'm using a direct git commit URL to pin to specific versions
 
+kubectl:
+	brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/9fec1d922fa734289eccaa495f13680587da8feb/Formula/kubernetes-cli.rb 
+
 k3d:
 	brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/5fb0385f36ad62ffb051eb3256dceec9f3dbfdd2/Formula/k3d.rb
 
@@ -39,7 +42,7 @@ kustomize:
 helm:
 	brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/6796c57c9ea504e74e26a32a14ab8c5758bf6750/Formula/helm.rb 
 
-install-deps: k3d kubeseal jq yq kustomize helm
+install-deps: kubectl k3d kubeseal jq yq kustomize helm
 
 cluster:
 	@$(call print-header,"creating new k3d cluster")

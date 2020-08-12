@@ -1,7 +1,7 @@
 # kafka-devops
 
 Simulated production environment running a streaming application targeting Apache Kafka on Confluent Cloud.
-Applications and resources are managed by declarative infrastructure and GitOps.
+Applications and resources are managed by GitOps with declarative infrastructure, Kubernetes and the [Operator Pattern](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/).
 
 For the full documentation on the the project see https://docs.confluent.io (TODO: real confluent docs link here).
 
@@ -11,8 +11,15 @@ For basic usage instructions on how to use this project, read on.
 
 The included `Makefile` contains a target to install these on MacOS or they can be installed manually. Details for automated installation in the Usage section.
 
+## kubectl
+Required to interact with your Kubernetes cluster, create secrets, etc...
+
+https://kubernetes.io/docs/tasks/tools/install-kubectl/
+
 ## k3d
 If you'd like to run the project on a local Docker based Kubernetes cluster
+
+https://github.com/rancher/k3d#get
 
 ## Kustomize
 Environments (dev, stg, prd, etc...) are created by using Kustomize style overlays
@@ -164,10 +171,10 @@ _*TODO*_: Link to Docs for setting up ccloud and environment properly until auto
 
 ## Info
 
-* Flux is configured to sync with the repository once per minute, you can force a syncronization with the command: `make sync`
+* FluxCD is configured to sync with the repository once per minute, you can force a syncronization with the command: `make sync`
 * You can open a terminal on the cluster with some dev tools available with: `make prompt`
 
 ## Credits / Links
 * Significant portions of the repository are based on the work of Steven Wade @ https://github.com/swade1987
 * The script based Operator patterns in this repository are based on the shell-operator project @ https://github.com/flant/shell-operator
-
+* [FluxCD](https://github.com/fluxcd/flux) is used for GitOps based CD
