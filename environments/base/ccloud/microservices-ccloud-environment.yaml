@@ -1,16 +1,51 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: microservices-ccloud-environment
+  name: kafka-devops-ccloud-environment
   labels:
     destination: ccloud
 data:
-  environment: |
-    name: null
-    kafka:
-      cluster:
-        name: microservices-orders
+  service-accounts: |
+    - name: microservices-orders-consumer
+    - name: microservices-orders-producer
+  environments: |
+    - name: kafka-devops 
+      kafka:
+        cluster:
+          - name: microservices-orders
+            cloud: gcp
+            region: us-central1
+            type: basic
+            topic:
+              - name: bronze
+              - name: gold
+              - name: silver
+              - name: platinum
+              - name: customers
+              - name: orders
+              - name: orders-enriched
+              - name: orders-validations
+              - name: payments
+              - name: warehouse-inventory
+            acl:
+              - permission: allow
+                service-account: microservices-orders-consumer
+                operation: READ
+                topic: *
+              - permission: allow
+                service-account: microservices-orders-producer
+                operation: WRITE
+                topic: *
+          - name: test-cluster
+            cloud: gcp
+            region: us-central1
+            type: basic
+            topic:
+              - name: testing-topic
+                partitions: 5
+                config:
+                  cleanup.policy: "delete"
+      schema-registry:
         cloud: gcp
-        region: us-central1
-        type: basic
+        geo: us
 
