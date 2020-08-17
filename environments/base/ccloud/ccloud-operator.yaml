@@ -5,7 +5,7 @@ metadata:
 spec:
   containers:
   - name: ccloud-operator
-    image: cnfldemos/ccloud-operator:sha-d20d0dd
+    image: cnfldemos/ccloud-operator:sha-d0f7df5
   restartPolicy: OnFailure
   serviceAccountName: ccloud-admin-sa
 
