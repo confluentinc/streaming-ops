@@ -17,6 +17,6 @@ kubernetes:
   jqFilter: ".data"
 EOF
 else
-  echo "hello from ccloud-operator"
+  cat $BINDING_CONTEXT_PATH
 fi
 
