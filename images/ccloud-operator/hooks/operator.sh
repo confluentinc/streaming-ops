@@ -1,45 +1,43 @@
 #!/usr/bin/env bash
 
-if [[ $1 == "--config" ]]; then
-  cat <<EOF
-configVersion: v1
-kubernetes:
-- name: ConnectConfigMapMonitor
-  apiVersion: v1
-  kind: ConfigMap
-  executeHookOnEvent: ["Added","Deleted","Modified"]
-  labelSelector:
-    matchLabels:
-      destination: ccloud
-  namespace:
-    nameSelector:
-      matchNames: ["default"]
-  jqFilter: ".data"
-EOF
-else
+source $SHELL_OPERATOR_HOOKS_DIR/lib/common.sh
+source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-service-account.sh
+
+hook::synchronize() {
+
+  DATA=$(jq -c ".[$INDEX].objects | .[].object.data" $BINDING_CONTEXT_PATH)
+
+  SVC_ACCOUNTS=$(echo $DATA | jq '."service-accounts"')
+  ccloud::sa::apply "$SVC_ACCOUNTS"
+
+  ENVIRONMENTS=$(echo $DATA | jq '.environments')
+  #echo $ENVIRONMENTS
+
+}
+hook::apply() {
+  DATA=$(jq -c -r ".[$INDEX].object.data" $BINDING_CONTEXT_PATH)
+}
+hook::delete() {
+  DATA=$(jq -c -r ".[$INDEX].object.data" $BINDING_CONTEXT_PATH)
+}
+
+hook::run() {
   ARRAY_COUNT=`jq -r '. | length-1' $BINDING_CONTEXT_PATH`
   for I in `seq 0 $ARRAY_COUNT`
   do
     export INDEX=$I
     TYPE=$(jq -r ".[$INDEX].type" $BINDING_CONTEXT_PATH)
     if [[ "$TYPE" == "Synchronization" ]]; then
-      DATA=$(jq -c ".[$INDEX].objects | .[].object.data" $BINDING_CONTEXT_PATH)
-      SVC_ACCOUNTS=$(echo $DATA | jq -r '."service-accounts"' | yq r - '.name')
-      echo $SVC_ACCOUNTS
-      while IRS= read -r svcacct; do
-        echo "ccloud service-account create $svcacct"
-      done <<< $SVC_ACCOUNTS
+      hook::synchronize
     elif [[ "$TYPE" == "Event" ]]; then
       EVENT=$(jq -r ".[$INDEX].watchEvent" $BINDING_CONTEXT_PATH)
-      DATA=$(jq -c -r ".[$INDEX].object.data" $BINDING_CONTEXT_PATH)
-      #KEY=$(echo $DATA | jq -r -c 'keys | .[0]')
-      #CONFIG=$(echo $DATA | jq -r -c ".\"$KEY\"")
       if [[ "$EVENT" == "Deleted" ]]; then
-        echo "delete"
+        hook::delete
       else
-        echo "apply"
+        hook::apply
       fi
     fi
-    done
-fi
+  done
+}
 
+common::run_hook "$@"
