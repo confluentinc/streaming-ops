@@ -9,7 +9,7 @@ hook::synchronize() {
   DATA=$(jq -c ".[$INDEX].objects | .[].object.data" $BINDING_CONTEXT_PATH)
 
   SVC_ACCOUNTS=$(echo $DATA | jq '."service-accounts"')
-  ccloud::sa::apply "$SVC_ACCOUNTS"
+  ccloud::sa::apply_list "$SVC_ACCOUNTS"
 
   ENVIRONMENTS=$(echo $DATA | jq '.environments')
   #echo $ENVIRONMENTS
