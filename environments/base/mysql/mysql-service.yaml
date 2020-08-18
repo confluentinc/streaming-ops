@@ -29,7 +29,7 @@ spec:
         name: mysql
         envFrom:
         - secretRef:
-          name: connect-operator-secrets
+            name: connect-operator-secrets
         ports:
         - containerPort: 3306
           name: mysql
