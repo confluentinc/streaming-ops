@@ -54,7 +54,7 @@ data:
                   "name": "bronze",
                   "partitions": 5,
                   "config": [
-                    "cleanup.policy": "delete"
+                    "cleanup.policy=delete"
                   ]
                 }
               ]
