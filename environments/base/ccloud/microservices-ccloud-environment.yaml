@@ -6,53 +6,61 @@ metadata:
     destination: ccloud
 data:
   service-accounts: |
-    [ { 
-      "name": "microservices-orders-consumer", 
-      "description": "Consumer application for microservices orders data"
+    [ 
+      { 
+        "name": "microservices-orders-consumer", 
+        "description": "Consumer application for microservices orders data"
       },
       { 
-      "name": "microservices-orders-producer", 
-      "description": "Producer application of microservices orders data"
+        "name": "microservices-orders-producer", 
+        "description": "Producer application of microservices orders data"
       } 
     ]
   environments: |
-    - name: kafka-devops 
-      kafka:
-        cluster:
-          - name: microservices-orders
-            cloud: gcp
-            region: us-central1
-            type: basic
-            topic:
-              - name: bronze
-              - name: gold
-              - name: silver
-              - name: platinum
-              - name: customers
-              - name: orders
-              - name: orders-enriched
-              - name: orders-validations
-              - name: payments
-              - name: warehouse-inventory
-            acl:
-              - permission: allow
-                service-account: microservices-orders-consumer
-                operation: READ
-                topic: *
-              - permission: allow
-                service-account: microservices-orders-producer
-                operation: WRITE
-                topic: *
-          - name: test-cluster
-            cloud: gcp
-            region: us-central1
-            type: basic
-            topic:
-              - name: testing-topic
-                partitions: 5
-                config:
-                  cleanup.policy: "delete"
-      schema-registry:
-        cloud: gcp
-        geo: us
+    [ 
+      { 
+        "name": "kafka-devops",
+        "schema-registry": {
+          "cloud": "gcp",
+          "geo": "us"
+        },
+        "kafka": { 
+          "cluster": [
+            { 
+              "name": "microservices-orders",
+              "cloud": "gcp",
+              "region": "us-central1",
+              "type": "basic",
+              "topic": [
+                { "name": "bronze" },
+                { "name": "gold" },
+                { "name": "silver" },
+                { "name": "platinum" },
+                { "name": "customers" },
+                { "name": "orders" },
+                { "name": "orders-enriched" },
+                { "name": "orders-validations" },
+                { "name": "payments" },
+                { "name": "warehouse-inventory" }
+              ]
+            },
+            {
+              "name": "test-cluster",
+              "cloud": "gcp",
+              "region": "us-central1",
+              "type": "basic",
+              "topic": [
+                { 
+                  "name": "bronze",
+                  "partitions": 5,
+                  "config": [
+                    "cleanup.policy": "delete"
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
 
