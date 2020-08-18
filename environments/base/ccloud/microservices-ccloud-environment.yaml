@@ -7,7 +7,9 @@ metadata:
 data:
   service-accounts: |
     - name: microservices-orders-consumer
+      description: Consumer application for microservices orders data
     - name: microservices-orders-producer
+      description: Producer application of microservices orders data
   environments: |
     - name: kafka-devops 
       kafka:
