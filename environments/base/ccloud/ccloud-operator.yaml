@@ -6,6 +6,9 @@ spec:
   containers:
   - name: ccloud-operator
     image: cnfldemos/ccloud-operator:sha-d0f7df5
+    envFrom:
+    - secretRef:
+        name: ccloud-secrets
   restartPolicy: OnFailure
   serviceAccountName: ccloud-admin-sa
 
