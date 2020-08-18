@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 source $SHELL_OPERATOR_HOOKS_DIR/lib/common.sh
+source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-common.sh
 source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-service-account.sh
 
 hook::synchronize() {
@@ -22,6 +23,7 @@ hook::delete() {
 }
 
 hook::run() {
+	ccloud::login
   ARRAY_COUNT=`jq -r '. | length-1' $BINDING_CONTEXT_PATH`
   for I in `seq 0 $ARRAY_COUNT`
   do
