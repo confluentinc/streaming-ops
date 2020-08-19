@@ -48,9 +48,9 @@ data:
             "region": "us-central1",
             "topic": [
               { "name": "test-compact", "partitions": 2,
-                "config": [ "cleanup.policy=compact" ] },
+                "config": "cleanup.policy=compact" },
               { "name": "test-delete", "partitions": 1,
-                "config": [ "cleanup.policy=delete" ] }
+                "config": "cleanup.policy=delete" }
             ]
           }
         ]
