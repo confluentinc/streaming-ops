@@ -13,6 +13,8 @@ function ccloud::env::apply_list() {
 
 		echo "environment: $envname, id = $env_id"
 
+		ccloud environment use "$env_id"
+
 		KAFKA=$(echo $ENV | jq -r .kafka)
 		ccloud::kafka::apply_list "$KAFKA"
 

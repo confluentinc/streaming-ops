@@ -5,30 +5,36 @@ function ccloud::kafka::apply_list() {
 	for KAFKA_ENCODED in $(echo $1 | jq -c -r '.[] | @base64'); do
 		
 		KAFKA=$(echo "${KAFKA_ENCODED}" | base64 --decode)
-		echo $KAFKA
+
+		local name=$(echo $KAFKA | jq -r .name)
+		local cloud=$(echo $KAFKA | jq -r .cloud)
+		local region=$(echo $KAFKA | jq -r .region)
+
+		local kafka_id=$(ccloud::kafka::apply name="$name" cloud="$cloud" region="$region")
+
+		echo "kafka: $name, id = $kafka_id"
 		
-		#local envname=$(echo $ENV | jq -r .name)
-		#local env_id=$(ccloud::env::apply name="$envname")
-
-		#echo "environment: $envname, id = $env_id"
-
 	done
 }
-
-#local FOUND_CLUSTER=$(ccloud kafka cluster list -o json | jq -c -r '.[] | select((.name == "'"$CLUSTER_NAME"'") and (.provider == "'"$CLUSTER_CLOUD"'") and (.region == "'"$CLUSTER_REGION"'"))')
 
 function ccloud::kafka::apply() {
 	local name cloud region
 	local "${@}"
 	
-	result=$(ccloud environment create $name -o json 2>&1)
-	retcode=$?
-	if [[ $retcode -eq 0 ]]; then
-		echo $result | jq -r '.id'
-	elif [[ "$result" == *"already in use"* ]]; then
-		ccloud environment list -o json | jq -r '.[] | select(.name=="'"$name"'") | .id'
-	else
-		echo $result
-		return $retcode
-	fi
+	local FOUND_CLUSTER=$(ccloud kafka cluster list -o json | jq -c -r '.[] | select((.name == "'"$name"'") and (.provider == "'"$cloud"'") and (.region == "'"$region"'"))')
+  [[ ! -z "$FOUND_CLUSTER" ]] && {
+      echo "$FOUND_CLUSTER" | jq -r .id
+      return 0 
+    } || {
+			result=$(ccloud kafka cluster create "$name" --cloud "$cloud" --region "$region" -o json 2>&1)
+			retcode=$?
+			if [[ $retcode -eq 0 ]]; then
+				echo $result | jq -r '.id'
+			else
+				echo $result
+				return $retcode
+			fi
+      return 1
+    }
+
 }
