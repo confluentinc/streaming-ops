@@ -24,43 +24,41 @@ data:
           "cloud": "gcp",
           "geo": "us"
         },
-        "kafka": { 
-          "cluster": [
-            { 
-              "name": "microservices-orders",
-              "cloud": "gcp",
-              "region": "us-central1",
-              "type": "basic",
-              "topic": [
-                { "name": "bronze" },
-                { "name": "gold" },
-                { "name": "silver" },
-                { "name": "platinum" },
-                { "name": "customers" },
-                { "name": "orders" },
-                { "name": "orders-enriched" },
-                { "name": "orders-validations" },
-                { "name": "payments" },
-                { "name": "warehouse-inventory" }
-              ]
-            },
-            {
-              "name": "test-cluster",
-              "cloud": "gcp",
-              "region": "us-central1",
-              "type": "basic",
-              "topic": [
-                { 
-                  "name": "bronze",
-                  "partitions": 5,
-                  "config": [
-                    "cleanup.policy=delete"
-                  ]
-                }
-              ]
-            }
-          ]
-        }
+        "kafka": [
+          { 
+            "name": "microservices-orders",
+            "cloud": "gcp",
+            "region": "us-central1",
+            "type": "basic",
+            "topic": [
+              { "name": "bronze" },
+              { "name": "gold" },
+              { "name": "silver" },
+              { "name": "platinum" },
+              { "name": "customers" },
+              { "name": "orders" },
+              { "name": "orders-enriched" },
+              { "name": "orders-validations" },
+              { "name": "payments" },
+              { "name": "warehouse-inventory" }
+            ]
+          },
+          {
+            "name": "test-cluster",
+            "cloud": "gcp",
+            "region": "us-central1",
+            "type": "basic",
+            "topic": [
+              { 
+                "name": "bronze",
+                "partitions": 5,
+                "config": [
+                  "cleanup.policy=delete"
+                ]
+              }
+            ]
+          }
+        ]
       }
     ]
 
