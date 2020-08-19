@@ -29,7 +29,6 @@ data:
             "name": "microservices-orders",
             "cloud": "gcp",
             "region": "us-central1",
-            "type": "basic",
             "topic": [
               { "name": "bronze" },
               { "name": "gold" },
@@ -47,7 +46,6 @@ data:
             "name": "test-cluster",
             "cloud": "gcp",
             "region": "us-central1",
-            "type": "basic",
             "topic": [
               { 
                 "name": "bronze",
