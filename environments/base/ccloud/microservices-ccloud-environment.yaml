@@ -49,8 +49,8 @@ data:
             "topic": [
               { "name": "test-compact", "partitions": 2,
                 "config": "cleanup.policy=compact" },
-              { "name": "test-delete", "partitions": 1,
-                "config": "cleanup.policy=delete" }
+              { "name": "test-delete", 
+                "config": "cleanup.policy=delete,retention.ms=259200000" }
             ]
           }
         ]
