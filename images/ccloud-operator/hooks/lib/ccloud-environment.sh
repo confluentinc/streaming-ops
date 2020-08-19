@@ -1,6 +1,8 @@
 if [ -n "$LIB_CCLOUD_ENV" ]; then return; fi
 LIB_CCLOUD_ENV=`date`
 
+source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-kafka.sh
+
 function ccloud::env::apply_list() {
 	for ENV_ENCODED in $(echo $1 | jq -c -r '.[] | @base64'); do
 		
@@ -10,6 +12,9 @@ function ccloud::env::apply_list() {
 		local env_id=$(ccloud::env::apply name="$envname")
 
 		echo "environment: $envname, id = $env_id"
+
+		KAFKA=$(echo $ENV | jq -r .kafka)
+		ccloud::kafka::apply_list "$KAFKA"
 
 	done
 }
