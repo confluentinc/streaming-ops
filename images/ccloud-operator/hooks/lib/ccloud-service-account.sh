@@ -13,11 +13,12 @@ function ccloud::sa::apply_list() {
 	# we encode, then decode, the list into base64 so that we can 
 	# iterate over them using a bash for loop, otherwise the spaces 
 	# would break up the loop elements
-	for SA_ENCODED in $(echo "$1" | jq -r '.[] | @base64'); do
+	for SA_ENCODED in $(echo $1 | jq -c -r '.[] | @base64'); do
 		SA=$(echo "${SA_ENCODED}" | base64 --decode)
 		local svcacctname=$(echo $SA | jq -r .name)
 		local svcacctdesc=$(echo $SA | jq -r .description)
-		ccloud::sa::create name="$svcacctname" description="$svcacctdesc"
+		local sa_id=$(ccloud::sa::apply name="$svcacctname" description="$svcacctdesc")
+		echo "service-account: $svcacctname, id = $sa_id"
 	done
 }
 
@@ -29,11 +30,11 @@ function ccloud::sa::apply_list() {
 function ccloud::sa::apply() {
 	local name description
 	local "${@}"
-	result=$(ccloud service-account create $name --description "$description" 2>&1)
+	result=$(ccloud service-account create $name --description "$description" -o json 2>&1)
 	retcode=$?
-	if [ $retcode -eq 0 ]; then
-		echo $result | jq '.id'
-	elif [ $result == *"already in use"* ]; then
+	if [[ $retcode -eq 0 ]]; then
+		echo $result | jq -r '.id'
+	elif [[ "$result" == *"already in use"* ]]; then
 		ccloud service-account list -o json | jq -r '.[] | select(.name=="'"$name"'") | .id'
 	else
 		echo $result

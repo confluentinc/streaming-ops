@@ -3,23 +3,28 @@
 source $SHELL_OPERATOR_HOOKS_DIR/lib/common.sh
 source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-common.sh
 source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-service-account.sh
+source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-environment.sh
 
 hook::synchronize() {
 
   DATA=$(jq -c ".[$INDEX].objects | .[].object.data" $BINDING_CONTEXT_PATH)
-
-  SVC_ACCOUNTS=$(echo $DATA | jq '."service-accounts"')
+  SVC_ACCOUNTS=$(echo $DATA | jq -r '."service-accounts"')
   ccloud::sa::apply_list "$SVC_ACCOUNTS"
 
-  ENVIRONMENTS=$(echo $DATA | jq '.environments')
-  #echo $ENVIRONMENTS
+  ENVIRONMENTS=$(echo $DATA | jq -r '.environments')
+	ccloud::env::apply_list "$ENVIRONMENTS"
 
 }
 hook::apply() {
   DATA=$(jq -c -r ".[$INDEX].object.data" $BINDING_CONTEXT_PATH)
 }
 hook::delete() {
-  DATA=$(jq -c -r ".[$INDEX].object.data" $BINDING_CONTEXT_PATH)
+	if [[ "$DELETE_ENABLED" == "true" ]]; then
+  	DATA=$(jq -c -r ".[$INDEX].object.data" $BINDING_CONTEXT_PATH)
+		echo "!! Delete is enabled, proceeding to delete ccloud resources"
+	else 
+		echo "!! Warning: Operator resources have been deleted, but DELETE_ENABLED is not true"
+	fi
 }
 
 hook::run() {
