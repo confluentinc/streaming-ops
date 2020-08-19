@@ -30,16 +30,16 @@ data:
             "cloud": "gcp",
             "region": "us-central1",
             "topic": [
-              { "name": "bronze" },
-              { "name": "gold" },
-              { "name": "silver" },
-              { "name": "platinum" },
-              { "name": "customers" },
-              { "name": "orders" },
-              { "name": "orders-enriched" },
-              { "name": "orders-validations" },
-              { "name": "payments" },
-              { "name": "warehouse-inventory" }
+              { "name": "bronze", "partitions": 3 },
+              { "name": "gold", "partitions": 3},
+              { "name": "silver", "partitions": 3  },
+              { "name": "platinum", "partitions": 3 },
+              { "name": "customers", "partitions": 3 },
+              { "name": "orders", "partitions": 3 },
+              { "name": "orders-enriched", "partitions": 3 },
+              { "name": "orders-validations", "partitions": 3 },
+              { "name": "payments", "partitions": 3 },
+              { "name": "warehouse-inventory", "partitions": 3 }
             ]
           },
           {
@@ -47,13 +47,10 @@ data:
             "cloud": "gcp",
             "region": "us-central1",
             "topic": [
-              { 
-                "name": "bronze",
-                "partitions": 5,
-                "config": [
-                  "cleanup.policy=delete"
-                ]
-              }
+              { "name": "test-compact", "partitions": 2,
+                "config": [ "cleanup.policy=compact" ] },
+              { "name": "test-delete", "partitions": 1,
+                "config": [ "cleanup.policy=delete" ] }
             ]
           }
         ]

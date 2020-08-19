@@ -11,6 +11,11 @@ For basic usage instructions on how to use this project, read on.
 
 The included `Makefile` contains a target to install these on MacOS or they can be installed manually. Details for automated installation in the Usage section.
 
+## ccloud
+Required to interact with the Confluent Cloud components managed by this project
+
+https://docs.confluent.io/current/cloud/cli/install.html
+
 ## kubectl
 Required to interact with your Kubernetes cluster, create secrets, etc...
 
