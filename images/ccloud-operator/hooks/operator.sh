@@ -1,13 +1,30 @@
 #!/usr/bin/env bash
 
+##############################################################
+# A shell-operator (https://github.com/flant/shell-operator)
+# to manage Confluent Cloud (https://confluent.cloud/)
+# resources using an Operator style pattern with standard
+# K8s resources (ConfigMaps, Secrets, etc...)
+# 
+# Shell operators have 3 stages
+#   1. Synchronize on startup
+#   2. Apply when the monitored resources change
+#   3. Delete when the monitored resources are deleted
+#
+##############################################################
+
 source $SHELL_OPERATOR_HOOKS_DIR/lib/common.sh
 source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-common.sh
 source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-service-account.sh
 source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-environment.sh
 
+# By default Deleting of resources will be disabled
+DELETE_ENABLED=${DELETE_ENABLED:-"false"}
+
 hook::synchronize() {
 
-  DATA=$(jq -c ".[$INDEX].objects | .[].object.data" $BINDING_CONTEXT_PATH)
+  DATA="$1"
+
   SVC_ACCOUNTS=$(echo $DATA | jq -r '."service-accounts"')
   ccloud::sa::apply_list "$SVC_ACCOUNTS"
 
@@ -15,16 +32,28 @@ hook::synchronize() {
 	ccloud::env::apply_list "$ENVIRONMENTS"
 
 }
+
 hook::apply() {
-  DATA=$(jq -c -r ".[$INDEX].object.data" $BINDING_CONTEXT_PATH)
+
+  DATA="$1"
+
+  echo "apply"
+  echo "$DATA"
+
 }
+
 hook::delete() {
+
 	if [[ "$DELETE_ENABLED" == "true" ]]; then
   	DATA=$(jq -c -r ".[$INDEX].object.data" $BINDING_CONTEXT_PATH)
 		echo "!! Delete is enabled, proceeding to delete ccloud resources"
 	else 
 		echo "!! Warning: Operator resources have been deleted, but DELETE_ENABLED is not true"
 	fi
+
+  DATA=$(jq -c -r ".[$INDEX].object.data" $BINDING_CONTEXT_PATH)
+  echo $DATA
+
 }
 
 hook::run() {
@@ -35,16 +64,20 @@ hook::run() {
     export INDEX=$I
     TYPE=$(jq -r ".[$INDEX].type" $BINDING_CONTEXT_PATH)
     if [[ "$TYPE" == "Synchronization" ]]; then
-      hook::synchronize
+      d=$(jq -c ".[$INDEX].objects | .[].object.data" $BINDING_CONTEXT_PATH)
+      hook::synchronize "$d" 
     elif [[ "$TYPE" == "Event" ]]; then
       EVENT=$(jq -r ".[$INDEX].watchEvent" $BINDING_CONTEXT_PATH)
       if [[ "$EVENT" == "Deleted" ]]; then
-        hook::delete
+        d=$(jq -c -r ".[$INDEX].object.data" $BINDING_CONTEXT_PATH)
+        hook::delete "$d"
       else
-        hook::apply
+        d=$(jq -c -r ".[$INDEX].object.data" $BINDING_CONTEXT_PATH)
+        hook::apply "$d"
       fi
     fi
   done
 }
 
 common::run_hook "$@"
+

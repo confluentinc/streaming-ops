@@ -1,6 +1,8 @@
 if [ -n "$LIB_CCLOUD_TOPIC" ]; then return; fi
 LIB_CCLOUD_TOPIC=`date`
 
+source $SHELL_OPERATOR_HOOKS_DIR/lib/common.sh
+
 function ccloud::topic::apply_list() {
 	local kafka_id topic
 	local "${@}"
@@ -25,13 +27,16 @@ function ccloud::topic::apply() {
 	local partition_flag=$([[ $partitions == "null" ]] && echo "" || echo "--partitions $partitions");
 	local config_flag=$([[ "$config" == "null" ]] && echo "" || echo "--config ${config}");
 
-	local result=$(ccloud kafka topic create "$name" --if-not-exists --cluster "$kafka_id" $partition_flag $config_flag && ccloud kafka topic describe $name --cluster "$kafka_id" -o json)
-	
-	echo "topic: $name" 
-
-	local current_config=$(echo $result | jq -r -c '.config')
-
-	[[ "$config" == "null" ]] || ccloud::topic::update name="$name" kafka_id="$kafka_id" config="$config" current_config="$current_config"	
+	retry 30 ccloud kafka topic create "$name" --if-not-exists --cluster "$kafka_id" $partition_flag $config_flag &> /dev/null && {
+		local result=$(ccloud kafka topic describe $name --cluster "$kafka_id" -o json)
+		local current_config=$(echo $result | jq -r -c '.config')
+		[[ "$config" == "null" ]] || ccloud::topic::update name="$name" kafka_id="$kafka_id" config="$config" current_config="$current_config"	
+		echo "topic: $name" 
+	} || {
+		retcode=$?
+		echo "Error creating topic $name"
+		return $retcode
+	}
 }
 
 function ccloud::topic::update() {
