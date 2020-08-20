@@ -28,10 +28,22 @@ function ccloud::topic::apply() {
 	local config_flag=$([[ "$config" == "null" ]] && echo "" || echo "--config ${config}");
 
 	retry 30 ccloud kafka topic create "$name" --if-not-exists --cluster "$kafka_id" $partition_flag $config_flag &> /dev/null && {
-		local result=$(ccloud kafka topic describe $name --cluster "$kafka_id" -o json)
+	
+		retry 60 ccloud kafka topic describe $name --cluster "$kafka_id" &> /dev/null || {
+			echo "Could not obtain description for topic $name"
+			exit 1
+		}
+	
+		# Experienced some issues with back to back create and the describe of topics
+		# 	So the `retry` above waits until the describe returns a valid return code
+		#		But them I'm calling it again to properly capture the output in json
+		#		form so we can process the description of the topic
+		result=$(ccloud kafka topic describe $name --cluster "$kafka_id" -o json)
 		local current_config=$(echo $result | jq -r -c '.config')
 		[[ "$config" == "null" ]] || ccloud::topic::update name="$name" kafka_id="$kafka_id" config="$config" current_config="$current_config"	
-		echo "topic: $name" 
+
+		echo "configured topic: $name" 
+
 	} || {
 		retcode=$?
 		echo "Error creating topic $name"

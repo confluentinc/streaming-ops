@@ -18,7 +18,7 @@ function ccloud::sa::apply_list() {
 		local svcacctname=$(echo $SA | jq -r .name)
 		local svcacctdesc=$(echo $SA | jq -r .description)
 		local sa_id=$(ccloud::sa::apply name="$svcacctname" description="$svcacctdesc")
-		echo "service-account: $svcacctname, id = $sa_id"
+		echo "configured service-account: $svcacctname, id = $sa_id"
 	done
 }
 

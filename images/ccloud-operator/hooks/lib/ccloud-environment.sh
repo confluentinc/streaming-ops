@@ -12,7 +12,7 @@ function ccloud::env::apply_list() {
 		local envname=$(echo $ENV | jq -r .name)
 		local env_id=$(ccloud::env::apply name="$envname")
 
-		echo "environment: $envname, id = $env_id"
+		echo "configured environment: $envname, id = $env_id"
 
 		ccloud environment use "$env_id"
 

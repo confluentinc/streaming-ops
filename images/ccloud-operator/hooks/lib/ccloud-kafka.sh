@@ -15,7 +15,7 @@ function ccloud::kafka::apply_list() {
 
 		local kafka_id=$(ccloud::kafka::apply name="$name" cloud="$cloud" region="$region")
 
-		echo "kafka: $name, id = $kafka_id"
+		echo "configured kafka cluster: $name, id = $kafka_id"
 	
     # When Kafka clusters are first created, they take time to initialize before they can be
     # used properly.  We're going to use the `ccloud kafka topic` command to wait until 
