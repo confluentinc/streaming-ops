@@ -1,6 +1,8 @@
 if [ -n "$LIB_CCLOUD_KAFKA" ]; then return; fi
 LIB_CCLOUD_KAFKA=`date`
 
+source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-topic.sh
+
 function ccloud::kafka::apply_list() {
 	for KAFKA_ENCODED in $(echo $1 | jq -c -r '.[] | @base64'); do
 		
@@ -13,7 +15,11 @@ function ccloud::kafka::apply_list() {
 		local kafka_id=$(ccloud::kafka::apply name="$name" cloud="$cloud" region="$region")
 
 		echo "kafka: $name, id = $kafka_id"
-		
+	
+		local topic=$(echo $KAFKA | jq -r -c .topic)
+	
+		ccloud::topic::apply_list kafka_id=$kafka_id topic="$topic"
+
 	done
 }
 

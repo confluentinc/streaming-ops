@@ -2,6 +2,7 @@ if [ -n "$LIB_CCLOUD_ENV" ]; then return; fi
 LIB_CCLOUD_ENV=`date`
 
 source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-kafka.sh
+source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-schema-registry.sh
 
 function ccloud::env::apply_list() {
 	for ENV_ENCODED in $(echo $1 | jq -c -r '.[] | @base64'); do
@@ -17,6 +18,10 @@ function ccloud::env::apply_list() {
 
 		KAFKA=$(echo $ENV | jq -r .kafka)
 		ccloud::kafka::apply_list "$KAFKA"
+
+    SR=$(echo $ENV | jq -r '."schema-registry"')
+    local sr_id=$(ccloud::schema-registry::apply "$SR")
+    echo "schema-registry: id = $sr_id"
 
 	done
 }
