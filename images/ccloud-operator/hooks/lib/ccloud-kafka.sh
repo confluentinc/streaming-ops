@@ -3,6 +3,7 @@ LIB_CCLOUD_KAFKA=`date`
 
 source $SHELL_OPERATOR_HOOKS_DIR/lib/common.sh
 source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-topic.sh
+source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-acl.sh
 
 function ccloud::kafka::apply_list() {
 	for KAFKA_ENCODED in $(echo $1 | jq -c -r '.[] | @base64'); do
@@ -32,10 +33,10 @@ function ccloud::kafka::apply_list() {
 		ccloud::topic::apply_list kafka_id=$kafka_id topic="$topic"
 
     local acl=$(echo $KAFKA | jq -r -c .acl)
-    echo $acl
+    [[ "$acl" != "null" ]] && ccloud::acl::apply_list kafka_id=$kafka_id acl="$acl"
 
-    local api_keys=$(echo $KAFKA | jq -r -c '."api-keys"')
-    echo $api_keys
+    local api_key=$(echo $KAFKA | jq -r -c '."api-keys"')
+    echo $api_key
     
 	done
 }

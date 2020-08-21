@@ -42,6 +42,12 @@ function ccloud::sa::apply() {
 	fi
 }
 
+function ccloud::sq::get_id() {
+  local name
+  local "${@}"
+	ccloud service-account list -o json | jq -r '.[] | select(.name=="'"$name"'") | .id'
+}
+
 ##################################
 # Delete a given service account
 # name to the configured ccloud 

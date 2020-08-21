@@ -56,7 +56,7 @@ data:
                 "resource": "topic", "name": "*"
               }
             ],
-            "api-keys": [
+            "api-key": [
               { "name": "microservices-orders-consumer-api-key",
                 "service-account": "microservices-orders-consumer" },
               { "name": "microservices-orders-producer-api-key",
