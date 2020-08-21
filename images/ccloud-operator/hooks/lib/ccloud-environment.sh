@@ -21,7 +21,7 @@ function ccloud::env::apply_list() {
 
     SR=$(echo $ENV | jq -r '."schema-registry"')
     local sr_id=$(ccloud::schema-registry::apply "$SR")
-    echo "schema-registry: id = $sr_id"
+    echo "configured schema-registry: id = $sr_id"
 
 	done
 }

@@ -48,12 +48,12 @@ data:
               { 
                 "service-account": "microservices-orders-consumer", 
                 "operation" : "read", "permission": "allow",
-                "resource": "topic", "topic": "*"
+                "resource": "topic", "name": "*"
               },
               {
                 "service-account": "microservices-orders-producer",
                 "operation": "write", "permission": "allow",
-                "resource": "topic", "topic": "*"
+                "resource": "topic", "name": "*"
               }
             ],
             "api-keys": [
