@@ -14,7 +14,7 @@ data:
       { 
         "name": "microservices-orders-producer", 
         "description": "Producer application of microservices orders data"
-      } 
+      }
     ]
   environments: |
     [ 
@@ -22,7 +22,10 @@ data:
         "name": "kafka-devops",
         "schema-registry": {
           "cloud": "gcp",
-          "geo": "us"
+          "geo": "us",
+          "api-keys": [
+            { "name": "schema-registry-api-key" }
+          ]
         },
         "kafka": [
           { 
@@ -31,7 +34,7 @@ data:
             "region": "us-central1",
             "topic": [
               { "name": "bronze", "partitions": 3 },
-              { "name": "gold", "partitions": 3},
+              { "name": "gold", "partitions": 3 },
               { "name": "silver", "partitions": 3  },
               { "name": "platinum", "partitions": 3 },
               { "name": "customers", "partitions": 3 },
@@ -40,6 +43,24 @@ data:
               { "name": "orders-validations", "partitions": 3 },
               { "name": "payments", "partitions": 3 },
               { "name": "warehouse-inventory", "partitions": 3 }
+            ],
+            "acl": [
+              { 
+                "service-account": "microservices-orders-consumer", 
+                "operation" : "read", "permission": "allow",
+                "resource": "topic", "topic": "*"
+              },
+              {
+                "service-account": "microservices-orders-producer",
+                "operation": "write", "permission": "allow",
+                "resource": "topic", "topic": "*"
+              }
+            ],
+            "api-keys": [
+              { "name": "microservices-orders-consumer-api-key",
+                "service-account": "microservices-orders-consumer" },
+              { "name": "microservices-orders-producer-api-key",
+                "service-account": "microservices-orders-producer" }
             ]
           },
           {

@@ -31,6 +31,12 @@ function ccloud::kafka::apply_list() {
 		local topic=$(echo $KAFKA | jq -r -c .topic)
 		ccloud::topic::apply_list kafka_id=$kafka_id topic="$topic"
 
+    local acl=$(echo $KAFKA | jq -r -c .acl)
+    echo $acl
+
+    local api_keys=$(echo $KAFKA | jq -r -c '."api-keys"')
+    echo $api_keys
+    
 	done
 }
 
