@@ -42,7 +42,7 @@ function ccloud::sa::apply() {
 	fi
 }
 
-function ccloud::sq::get_id() {
+function ccloud::sa::get_id() {
   local name
   local "${@}"
 	ccloud service-account list -o json | jq -r '.[] | select(.name=="'"$name"'") | .id'

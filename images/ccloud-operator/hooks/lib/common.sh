@@ -2,6 +2,11 @@
 if [ -n "$LIB_COMMON" ]; then return; fi
 LIB_COMMON=`date`
 
+UNKNOWN_ERROR=1
+SERVICE_ACCOUNT_NOT_FOUND=2
+CCLOUD_ERROR=3
+KUBE_ERROR=4
+
 function retry() {
     local -r -i max_wait="$1"; shift
     local -r cmd="$@"

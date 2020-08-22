@@ -32,7 +32,7 @@ function ccloud::acl::apply_topic() {
   local kafka_id permission service_account operation topic prefix
   local "${@}"
 
-  local sa_id=$(ccloud::sq::get_id name=$service_account)
+  local sa_id=$(ccloud::sa::get_id name=$service_account)
 
   local permission_flag=$([[ $permission == "allow" ]] && echo "--allow" || echo "--deny")
   local service_account_flag="--service-account $sa_id"

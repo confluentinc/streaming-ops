@@ -57,9 +57,9 @@ data:
               }
             ],
             "api-key": [
-              { "name": "microservices-orders-consumer-api-key",
+              { "name": "microservices-orders-consumer-sasl-jaas-config",
                 "service-account": "microservices-orders-consumer" },
-              { "name": "microservices-orders-producer-api-key",
+              { "name": "microservices-orders-producer-api-key-sasl-jaas-config",
                 "service-account": "microservices-orders-producer" }
             ]
           },
