@@ -1,0 +1,9 @@
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: monitor-configmaps
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["get","watch","list"]
+---
