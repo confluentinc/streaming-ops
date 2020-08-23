@@ -9,7 +9,7 @@ function ccloud::api_key::create_from_list() {
   
 	for API_KEY_ENCODED in $(echo $api_key | jq -c -r '.[] | @base64'); do
 		
-		API_KEY=$(echo "${API_KEY_ENCODED}" | base64 --decode)
+		API_KEY=$(echo "${API_KEY_ENCODED}" | base64 -d)
 
     local name=$(echo $API_KEY | jq -r '.name')
     local service_account=$(echo $API_KEY | jq -r '."service-account"')

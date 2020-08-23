@@ -10,7 +10,7 @@ function ccloud::acl::apply_list() {
 
 	for ACL_ENCODED in $(echo $acl | jq -c -r '.[] | @base64'); do
 		
-		ACL=$(echo "${ACL_ENCODED}" | base64 --decode)
+		ACL=$(echo "${ACL_ENCODED}" | base64 -d)
 
 		local service_account=$(echo $ACL | jq -r '."service-account"')
 		local operation=$(echo $ACL | jq -r .operation)

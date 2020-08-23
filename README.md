@@ -165,7 +165,7 @@ _*TODO*_: Link to Docs for setting up ccloud and environment properly until auto
     Combining `kubectl`, `jq`, and `base64`, you can decode the secret file to ensure it has been properly set. This should match the original properties file you created. It's controlled by the GitOps process in the same way the other K8s manifests are, however it's not exposed in the code repository.
 
     ```
-    kubectl get secrets/kafka-secrets -o json | jq -r '.data."kafka.properties"' | base64 --decode
+    kubectl get secrets/kafka-secrets -o json | jq -r '.data."kafka.properties"' | base64 -d
     ```
 
 10. Verify the system is deployed

@@ -7,7 +7,7 @@ source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-schema-registry.sh
 function ccloud::env::apply_list() {
 	for ENV_ENCODED in $(echo $1 | jq -c -r '.[] | @base64'); do
 		
-		ENV=$(echo "${ENV_ENCODED}" | base64 --decode)
+		ENV=$(echo "${ENV_ENCODED}" | base64 -d)
 		
 		local envname=$(echo $ENV | jq -r .name)
 		local env_id=$(ccloud::env::apply name="$envname")

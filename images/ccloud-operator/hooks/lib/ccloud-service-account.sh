@@ -14,7 +14,7 @@ function ccloud::sa::apply_list() {
 	# iterate over them using a bash for loop, otherwise the spaces 
 	# would break up the loop elements
 	for SA_ENCODED in $(echo $1 | jq -c -r '.[] | @base64'); do
-		SA=$(echo "${SA_ENCODED}" | base64 --decode)
+		SA=$(echo "${SA_ENCODED}" | base64 -d)
 		local svcacctname=$(echo $SA | jq -r .name)
 		local svcacctdesc=$(echo $SA | jq -r .description)
 		local sa_id=$(ccloud::sa::apply name="$svcacctname" description="$svcacctdesc")

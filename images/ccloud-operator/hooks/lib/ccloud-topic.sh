@@ -9,7 +9,7 @@ function ccloud::topic::apply_list() {
 
 	for TOPIC_ENCODED in $(echo $topic | jq -c -r '.[] | @base64'); do
 		
-		TOPIC=$(echo "${TOPIC_ENCODED}" | base64 --decode)
+		TOPIC=$(echo "${TOPIC_ENCODED}" | base64 -d)
 
 		local name=$(echo $TOPIC | jq -r .name)
 		local partitions=$(echo $TOPIC | jq -r .partitions)

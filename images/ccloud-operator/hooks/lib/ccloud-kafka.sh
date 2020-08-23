@@ -9,7 +9,7 @@ source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-api-key.sh
 function ccloud::kafka::apply_list() {
 	for KAFKA_ENCODED in $(echo $1 | jq -c -r '.[] | @base64'); do
 		
-		KAFKA=$(echo "${KAFKA_ENCODED}" | base64 --decode)
+		KAFKA=$(echo "${KAFKA_ENCODED}" | base64 -d)
 
 		local name=$(echo $KAFKA | jq -r .name)
 		local cloud=$(echo $KAFKA | jq -r .cloud)
@@ -73,7 +73,7 @@ function ccloud::kafka::apply_secret_from_api_key_list() {
   
 	for API_KEY_ENCODED in $(echo $api_key_list | jq -c -r '.[] | @base64'); do
 		
-		API_KEY=$(echo "${API_KEY_ENCODED}" | base64 --decode)
+		API_KEY=$(echo "${API_KEY_ENCODED}" | base64 -d)
 
     local name=$(echo $API_KEY | jq -r '.name')
     local service_account=$(echo $API_KEY | jq -r '."service-account"')
