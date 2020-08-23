@@ -32,6 +32,9 @@ spec:
       - name: kafka-properties-volume
         secret:
           secretName: kafka-secrets
+      - name: kafka-jaas-config
+        secret:
+          secretName: 
       containers:
       - name: orders-service
         image: cnfldemos/orders-service:sha-98ca470

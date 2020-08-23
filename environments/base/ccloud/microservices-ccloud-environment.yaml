@@ -46,13 +46,8 @@ data:
             ],
             "acl": [
               { 
-                "service-account": "microservices-orders-consumer", 
+                "service-account": "microservices-orders-client", 
                 "operation" : "read", "permission": "allow",
-                "resource": "topic", "name": "*"
-              },
-              {
-                "service-account": "microservices-orders-producer",
-                "operation": "write", "permission": "allow",
                 "resource": "topic", "name": "*"
               }
             ],

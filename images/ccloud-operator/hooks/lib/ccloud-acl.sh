@@ -13,11 +13,11 @@ function ccloud::acl::apply_list() {
 		ACL=$(echo "${ACL_ENCODED}" | base64 -d)
 
 		local service_account=$(echo $ACL | jq -r '."service-account"')
-		local operation=$(echo $ACL | jq -r .operation)
 		local permission=$(echo $ACL | jq -r .permission)
     local resource=$(echo $ACL | jq -r .resource)
     local name=$(echo $ACL | jq -r .name)
     local prefix=$(echo $ACL | jq -r .prefix)
+		local operation=$(echo $ACL | jq -r .operation)
 
     if [[ "$resource" == "topic" ]]; then
 		  ccloud::acl::apply_topic kafka_id="$kafka_id" permission="$permission" service_account="$service_account" operation="$operation" topic="$name" prefix="$prefix"  
@@ -36,9 +36,15 @@ function ccloud::acl::apply_topic() {
 
   local permission_flag=$([[ $permission == "allow" ]] && echo "--allow" || echo "--deny")
   local service_account_flag="--service-account $sa_id"
-  local operation_flag="--operation $operation"
   local topic_flag="--topic \"$topic\"" 
   local prefix_flag=$([[ $prefix == "null" ]] && echo "" | echo "--prefix") 
+   
+  IFS=","
+  local operation_flag=""
+  for o in $operation
+  do 
+    operation_flag=$operation_flag" --operation $operation"
+  done
 
   local result=$(ccloud kafka acl create $permission_flag $service_account_flag $operation_flag $topic_flag --cluster $kafka_id 2>&1) && {
     echo "configured acl: $service_account:$operation:topic:$topic:$prefix"
