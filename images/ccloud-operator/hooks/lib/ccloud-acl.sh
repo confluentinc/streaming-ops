@@ -38,13 +38,15 @@ function ccloud::acl::apply_topic() {
   local service_account_flag="--service-account $sa_id"
   local topic_flag="--topic \"$topic\"" 
   local prefix_flag=$([[ $prefix == "null" ]] && echo "" | echo "--prefix") 
-   
+  
+  PREV_IFS=$IFS 
   IFS=","
   local operation_flag=""
   for o in $operation
   do 
     operation_flag=$operation_flag" --operation $operation"
   done
+  IFS=$PREV_IFS
 
   local result=$(ccloud kafka acl create $permission_flag $service_account_flag $operation_flag $topic_flag --cluster $kafka_id 2>&1) && {
     echo "configured acl: $service_account:$operation:topic:$topic:$prefix"

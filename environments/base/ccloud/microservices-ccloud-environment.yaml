@@ -47,15 +47,13 @@ data:
             "acl": [
               { 
                 "service-account": "microservices-orders-client", 
-                "operation" : "read", "permission": "allow",
+                "operation" : "read,write", "permission": "allow",
                 "resource": "topic", "name": "*"
               }
             ],
             "api-key": [
-              { "name": "microservices-orders-consumer-sasl-jaas-config",
-                "service-account": "microservices-orders-consumer" },
-              { "name": "microservices-orders-producer-sasl-jaas-config",
-                "service-account": "microservices-orders-producer" }
+              { "name": "microservices-orders-client-sasl-jaas-config",
+                "service-account": "microservices-orders-consumer" }
             ]
           },
           {
