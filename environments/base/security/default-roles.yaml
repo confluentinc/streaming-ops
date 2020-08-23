@@ -5,5 +5,5 @@ metadata:
   name: secret-admin
 rules:
 - apiGroups: [""]
-	resources: ["secrets"]
-	verbs: ["create","get","watch","list"]
+  resources: ["secrets"]
+  verbs: ["create","get","watch","list"]
