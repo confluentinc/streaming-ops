@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
 - in-cluster-service-account.yaml
 - cluster-roles.yaml
+- default-roles.yaml
