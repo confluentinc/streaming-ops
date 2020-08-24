@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: kafka-properties
+  name: shared-client-config
   namespace: default
 data:
-  kafka.properties: |
+  shared-client.properties: |
     security.protocol=SASL_SSL
     ssl.endpoint.identification.algorithm=https
     sasl.mechanism=PLAIN
