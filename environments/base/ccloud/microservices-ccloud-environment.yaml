@@ -8,12 +8,8 @@ data:
   service-accounts: |
     [ 
       { 
-        "name": "microservices-orders-consumer", 
-        "description": "Consumer application for microservices orders data"
-      },
-      { 
-        "name": "microservices-orders-producer", 
-        "description": "Producer application of microservices orders data"
+        "name": "microservices-orders-client", 
+        "description": "Account for client microservices orders client apps"
       }
     ]
   environments: |
@@ -53,7 +49,7 @@ data:
             ],
             "api-key": [
               { "name": "microservices-orders-client-sasl-jaas-config",
-                "service-account": "microservices-orders-consumer" }
+                "service-account": "microservices-orders-client" }
             ]
           },
           {
