@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: kafka-properties
-  namesapce: default
+  namespace: default
 data:
   kafka.properties: |
     security.protocol=SASL_SSL
