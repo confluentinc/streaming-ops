@@ -2,6 +2,7 @@ if [ -n "$LIB_CCLOUD_SR" ]; then return; fi
 LIB_CCLOUD_ENV=`date`
 
 source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-kafka.sh
+source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-api-key.sh
 
 ####################################################################
 # Apply an schema-registry configuration given in json as the

@@ -54,7 +54,7 @@ spec:
           subPath: bootstrap.servers.properties
           readOnly: true
         - name: kafka-devops-schema-registry-secrets-volume
-          mountPath: /etc/config/connect/sr.secrets.properties
+          mountPath: /etc/config/connect/
           subPath: sr.secrets.properties
           readOnly: true
 

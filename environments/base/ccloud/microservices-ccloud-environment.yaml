@@ -7,9 +7,11 @@ metadata:
 data:
   service-accounts: |
     [ 
-      { 
-        "name": "microservices-orders-client", 
+      { "name": "microservices-orders-client", 
         "description": "Account for client microservices orders client apps"
+      }, {
+        "name": "kafka-devops-sr-client",
+        "description": "Account for client access to kafka-devlops environment scheuma registry"
       }
     ]
   environments: |
@@ -48,7 +50,7 @@ data:
               }
             ],
             "api-key": [
-              { "name": "microservices-orders-client-sasl-jaas-config",
+              { "name": "microservices-orders-client-kafka-client",
                 "service-account": "microservices-orders-client" }
             ]
           },
@@ -66,15 +68,4 @@ data:
         ]
       }
     ]
----
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: cc.kafka.shared-client-config
-data:
-  client-configuration.properties: |
-    security.protocol=SASL_SSL
-    ssl.endpoint.identification.algorithm=https
-    sasl.mechanism=PLAIN
-    basic.auth.credentials.source=USER_INFO
 
