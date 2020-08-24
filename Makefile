@@ -72,13 +72,7 @@ install-flux-%:
 FLUX_KEY=$(shell fluxctl identity --k8s-fwd-ns flux)
 
 create-secrets-%:
-ifndef KAFKA_SECRET_FILE 
-	$(error KAFKA_SECRET_FILE is not set)
-endif
 	@$(call print-header,"Creating secrets")
-	@$(call print-prompt)
-	kubectl create secret generic kafka-secrets --namespace=default --from-file=kafka.properties=$(KAFKA_SECRET_FILE) --dry-run=client -o yaml > secrets/local-toseal/$*/default-kafka-secrets.yaml && echo "ready to seal: secrets/local-toseal/$*/default-kafka-secrets.yaml"
-	@printf "\n"
 	@$(call print-prompt)
 	kubectl create secret generic connect-operator-secrets --namespace=default --from-env-file=./secrets/example-connect-operator-secrets.props --dry-run=client -o yaml > secrets/local-toseal/$*/default-connect-operator-secrets.yaml && echo "ready to seal: secrets/local-toseal/$*/default-connect-operator-secrets.yaml"
 	@printf "\n"
@@ -109,9 +103,6 @@ sync:
 	fluxctl sync --k8s-fwd-ns flux
 
 demo-%:
-ifndef KAFKA_SECRET_FILE
-	$(error KAFKA_SECRET_FILE is not set)
-endif
 ifndef GH_TOKEN
 	$(error GH_TOKEN is not set)
 endif

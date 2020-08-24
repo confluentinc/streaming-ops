@@ -20,7 +20,7 @@ function ccloud::env::apply_list() {
 		ccloud::kafka::apply_list "$KAFKA"
 
     SR=$(echo $ENV | jq -r '."schema-registry"')
-    local sr_id=$(ccloud::schema-registry::apply "$SR")
+    local sr_id=$(ccloud::schema-registry::apply sr="$SR" environment_name="$envname")
     echo "configured schema-registry: id = $sr_id"
 
 	done

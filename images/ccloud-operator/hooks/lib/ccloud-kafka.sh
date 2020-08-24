@@ -55,10 +55,14 @@ function ccloud::kafka::apply() {
 
       local kafka_id=$(echo "$FOUND_CLUSTER" | jq -r .id)
  
-      ccloud::kafka::apply_secret_from_endpoint $kafka_id     
-
-      echo $kafka_id
-      return 0 
+      local secret_result=$(ccloud::kafka::apply_secret_for_endpoint kafka_id="$kafka_id") && {
+        echo $kafka_id
+        return 0 
+      } || {
+        local ret_code=$?
+        echo "Error creating ccloud kafka secret: $secret_result"
+        return $ret_code
+      }
 
     } || {
       
@@ -67,10 +71,15 @@ function ccloud::kafka::apply() {
 			if [[ $retcode -eq 0 ]]; then
 
 			  local kafka_id = $(echo $result | jq -r '.id')
-        ccloud::kafka::apply_secret_from_endpoint $kafka_id     
 
-        echo $kafka_id
-        return $retcode
+        local secret_result=$(ccloud::kafka::apply_secret_for_endpoint kafka_id="$kafka_id") && {
+          echo $kafka_id
+          return $retcode
+        } || {
+          local ret_code=$?
+          echo "Error creating ccloud kafka secret: $secret_result"
+          return $ret_code
+        }
 
 			else
 				echo $result
@@ -103,19 +112,22 @@ function ccloud::kafka::apply_secret_from_api_key() {
   local name service_account kafka_id
   local "${@}"
 
-  kubectl get secrets/"$name" > /dev/null 2>&1 || {
+  local secret_name="cc.sa.$service_account"
+
+  kubectl get secrets/"$secret_name" > /dev/null 2>&1 || {
     local new_key=$(ccloud::api_key::create resource_id="$kafka_id" service_account="$service_account") && {
       local key=$(echo $new_key | jq '.key')
       local secret=$(echo $new_key | jq '.secret')
-      result=$(kubectl create secret generic "$name" --from-literal="sasl.jaas.config"="sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username=$key password=$secret;")
+      result=$(kubectl create secret generic "$secret_name" --from-literal="sasl.jaas.config"="sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username=$key password=$secret;" -o yaml --dry-run=client | kubectl apply -f -)
     } || {
       # secret already exists so we'll just leave it be
+      # TODO Consider a key rotation solution
       return 0
     }
   }
 }
 
-function ccloud::kafka::apply_secret_from_endpoint() {
+function ccloud::kafka::apply_secret_for_endpoint() {
   local kafka_id
   local "${@}"
 
@@ -125,7 +137,7 @@ function ccloud::kafka::apply_secret_from_endpoint() {
   local provider=$(echo $kafka_description | jq -r '.provider')
   local region=$(echo $kafka_description | jq -r '.region')
 
-  local result=$(kubectl create secret generic "$name.$provider.$region" --from-literal="bootstrap.servers"="bootstrap.servers=$endpoint" --dry-run | kubectl apply -f -)
+  local result=$(kubectl create secret generic "cc.kafka.$name.$provider.$region" --from-literal="bootstrap.servers"="bootstrap.servers=$endpoint" -o yaml --dry-run=client | kubectl apply -f -)
   echo $result
   
 }
