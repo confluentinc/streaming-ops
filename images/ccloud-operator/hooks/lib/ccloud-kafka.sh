@@ -45,25 +45,39 @@ function ccloud::kafka::apply_list() {
 function ccloud::kafka::apply() {
 	local name cloud region
 	local "${@}"
-	
+
+  # TODO: Determine if matching on name only is better, in the current case, changing cloud/region will
+  #   result in a new cluster which may not be the intent of the user	
 	local FOUND_CLUSTER=$(ccloud kafka cluster list -o json | \
       jq -c -r '.[] | select((.name == "'"$name"'") and (.provider == "'"$cloud"'") and (.region == "'"$region"'"))')
 
   [[ ! -z "$FOUND_CLUSTER" ]] && {
-      echo "$FOUND_CLUSTER" | jq -r .id
+
+      local kafka_id=$(echo "$FOUND_CLUSTER" | jq -r .id)
+ 
+      ccloud::kafka::apply_secret_from_endpoint $kafka_id     
+
+      echo $kafka_id
       return 0 
+
     } || {
       
       result=$(ccloud kafka cluster create "$name" --cloud "$cloud" --region "$region" -o json 2>&1)
 			retcode=$?
 			if [[ $retcode -eq 0 ]]; then
-				echo $(echo $result | jq -r '.id')
+
+			  local kafka_id = $(echo $result | jq -r '.id')
+        ccloud::kafka::apply_secret_from_endpoint $kafka_id     
+
+        echo $kafka_id
         return $retcode
+
 			else
 				echo $result
 				return $retcode
 			fi
       return 1
+
     }
 }
 
@@ -99,6 +113,20 @@ function ccloud::kafka::apply_secret_from_api_key() {
       return 0
     }
   }
+}
 
+function ccloud::kafka::apply_secret_from_endpoint() {
+  local kafka_id
+  local "${@}"
+
+  local kafka_description=$(ccloud kafka cluster describe $kafka_id -o json)
+  local endpoint=$(echo $kafka_description | jq -r '.endpoint')
+  local name=$(echo $kafka_description | jq -r '.name')
+  local provider=$(echo $kafka_description | jq -r '.provider')
+  local region=$(echo $kafka_description | jq -r '.region')
+
+  local result=$(kubectl create secret generic "$name.$provider.$region" --from-literal="bootstrap.servers"="bootstrap.servers=$endpoint" --dry-run | kubectl apply -f -)
+  echo $result
+  
 }
 
