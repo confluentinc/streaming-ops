@@ -66,4 +66,15 @@ data:
         ]
       }
     ]
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cc.kafka.shared-client-config
+data:
+  client-configuration.properties: |
+    security.protocol=SASL_SSL
+    ssl.endpoint.identification.algorithm=https
+    sasl.mechanism=PLAIN
+    basic.auth.credentials.source=USER_INFO
 
