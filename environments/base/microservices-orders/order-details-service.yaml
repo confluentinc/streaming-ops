@@ -15,13 +15,21 @@ spec:
     spec:
       volumes:
       - name: kafka-properties-volume
+        configMap:
+          name: kafka-properties
+      - name: sasl-jaas-config-volume 
         secret:
-          secretName: kafka-secrets
+          secretName: microservices-orders-client-sasl-jaas-config
       containers:
       - name: order-details-service
         image: cnfldemos/order-details-service:sha-f0467e7
         volumeMounts:
         - name: kafka-properties-volume
           mountPath: /etc/config/kafka/
+          subPath: kafka.properties
+          readOnly: true
+        - name: sasl-jaas-config-volume
+          mountPath: /etc/config/kafka/
+          subPath: sasl-jaas.properties
           readOnly: true
 

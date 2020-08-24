@@ -30,17 +30,22 @@ spec:
     spec:
       volumes:
       - name: kafka-properties-volume
+        configMap:
+          name: kafka-properties
+      - name: sasl-jaas-properties-volume 
         secret:
-          secretName: kafka-secrets
-      - name: kafka-jaas-config
-        secret:
-          secretName: 
+          secretName: microservices-orders-client-sasl-jaas-config
       containers:
       - name: orders-service
         image: cnfldemos/orders-service:sha-98ca470
         volumeMounts:
         - name: kafka-properties-volume
           mountPath: /etc/config/kafka/
+          subPath: kafka.properties
+          readOnly: true
+        - name: sasl-jaas-properties-volume
+          mountPath: /etc/config/kafka/
+          subPath: sasl-jaas.properties
           readOnly: true
         ports:
         - containerPort: 18894
