@@ -27,21 +27,34 @@ spec:
         app: connect-service
     spec:
       volumes:
-      - name: kafka-properties-volume
+      - name: shared-client-config-volume
+        configMap:
+          name: cc.kafka.shared-client-config
+      - name: microservices-orders-secrets-volume
         secret:
-          secretName: kafka-secrets
+          secretName: cc.kafka.microservices-orders.gcp.us-central1
+      - name: kafka-devops-schema-registry-secrets-volume
+        secret:
+          secretName: cc.sr.kafka-devops
       containers:
       - name: connect-service
         image: cnfldemos/microservices-orders-connect:sha-04f0f23
         ports:
         - containerPort: 8083
         env:
-        - name: CONFIG_FILE
-          value: /etc/config/connect/kafka.properties
         - name: CLASSPATH
           value: /usr/share/java/kafka-connect-jdbc/mysql-connector-java-8.0.21.jar
         volumeMounts:
-        - name: kafka-properties-volume
+        - name: shared-client-config-volume 
           mountPath: /etc/config/connect/
+          subPath: kafka.properties
+          readOnly: true
+        - name: microservices-orders-secrets-volume
+          mountPath: /etc/config/connect/
+          subPath: kafka.secrets.properties
+          readOnly: true
+        - name: kafka-devops-schema-registry-secrets-volume
+          mountPath: /etc/config/connect/
+          subPath: sr.secrets.properties
           readOnly: true
 

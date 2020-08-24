@@ -5,4 +5,4 @@ commonLabels:
 resources:
 - ../base/
 patchesStrategicMerge:
-#- connect/connect-service.yaml
+- connect/connect-service.yaml
