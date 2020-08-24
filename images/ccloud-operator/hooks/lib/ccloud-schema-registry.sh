@@ -32,7 +32,7 @@ function ccloud::schema-registry::apply_secret_for_endpoint() {
   local sr_description=$(ccloud schema-registry cluster describe -o json)
   local endpoint=$(echo $sr_description | jq -r '.endpoint_url')
 
-  local result=$(kubectl create secret generic "cc.sr.$environment_name" --from-literal="schema.registry.url"="schema.registry.url=$endpoint" -o yaml --dry-run=client | kubectl apply -f -)
+  local result=$(kubectl create secret generic "cc.sr.$environment_name" --from-literal="schema.registry.url.properties"="schema.registry.url=$endpoint" -o yaml --dry-run=client | kubectl apply -f -)
   echo $result
   
 }

@@ -137,7 +137,7 @@ function ccloud::kafka::apply_secret_for_endpoint() {
   local provider=$(echo $kafka_description | jq -r '.provider')
   local region=$(echo $kafka_description | jq -r '.region')
 
-  local result=$(kubectl create secret generic "cc.kafka.$name.$provider.$region" --from-literal="bootstrap.servers"="bootstrap.servers=$endpoint" -o yaml --dry-run=client | kubectl apply -f -)
+  local result=$(kubectl create secret generic "cc.kafka.$name.$provider.$region" --from-literal="bootstrap.servers.properties"="bootstrap.servers=$endpoint" -o yaml --dry-run=client | kubectl apply -f -)
   echo $result
   
 }

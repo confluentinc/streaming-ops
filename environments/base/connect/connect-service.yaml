@@ -46,12 +46,12 @@ spec:
           value: /usr/share/java/kafka-connect-jdbc/mysql-connector-java-8.0.21.jar
         volumeMounts:
         - name: shared-client-config-volume 
-          mountPath: /etc/config/connect/kafka.properties
-          subPath: kafka.properties
+          mountPath: /etc/config/connect/
+          subPath: client-configuration.properties
           readOnly: true
         - name: microservices-orders-secrets-volume
-          mountPath: /etc/config/connect/kafka.secrets.properties
-          subPath: kafka.secrets.properties
+          mountPath: /etc/config/connect/
+          subPath: bootstrap.servers.properties
           readOnly: true
         - name: kafka-devops-schema-registry-secrets-volume
           mountPath: /etc/config/connect/sr.secrets.properties
