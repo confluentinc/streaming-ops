@@ -50,8 +50,7 @@ data:
               }
             ],
             "api-key": [
-              { "name": "microservices-orders-client-kafka-client",
-                "service-account": "microservices-orders-client" }
+              { "service-account": "microservices-orders-client" }
             ]
           },
           {

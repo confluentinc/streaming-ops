@@ -98,7 +98,6 @@ function ccloud::kafka::apply_secret_from_api_key_list() {
 		
 		API_KEY=$(echo "${API_KEY_ENCODED}" | base64 -d)
 
-    local name=$(echo $API_KEY | jq -r '.name')
     local service_account=$(echo $API_KEY | jq -r '."service-account"')
 
     ccloud::kafka::apply_secret_from_api_key name="$name" service_account="$service_account" kafka_id="$kafka_id" && {
@@ -109,16 +108,23 @@ function ccloud::kafka::apply_secret_from_api_key_list() {
 }
 
 function ccloud::kafka::apply_secret_from_api_key() {
-  local name service_account kafka_id
+  local service_account kafka_id
   local "${@}"
 
+  # TODO: Query for cc.api-key secret
+  #   then ensure a kafka sasl config exists with proper values
+  exit 111
   local secret_name="cc.sa.$service_account"
 
   kubectl get secrets/"$secret_name" > /dev/null 2>&1 || {
+
     local new_key=$(ccloud::api_key::create resource_id="$kafka_id" service_account="$service_account") && {
+
       local key=$(echo $new_key | jq '.key')
       local secret=$(echo $new_key | jq '.secret')
+
       result=$(kubectl create secret generic "$secret_name" --from-literal="sasl.jaas.config"="sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username=$key password=$secret;" -o yaml --dry-run=client | kubectl apply -f -)
+
     } || {
       # secret already exists so we'll just leave it be
       # TODO Consider a key rotation solution
