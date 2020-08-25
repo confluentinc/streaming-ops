@@ -3,6 +3,6 @@ kind: Kustomization
 resources:
 - security/
 - microservices-orders/
-- mysql/
-- connect/
+#- mysql/
+#- connect/
 - ccloud/
