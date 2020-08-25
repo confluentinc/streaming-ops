@@ -21,7 +21,7 @@ data:
         "schema-registry": {
           "cloud": "gcp",
           "geo": "us",
-          "api-keys": [
+          "api-key": [
             { "name": "schema-registry-api-key" }
           ]
         },

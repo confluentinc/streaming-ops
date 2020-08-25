@@ -20,7 +20,7 @@ function ccloud::acl::apply_list() {
 		local operation=$(echo $ACL | jq -r .operation)
 
     if [[ "$resource" == "topic" ]]; then
-		  ccloud::acl::apply_topic kafka_id="$kafka_id" permission="$permission" service_account="$service_account" operation="$operation" topic="$name" prefix="$prefix"  
+		  ccloud::acl::apply_topic kafka_id=$kafka_id permission=$permission service_account=$service_account operation=$operation topic=$name prefix=$prefix  
     else 
       echo "$resource acls not yet supported"
     fi
@@ -36,7 +36,7 @@ function ccloud::acl::apply_topic() {
 
   local permission_flag=$([[ $permission == "allow" ]] && echo "--allow" || echo "--deny")
   local service_account_flag="--service-account $sa_id"
-  local topic_flag="--topic \"$topic\"" 
+  local topic_flag='--topic "'$topic'"'
   local prefix_flag=$([[ $prefix == "null" ]] && echo "" | echo "--prefix") 
   
   PREV_IFS=$IFS 
@@ -44,7 +44,7 @@ function ccloud::acl::apply_topic() {
   local operation_flag=""
   for o in $operation
   do 
-    operation_flag=$operation_flag" --operation $operation"
+    operation_flag=$operation_flag" --operation $o"
   done
   IFS=$PREV_IFS
 

@@ -20,13 +20,13 @@ function ccloud::api_key::create_from_list() {
 }
 
 function ccloud::api_key::build_api_key_secret_name() {
-  local type service_account_name resource_id 
+  local category service_account_name resource_id 
   local "${@}"
-  echo "cc.api-key.$type.$service_account_name.$resource_id"
+  echo "cc.api-key.$category.$service_account_name.$resource_id"
 }
 
 function ccloud::api_key::apply() {
-  local type service_account_name resource_id 
+  local category service_account_name resource_id 
   local "${@}"
   
   local sa_id=$(ccloud::sa::get_id name=$service_account_name) || {
@@ -34,14 +34,17 @@ function ccloud::api_key::apply() {
     return $SERVICE_ACCOUNT_NOT_FOUND
   }
 
-  local secret_name=$(ccloud::api_key::build_api_key_secret_name type=$type service_account_name=$service_account_name resource_id=$resource_id)
- 
-  local ccloud_api_key=$(kubectl get secrets/$secret_name -o json | jq '.data' || ccloud api-key create --service-account $sa_id --resource $resource_id -o json 2>&1) || { # not a great test, kubectl could fail for perms, connectivity, etc...
-    local retcode=$?
-    echo "error retrieving or creating ccloud api key: $ccloud_api_key"
-    return $retcode
-  }
+  local secret_name=$(ccloud::api_key::build_api_key_secret_name category=$category service_account_name=$service_account_name resource_id=$resource_id)
   
+  local ccloud_api_key=$(kubectl get secrets/$secret_name -o json 2>/dev/null && jq -r -c '.data') || {
+    local ccloud_api_key=$(ccloud api-key create --service-account $sa_id --resource $resource_id -o json | jq -r -c '.') || { 
+      # not a great test, kubectl could fail for perms, connectivity, etc...
+      local retcode=$?
+      echo "error retrieving or creating ccloud api key: $ccloud_api_key"
+      return $retcode
+    }
+  }
+ 
   local key=$(echo $ccloud_api_key | jq -r '.key')
 
   local result=$(kubectl create secret generic "$secret_name" --from-literal="ccloud-api-key"="$ccloud_api_key" --dry-run=client -o yaml | kubectl label -f - --dry-run=client -o yaml --local resource_id=$resource_id --local service_accont=$service_account --local service_account_id=$sa_id --local key=$key | kubectl apply -f -) && {

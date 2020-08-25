@@ -9,16 +9,16 @@ source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-api-key.sh
 function ccloud::kafka::apply_list() {
   local kafka environment_name
   local "${@}"
-
-	for KAFKA_ENCODED in $(echo $1 | jq -c -r '.[] | @base64'); do
-		
+	
+	for KAFKA_ENCODED in $(echo $kafka | jq -c -r '.[] | @base64'); do
+	
 		KAFKA=$(echo "${KAFKA_ENCODED}" | base64 -d)
 
 		local name=$(echo $KAFKA | jq -r .name)
 		local cloud=$(echo $KAFKA | jq -r .cloud)
 		local region=$(echo $KAFKA | jq -r .region)
 
-		local kafka_id=$(ccloud::kafka::apply name="$name" cloud="$cloud" region="$region")
+		local kafka_id=$(ccloud::kafka::apply name="$name" cloud="$cloud" region="$region" environment_name="$environment_name")
 
 		echo "configured kafka cluster: $name, id = $kafka_id"
 	
@@ -40,13 +40,13 @@ function ccloud::kafka::apply_list() {
     [[ "$acl" != "null" ]] && ccloud::acl::apply_list kafka_id=$kafka_id acl="$acl"
 
     local api_key=$(echo $KAFKA | jq -r -c '."api-key"')
-    [[ "$api_key" != "null" ]] && ccloud::kafka::apply_secret_from_api_key_list kafka_id=$kafka_id api_key_list="$api_key"
+    [[ "$api_key" != "null" ]] && ccloud::kafka::apply_secret_from_api_key_list kafka_id="$kafka_id" api_key_list="$api_key" environment_name="$environment_name"
      
 	done
 }
 
 function ccloud::kafka::apply() {
-	local name cloud region
+	local name cloud region environment_name
 	local "${@}"
 
   # TODO: Determine if matching on name only is better, in the current case, changing cloud/region will
@@ -58,7 +58,7 @@ function ccloud::kafka::apply() {
 
       local kafka_id=$(echo "$FOUND_CLUSTER" | jq -r .id)
  
-      local secret_result=$(ccloud::kafka::apply_secret_for_endpoint kafka_id="$kafka_id") && {
+      local secret_result=$(ccloud::kafka::apply_secret_for_endpoint kafka_id="$kafka_id" environment_name=$environment_name) && {
         echo $kafka_id
         return 0 
       } || {
@@ -73,9 +73,9 @@ function ccloud::kafka::apply() {
 			retcode=$?
 			if [[ $retcode -eq 0 ]]; then
 
-			  local kafka_id = $(echo $result | jq -r '.id')
+			  local kafka_id=$(echo $result | jq -r '.id')
 
-        local secret_result=$(ccloud::kafka::apply_secret_for_endpoint kafka_id="$kafka_id") && {
+        local secret_result=$(ccloud::kafka::apply_secret_for_endpoint kafka_id="$kafka_id" environment_name=$environment_name) && {
           echo $kafka_id
           return $retcode
         } || {
@@ -103,7 +103,7 @@ function ccloud::kafka::apply_secret_from_api_key_list() {
 
     local service_account=$(echo $API_KEY | jq -r '."service-account"')
 
-    ccloud::kafka::apply_secret_for_api_key service_account="$service_account" kafka_id="$kafka_id" environment_name=$environment_name && {
+    ccloud::kafka::apply_secret_for_api_key service_account="$service_account" kafka_id="$kafka_id" environment_name="$environment_name" && {
       echo "configured api-key for $service_account"
     }
 
@@ -114,7 +114,7 @@ function ccloud::kafka::apply_secret_for_api_key() {
   local service_account kafka_id environment_name
   local "${@}"
 
-  local ccloud_api_key=$(ccloud::api_key::apply() type="kafka" service_account_name=$service_account resource_id=$kafka_id) || {
+  local ccloud_api_key=$(ccloud::api_key::apply category='kafka' service_account_name="$service_account" resource_id="$kafka_id") || {
     local retcode=$?
     echo "error getting ccloud api-key for $service_account:$kafka_id"
     return $retcode
