@@ -19,7 +19,7 @@ source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-service-account.sh
 source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-environment.sh
 
 # By default Deleting of resources will be disabled
-DELETE_ENABLED=${DELETE_ENABLED:-"false"}
+#DELETE_ENABLED=${DELETE_ENABLED:-"false"}
 
 hook::synchronize() {
 
@@ -34,25 +34,22 @@ hook::synchronize() {
 }
 
 hook::apply() {
-
-  DATA="$1"
-
-  echo "apply"
-  echo "$DATA"
-
+	hook::synchronize "$1"
 }
 
 hook::delete() {
+	echo "!! Deleting resources with ccloud-operator is not supported at this time. See: https://github.com/confluentinc/kafka-devops/issues/3"
 
-	if [[ "$DELETE_ENABLED" == "true" ]]; then
-  	DATA=$(jq -c -r ".[$INDEX].object.data" $BINDING_CONTEXT_PATH)
-		echo "!! Delete is enabled, proceeding to delete ccloud resources"
-	else 
-		echo "!! Warning: Operator resources have been deleted, but DELETE_ENABLED is not true"
-	fi
+	# if deleting is supported, some type of toggle should be used and heavy warnings implemented 
+	#if [[ "$DELETE_ENABLED" == "true" ]]; then
+  #	DATA=$(jq -c -r ".[$INDEX].object.data" $BINDING_CONTEXT_PATH)
+	#	echo "!! Delete is enabled, proceeding to delete ccloud resources"
+	#else 
+	#	echo "!! Warning: Operator resources have been deleted, but DELETE_ENABLED is not true"
+	#fi
 
-  DATA=$(jq -c -r ".[$INDEX].object.data" $BINDING_CONTEXT_PATH)
-  echo $DATA
+  #DATA=$(jq -c -r ".[$INDEX].object.data" $BINDING_CONTEXT_PATH)
+  #echo $DATA
 
 }
 
