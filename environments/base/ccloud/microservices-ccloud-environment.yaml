@@ -22,7 +22,7 @@ data:
           "cloud": "gcp",
           "geo": "us",
           "api-key": [
-            { "name": "schema-registry-api-key" }
+            { "service-account": "kafka-devops-sr-client" }
           ]
         },
         "kafka": [

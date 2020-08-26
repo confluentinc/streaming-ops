@@ -7,7 +7,7 @@ source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-schema-registry.sh
 function ccloud::env::apply_list() {
 	for ENV_ENCODED in $(echo $1 | jq -c -r '.[] | @base64'); do
 		
-		ENV=$(echo "${ENV_ENCODED}" | base64 -d)
+		local ENV=$(echo "${ENV_ENCODED}" | base64 -d)
 		
 		local envname=$(echo $ENV | jq -r .name)
 		local env_id=$(ccloud::env::apply name="$envname")
@@ -16,10 +16,10 @@ function ccloud::env::apply_list() {
 
 		ccloud environment use "$env_id"
 
-		KAFKA=$(echo $ENV | jq -r -c '.kafka')
+		local KAFKA=$(echo $ENV | jq -r -c '.kafka')
 		ccloud::kafka::apply_list kafka="$KAFKA" environment_name="$envname"
 
-    SR=$(echo $ENV | jq -r -c '."schema-registry"')
+    local SR=$(echo $ENV | jq -r -c '."schema-registry"')
     local sr_id=$(ccloud::schema-registry::apply sr="$SR" environment_name="$envname")
     echo "configured schema-registry: id = $sr_id"
 

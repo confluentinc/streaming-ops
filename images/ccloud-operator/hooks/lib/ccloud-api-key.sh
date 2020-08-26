@@ -24,12 +24,12 @@ function ccloud::api_key::apply() {
   [[ ! -z "$existing_secret" ]] && {
     local ccloud_api_key=$(echo "$ccloud_api_key" | jq -r -c '.data')
   } || {
-    local ccloud_api_key=$(ccloud api-key create --service-account $sa_id --resource $resource_id -o json | jq -r -c '.')
+    local ccloud_api_key=$(ccloud api-key create --service-account $sa_id --resource $resource_id --description "Created by ccloud-operator $date for sa:$service_account_name" -o json | jq -r -c '.')
   }
 
   local key=$(echo $ccloud_api_key | jq -r '.key')
 
-  local result=$(kubectl create secret generic "$secret_name" --from-literal="ccloud-api-key"="$ccloud_api_key" --dry-run=client -o yaml | kubectl label -f - --dry-run=client -o yaml --local resource_id=$resource_id --local service_accont=$service_account --local service_account_id=$sa_id --local key=$key | kubectl apply -f -) && {
+  local result=$(kubectl create secret generic "$secret_name" --from-literal="ccloud-api-key"="$ccloud_api_key" --dry-run=client -o yaml | kubectl label -f - --dry-run=client -o yaml --local resource_id=$resource_id --local service_accont=$service_account --local service_account_id=$sa_id --local key=$key --local category=$category | kubectl apply -f -) && {
     echo $ccloud_api_key
   } || {
     local retcode=$?

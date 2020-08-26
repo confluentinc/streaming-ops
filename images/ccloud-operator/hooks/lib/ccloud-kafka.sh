@@ -44,7 +44,7 @@ function ccloud::kafka::apply_list() {
      
 	done
 
-	exit 0
+	return 0
 }
 
 function ccloud::kafka::apply() {
