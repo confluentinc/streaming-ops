@@ -61,7 +61,7 @@ function ccloud::schema-registry::apply_secret_for_api_key() {
  
   local secret_name="cc.schema-registry-basic-auth-user-info.$service_account.$environment_name"
 
-  local result=$(kubectl create secret generic $secret_name --from-literal="schema.registry.basic.auth.user.info"="schema.registry.basic.auth.user.info=$key:$secret" -o yaml --dry-run=client | kubectl apply -f -)
+  local result=$(kubectl create secret generic $secret_name --from-literal="schema-registry-basic-auth-user-info.properties"="schema.registry.basic.auth.user.info=$key:$secret" -o yaml --dry-run=client | kubectl apply -f -)
   set +x
 }
 
@@ -74,7 +74,7 @@ function ccloud::schema-registry::apply_secret_for_endpoint() {
 
   local secret_name="cc.schema-registry-url.$environment_name"
 
-  local result=$(kubectl create secret generic $secret_name --from-literal="schema.registry.url.properties"="schema.registry.url=$endpoint" -o yaml --dry-run=client | kubectl apply -f -)
+  local result=$(kubectl create secret generic $secret_name --from-literal="schema-registry-url.properties"="schema.registry.url=$endpoint" -o yaml --dry-run=client | kubectl apply -f -)
   echo $result
   
 }

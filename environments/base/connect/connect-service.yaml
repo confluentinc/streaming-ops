@@ -29,13 +29,13 @@ spec:
       volumes:
       - name: shared-client-config-volume
         configMap:
-          name: cc.kafka.shared-client-config
-      - name: microservices-orders-secrets-volume
+          name: cc.shared-client-config
+      - name: sasl-jaas-config-volume
         secret:
-          secretName: cc.kafka.microservices-orders.gcp.us-central1
-      - name: kafka-devops-schema-registry-secrets-volume
+          secretName: cc.sasl-jaas-config.microservices-orders-client.kafka-devops.microservices-orders 
+      - name: schema-registry-basic-user-info-config-volume 
         secret:
-          secretName: cc.sr.kafka-devops
+          secretName: cc.schema-registry-basic-auth-user-info.kafka-devops-sr-client.kafka-devops
       containers:
       - name: connect-service
         image: cnfldemos/microservices-orders-connect:sha-04f0f23
@@ -47,11 +47,11 @@ spec:
         volumeMounts:
         - name: shared-client-config-volume 
           mountPath: /etc/config/connect/
-          subPath: client-configuration.properties
+          subPath: shared-client.properties
           readOnly: true
-        - name: microservices-orders-secrets-volume
+        - name: sasl-jaas-config-volume 
           mountPath: /etc/config/connect/
-          subPath: bootstrap.servers.properties
+          subPath: sasl-jaas-config.properties
           readOnly: true
         - name: kafka-devops-schema-registry-secrets-volume
           mountPath: /etc/config/connect/

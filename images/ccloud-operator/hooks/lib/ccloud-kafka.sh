@@ -117,7 +117,7 @@ function ccloud::kafka::apply_secret_for_api_key() {
 
   local secret_name="cc.sasl-jaas-config.$service_account.$environment_name.$kafka_name"
 
-  local result=$(kubectl create secret generic $secret_name --from-literal="sasl.jaas.config"="sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username=$key password=$secret;" -o yaml --dry-run=client | kubectl apply -f -)
+  local result=$(kubectl create secret generic $secret_name --from-literal="sasl-jaas-config.properties"="sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username=$key password=$secret;" -o yaml --dry-run=client | kubectl apply -f -)
 
 }
 
@@ -133,7 +133,7 @@ function ccloud::kafka::apply_secret_for_endpoint() {
 
   local secret_name="cc.bootstrap-servers.$environment_name.$kafka_name"
 
-  local result=$(kubectl create secret generic $secret_name --from-literal="bootstrap.servers.properties"="bootstrap.servers=$endpoint" -o yaml --dry-run=client | kubectl apply -f -)
+  local result=$(kubectl create secret generic $secret_name --from-literal="bootstrap-servers.properties"="bootstrap.servers=$endpoint" -o yaml --dry-run=client | kubectl apply -f -)
   echo $result
   
 }
