@@ -52,22 +52,23 @@ spec:
           value: /usr/share/java/kafka-connect-jdbc/mysql-connector-java-8.0.21.jar
         volumeMounts:
         - name: shared-client-config-volume 
-          mountPath: /etc/config/connect/
+          mountPath: /etc/config/connect/shared-client.properties
           subPath: shared-client.properties
           readOnly: true
         - name: sasl-jaas-config-volume 
-          mountPath: /etc/config/connect/
+          mountPath: /etc/config/connect/sasl-jaas-config.properties
           subPath: sasl-jaas-config.properties
           readOnly: true
         - name: bootstrap-config-volume 
-          mountPath: /etc/config/connect/
-          subPath: sasl-jaas-config.properties
+          mountPath: /etc/config/connect/bootstrap-servers.properties
+          subPath: bootstrap-servers.properties
           readOnly: true
         - name: schema-registry-basic-user-info-config-volume 
-          mountPath: /etc/config/connect/
+          mountPath: /etc/config/connect/schema-registry-basic-auth-user-info.properties
           subPath: schema-registry-basic-auth-user-info.properties 
           readOnly: true
         - name: schema-registry-url-volume
-          mountPath: /etc/config/connect/
+          mountPath: /etc/config/connect/schema-registry-url.properties
           subPath: schema-registry-url.properties 
           readOnly: true
+
