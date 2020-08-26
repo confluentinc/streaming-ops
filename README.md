@@ -121,7 +121,7 @@ _*TODO*_: Link to Docs for setting up ccloud and environment properly until auto
 	Create these two local secrets files and execte a `kubectl create secret` command like below for each file.  This will create a generic secret file from your secrets files and put them into a staging area (`secrets/local-toseal`). _The namespace, secret name, and generic secret file name are related in this command, do not change them without understanding the seal script, executed next_.
 
     ```
-		kubectl create secret generic ccloud-secrets --namespace=default --from-env-file=./secrets/example-ccloud-secrets.props --dry-run=client -o yaml > secrets/local-toseal/dev/default-ccloud-secrets.yaml
+		kubectl create secret generic cc.ccloud-secrets --namespace=default --from-env-file=./secrets/example-ccloud-secrets.props --dry-run=client -o yaml > secrets/local-toseal/dev/default-ccloud-secrets.yaml
     ```
     
     ```

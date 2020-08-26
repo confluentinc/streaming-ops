@@ -24,6 +24,8 @@ function ccloud::schema-registry::apply() {
     echo "error creating schema-registry secret: $secret_result"
     return $ret_code
   }
+
+  # TODO Apply api-key secrets for SR configured API-keys
 }
 
 function ccloud::schema-registry::apply_secret_for_endpoint() {
@@ -33,7 +35,9 @@ function ccloud::schema-registry::apply_secret_for_endpoint() {
   local sr_description=$(ccloud schema-registry cluster describe -o json)
   local endpoint=$(echo $sr_description | jq -r '.endpoint_url')
 
-  local result=$(kubectl create secret generic "cc.$environment_name.sr" --from-literal="schema.registry.url.properties"="schema.registry.url=$endpoint" -o yaml --dry-run=client | kubectl apply -f -)
+  local secret_name="cc.schema-registry-url.$environment_name"
+
+  local result=$(kubectl create secret generic $secret_name --from-literal="schema.registry.url.properties"="schema.registry.url=$endpoint" -o yaml --dry-run=client | kubectl apply -f -)
   echo $result
   
 }

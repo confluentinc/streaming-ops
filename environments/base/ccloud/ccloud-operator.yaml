@@ -8,7 +8,7 @@ spec:
     image: cnfldemos/ccloud-operator:sha-8c5bc2e
     envFrom:
     - secretRef:
-        name: ccloud-secrets
+        name: cc.ccloud-secrets
   restartPolicy: OnFailure
   serviceAccountName: ccloud-admin-sa
 

@@ -20,7 +20,7 @@ function ccloud::acl::apply_list() {
 		local operation=$(echo $ACL | jq -r .operation)
 
     if [[ "$resource" == "topic" ]]; then
-		  ccloud::acl::apply_topic kafka_id=$kafka_id permission=$permission service_account=$service_account operation=$operation topic=$name prefix=$prefix  
+		  ccloud::acl::apply_topic kafka_id=$kafka_id permission=$permission service_account=$service_account operation=$operation topic=$name prefix=$prefix
     else 
       echo "$resource acls not yet supported"
     fi

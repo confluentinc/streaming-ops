@@ -74,10 +74,11 @@ FLUX_KEY=$(shell fluxctl identity --k8s-fwd-ns flux)
 create-secrets-%:
 	@$(call print-header,"Creating secrets")
 	@$(call print-prompt)
+# TODO Rename these secrets, they are DB specific, not connect specific.. connect just uses them
 	kubectl create secret generic connect-operator-secrets --namespace=default --from-env-file=./secrets/example-connect-operator-secrets.props --dry-run=client -o yaml > secrets/local-toseal/$*/default-connect-operator-secrets.yaml && echo "ready to seal: secrets/local-toseal/$*/default-connect-operator-secrets.yaml"
 	@printf "\n"
 	@$(call print-prompt)
-	kubectl create secret generic ccloud-secrets --namespace=default --from-env-file=$(CCLOUD_SECRET_FILE) --dry-run=client -o yaml > secrets/local-toseal/$*/default-ccloud-secrets.yaml && echo "ready to seal: secrets/local-toseal/$*/default-ccloud-secrets.yaml"
+	kubectl create secret generic cc.ccloud-secrets --namespace=default --from-env-file=$(CCLOUD_SECRET_FILE) --dry-run=client -o yaml > secrets/local-toseal/$*/default-ccloud-secrets.yaml && echo "ready to seal: secrets/local-toseal/$*/default-ccloud-secrets.yaml"
 
 seal-secrets-%:
 	@$(call print-header,"Sealing secrets")

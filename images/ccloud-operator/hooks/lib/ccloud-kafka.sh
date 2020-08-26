@@ -43,6 +43,8 @@ function ccloud::kafka::apply_list() {
     [[ "$api_key" != "null" ]] && ccloud::kafka::apply_secret_from_api_key_list kafka_id="$kafka_id" api_key_list="$api_key" environment_name="$environment_name"
      
 	done
+
+	exit 0
 }
 
 function ccloud::kafka::apply() {
@@ -55,42 +57,29 @@ function ccloud::kafka::apply() {
       jq -c -r '.[] | select((.name == "'"$name"'") and (.provider == "'"$cloud"'") and (.region == "'"$region"'"))')
 
   [[ ! -z "$FOUND_CLUSTER" ]] && {
-
       local kafka_id=$(echo "$FOUND_CLUSTER" | jq -r .id)
- 
-      local secret_result=$(ccloud::kafka::apply_secret_for_endpoint kafka_id="$kafka_id" environment_name=$environment_name) && {
-        echo $kafka_id
-        return 0 
-      } || {
-        local ret_code=$?
-        echo "Error creating ccloud kafka secret: $secret_result"
-        return $ret_code
-      }
+  } || {
+    
+    result=$(ccloud kafka cluster create "$name" --cloud "$cloud" --region "$region" -o json 2>&1)
+		retcode=$?
 
-    } || {
-      
-      result=$(ccloud kafka cluster create "$name" --cloud "$cloud" --region "$region" -o json 2>&1)
-			retcode=$?
-			if [[ $retcode -eq 0 ]]; then
+		if [[ $retcode -eq 0 ]]; then
+		  local kafka_id=$(echo $result | jq -r '.id')
+		else
+			echo $result
+			return $retcode
+		fi
 
-			  local kafka_id=$(echo $result | jq -r '.id')
+  }
 
-        local secret_result=$(ccloud::kafka::apply_secret_for_endpoint kafka_id="$kafka_id" environment_name=$environment_name) && {
-          echo $kafka_id
-          return $retcode
-        } || {
-          local ret_code=$?
-          echo "Error creating ccloud kafka secret: $secret_result"
-          return $ret_code
-        }
-
-			else
-				echo $result
-				return $retcode
-			fi
-      return 1
-
-    }
+  local secret_result=$(ccloud::kafka::apply_secret_for_endpoint kafka_id="$kafka_id" environment_name=$environment_name) && {
+    echo $kafka_id
+    return 0 
+  } || {
+    local ret_code=$?
+    echo "Error creating ccloud kafka secret: $secret_result"
+    return $ret_code
+  }
 }
 
 function ccloud::kafka::apply_secret_from_api_key_list() {
@@ -114,6 +103,8 @@ function ccloud::kafka::apply_secret_for_api_key() {
   local service_account kafka_id environment_name
   local "${@}"
 
+	echo "apply_secret_for_api_key"
+
   local ccloud_api_key=$(ccloud::api_key::apply category='kafka' service_account_name="$service_account" resource_id="$kafka_id") || {
     local retcode=$?
     echo "error getting ccloud api-key for $service_account:$kafka_id"
@@ -124,10 +115,11 @@ function ccloud::kafka::apply_secret_for_api_key() {
   local secret=$(echo $ccloud_api_key | jq -r .secret)
  
   local kafka_description=$(ccloud kafka cluster describe $kafka_id -o json)
-  local name=$(echo $kafka_description | jq -r '.name')
+  local kafka_name=$(echo $kafka_description | jq -r '.name')
 
-  local secret_name="cc.$environment_name.kafka.$name.api-key.$service_account"
-  local result=$(kubectl create secret generic "$secret_name" --from-literal="sasl.jaas.config"="sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username=$key password=$secret;" -o yaml --dry-run=client | kubectl apply -f -)
+  local secret_name="cc.sasl-jaas-config.$service_account.$environment_name.$kafka_name"
+
+  local result=$(kubectl create secret generic $secret_name --from-literal="sasl.jaas.config"="sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username=$key password=$secret;" -o yaml --dry-run=client | kubectl apply -f -)
 
 }
 
@@ -137,11 +129,13 @@ function ccloud::kafka::apply_secret_for_endpoint() {
 
   local kafka_description=$(ccloud kafka cluster describe $kafka_id -o json)
   local endpoint=$(echo $kafka_description | jq -r '.endpoint')
-  local name=$(echo $kafka_description | jq -r '.name')
+  local kafka_name=$(echo $kafka_description | jq -r '.name')
   local provider=$(echo $kafka_description | jq -r '.provider')
   local region=$(echo $kafka_description | jq -r '.region')
 
-  local result=$(kubectl create secret generic "cc.$environment_name.kafka.$name" --from-literal="bootstrap.servers.properties"="bootstrap.servers=$endpoint" -o yaml --dry-run=client | kubectl apply -f -)
+  local secret_name="cc.bootstrap-servers.$environment_name.$kafka_name"
+
+  local result=$(kubectl create secret generic $secret_name --from-literal="bootstrap.servers.properties"="bootstrap.servers=$endpoint" -o yaml --dry-run=client | kubectl apply -f -)
   echo $result
   
 }
