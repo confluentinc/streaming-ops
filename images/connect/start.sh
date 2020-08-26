@@ -4,7 +4,7 @@ set -a
 
 STARTUP_DELAY=${STARTUP_DELAY:-0}
 
-cat /etc/config/connect/*.properties >> /etc/config/connect/kafka.properties
+for f in /etc/config/connect/*.properties; do (cat "${f}"; echo) >> /etc/config/connect/kafka.properties; done
 
 CONFIG_FILE=${CONFIG_FILE:-"/etc/config/connect/kafka.properties"}
 
