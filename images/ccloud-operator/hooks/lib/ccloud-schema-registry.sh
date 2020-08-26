@@ -9,7 +9,6 @@ source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-api-key.sh
 # first parameter
 ####################################################################
 function ccloud::schema-registry::apply() {
-  set -x
   local sr environment_name
   local "${@}"
 
@@ -30,7 +29,6 @@ function ccloud::schema-registry::apply() {
   }
 
   echo $sr_id
-  set +x
 }
 
 function ccloud::schema-registry::apply_secret_from_api_key_list() {
@@ -43,9 +41,7 @@ function ccloud::schema-registry::apply_secret_from_api_key_list() {
 
     local service_account=$(echo $API_KEY | jq -r '."service-account"')
 
-    ccloud::schema-registry::apply_secret_for_api_key service_account="$service_account" sr_id="$sr_id" environment_name="$environment_name" && {
-      echo "configured api-key $service_account"
-    }
+    ccloud::schema-registry::apply_secret_for_api_key service_account="$service_account" sr_id="$sr_id" environment_name="$environment_name"
 
   done
 }
