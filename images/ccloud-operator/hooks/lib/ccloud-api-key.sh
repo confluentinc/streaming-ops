@@ -4,9 +4,9 @@ LIB_CCLOUD_API_KEY=`date`
 source $SHELL_OPERATOR_HOOKS_DIR/lib/common.sh
 
 function ccloud::api_key::build_api_key_secret_name() {
-  local category service_account_name resource_id 
+  local service_account_name resource_id 
   local "${@}"
-  echo "cc.api-key.$category.$service_account_name.$resource_id"
+  echo "cc.api-key.$service_account_name.$resource_id"
 }
 
 function ccloud::api_key::apply() {
@@ -18,7 +18,7 @@ function ccloud::api_key::apply() {
     return $SERVICE_ACCOUNT_NOT_FOUND
   }
 
-  local secret_name=$(ccloud::api_key::build_api_key_secret_name category=$category service_account_name=$service_account_name resource_id=$resource_id)
+  local secret_name=$(ccloud::api_key::build_api_key_secret_name service_account_name=$service_account_name resource_id=$resource_id)
  
   local existing_secret=$(kubectl get secrets/$secret_name -o json 2>/dev/null)
   [[ ! -z "$existing_secret" ]] && {
