@@ -103,8 +103,6 @@ function ccloud::kafka::apply_secret_for_api_key() {
   local service_account kafka_id environment_name
   local "${@}"
 
-	echo "apply_secret_for_api_key"
-
   local ccloud_api_key=$(ccloud::api_key::apply category='kafka' service_account_name="$service_account" resource_id="$kafka_id") || {
     local retcode=$?
     echo "error getting ccloud api-key for $service_account:$kafka_id"
