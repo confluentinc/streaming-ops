@@ -33,9 +33,15 @@ spec:
       - name: sasl-jaas-config-volume
         secret:
           secretName: cc.sasl-jaas-config.microservices-orders-client.kafka-devops.microservices-orders 
+      - name: bootstrap-config-volume
+        secret:
+          secretName: cc.bootstrap-servers.kafka-devops.microservices-orders 
       - name: schema-registry-basic-user-info-config-volume 
         secret:
-          secretName: cc.schema-registry-basic-auth-user-info.kafka-devops-sr-client.kafka-devops
+          secretName: cc.schema-registry-basic-auth-user-info.kafka-devops-sr-client.kafka-devops 
+      - name: schema-registry-url-volume 
+        secret:
+          secretName: cc.schema-registry-url.kafka-devops 
       containers:
       - name: connect-service
         image: cnfldemos/microservices-orders-connect:sha-04f0f23
@@ -53,8 +59,15 @@ spec:
           mountPath: /etc/config/connect/
           subPath: sasl-jaas-config.properties
           readOnly: true
-        - name: kafka-devops-schema-registry-secrets-volume
+        - name: bootstrap-config-volume 
           mountPath: /etc/config/connect/
-          subPath: sr.secrets.properties
+          subPath: sasl-jaas-config.properties
           readOnly: true
-
+        - name: schema-registry-basic-user-info-config-volume 
+          mountPath: /etc/config/connect/
+          subPath: schema-registry-basic-auth-user-info.properties 
+          readOnly: true
+        - name: schema-registry-url-volume
+          mountPath: /etc/config/connect/
+          subPath: schema-registry-url.properties 
+          readOnly: true

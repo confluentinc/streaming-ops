@@ -3,6 +3,9 @@
 set -a
 
 STARTUP_DELAY=${STARTUP_DELAY:-0}
+
+cat /etc/config/connect/*.properties >> /etc/config/connect/kafka.properties
+
 CONFIG_FILE=${CONFIG_FILE:-"/etc/config/connect/kafka.properties"}
 
 BOOTSTRAP_SERVERS=$(grep "bootstrap.servers" $CONFIG_FILE | cut -d= -f2)

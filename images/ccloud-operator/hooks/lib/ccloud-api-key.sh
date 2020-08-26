@@ -22,8 +22,10 @@ function ccloud::api_key::apply() {
  
   local existing_secret=$(kubectl get secrets/$secret_name -o json 2>/dev/null)
   [[ ! -z "$existing_secret" ]] && {
-    local ccloud_api_key=$(echo "$ccloud_api_key" | jq -r -c '.data')
-  } || {
+    local ccloud_api_key=$(echo "$ccloud_api_key" | jq -r -c '.data."ccloud-api-key"')
+  }
+
+  [[ -z "$ccloud_api_key" ]] && { 
     local ccloud_api_key=$(ccloud api-key create --service-account $sa_id --resource $resource_id --description "Created by ccloud-operator $(date) for sa:$service_account_name" -o json | jq -r -c '.')
   }
 
