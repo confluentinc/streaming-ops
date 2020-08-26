@@ -122,15 +122,15 @@ _*TODO*_: Link to Docs for setting up ccloud and environment properly until auto
 
 	Create a local secrets files for your `ccloud` credentials, ensuring you do not commit them to any repository. Execte a `kubectl create secret` command like below for each file passing the path to your `ccloud` credentials file into the `--from-env-file` argument. There isn't a need to create a seperate file for the database credentials file as that service is ran entirely inside the demonstrations Kubernetes cluster and is not publically accessible.
   
-  These commands will create generic secret files from your secrets files and put them into a staging area (`secrets/local-toseal`). _The namespace, secret name, and generic secret file name are related in this command, do not change them without understanding the seal script, executed next_.
+	These commands will create generic secret files from your secrets files and put them into a staging area (`secrets/local-toseal`). _The namespace, secret name, and generic secret file name are related in this command, do not change them without understanding the seal script, executed next_.
 
-  ```
+	```
 	kubectl create secret generic cc.ccloud-secrets --namespace=default --from-env-file=./secrets/example-ccloud-secrets.props --dry-run=client -o yaml > secrets/local-toseal/dev/default-ccloud-secrets.yaml
-  ```
+	```
     
-  ```
+	```
 	kubectl create secret generic connect-operator-secrets --namespace=default --from-env-file=./secrets/example-connect-operator-secrets.props --dry-run=client -o yaml > secrets/local-toseal/dev/default-connect-operator-secrets.yaml 
-  ```
+	```
 
   * Seal the secrets, for the `dev` environment, with the following helper command which uses the `scripts/seal-secrets.sh` script. This command will place the sealed secret in `secrets/sealed/dev`, and these are the files which are safe to commit to the repository.
 
