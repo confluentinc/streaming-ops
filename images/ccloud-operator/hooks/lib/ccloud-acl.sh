@@ -9,7 +9,7 @@ function ccloud::acl::apply_list() {
 	local "${@}"
 
 	for ACL_ENCODED in $(echo $acl | jq -c -r '.[] | @base64'); do
-		
+
 		local ACL=$(echo "${ACL_ENCODED}" | base64 -d)
 
 		local service_account=$(echo $ACL | jq -r '."service-account"')
@@ -29,7 +29,7 @@ function ccloud::acl::apply_list() {
 		    ccloud::acl::apply_consumer_group kafka_id=$kafka_id permission=$permission service_account=$service_account operation=$operation consumer_group=$name prefix=$prefix
       elif [ "$resource" == "cluster-scope" ]; then
 		    ccloud::acl::apply_cluster_scope kafka_id=$kafka_id permission=$permission service_account=$service_account operation=$operation
-      else 
+      else
         echo "$resource acls not yet supported"
       fi
     done
@@ -45,14 +45,14 @@ function ccloud::acl::apply_topic() {
 
   local permission_flag=$([[ $permission == "allow" ]] && echo "--allow" || echo "--deny")
   local service_account_flag="--service-account $sa_id"
-  local topic_flag='--topic "'$topic'"'
+  local topic_flag='--topic $topic'
   local prefix_flag=$( [[ $prefix != "true" ]] && echo "" || echo "--prefix" )
-  
-  PREV_IFS=$IFS 
+
+  PREV_IFS=$IFS
   IFS=","
   local operation_flag=""
   for o in $operation
-  do 
+  do
     operation_flag=$operation_flag" --operation $o"
   done
   IFS=$PREV_IFS
@@ -72,14 +72,14 @@ function ccloud::acl::apply_consumer_group() {
 
   local permission_flag=$([[ $permission == "allow" ]] && echo "--allow" || echo "--deny")
   local service_account_flag="--service-account $sa_id"
-  local consumer_group_flag='--consumer-group "'$consumer_group'"'
-  local prefix_flag=$([[ $prefix == "null" ]] || [[ $prefix != "true" ]] && echo "" | echo "--prefix") 
-  
-  PREV_IFS=$IFS 
+  local consumer_group_flag='--consumer-group $consumer_group'
+  local prefix_flag=$([[ $prefix == "null" ]] || [[ $prefix != "true" ]] && echo "" | echo "--prefix")
+
+  PREV_IFS=$IFS
   IFS=","
   local operation_flag=""
   for o in $operation
-  do 
+  do
     operation_flag=$operation_flag" --operation $o"
   done
   IFS=$PREV_IFS
@@ -99,12 +99,12 @@ function ccloud::acl::apply_cluster_scope() {
 
   local permission_flag=$([[ $permission == "allow" ]] && echo "--allow" || echo "--deny")
   local service_account_flag="--service-account $sa_id"
-  
-  PREV_IFS=$IFS 
+
+  PREV_IFS=$IFS
   IFS=","
   local operation_flag=""
   for o in $operation
-  do 
+  do
     operation_flag=$operation_flag" --operation $o"
   done
   IFS=$PREV_IFS

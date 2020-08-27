@@ -6,8 +6,8 @@ metadata:
     destination: ccloud
 data:
   service-accounts: |
-    [ 
-      { "name": "microservices-orders-client", 
+    [
+      { "name": "microservices-orders-client",
         "description": "Account for client microservices orders client apps"
       }, {
         "name": "kafka-devops-sr-client",
@@ -18,8 +18,8 @@ data:
       }
     ]
   environments: |
-    [ 
-      { 
+    [
+      {
         "name": "kafka-devops",
         "schema-registry": {
           "cloud": "gcp",
@@ -29,7 +29,7 @@ data:
           ]
         },
         "kafka": [
-          { 
+          {
             "name": "microservices-orders",
             "cloud": "gcp",
             "region": "us-central1",
@@ -51,15 +51,15 @@ data:
               { "name": "_confluent-command" }
             ],
             "acl": [
-              { 
-                "service-account": "microservices-orders-client", 
+              {
+                "service-account": "microservices-orders-client",
                 "controls": [
                   { "operation" : "read,write", "permission": "allow",
                     "resource": "topic", "name": "*" }
                 ]
               },
-              { 
-                "service-account": "connect-worker-client", 
+              {
+                "service-account": "connect-worker-client",
                 "controls": [
                   { "operation" : "read,write", "permission": "allow",
                     "resource": "topic", "name": "connect-*", "prefix": true },
@@ -84,7 +84,7 @@ data:
             "topic": [
               { "name": "test-compact", "partitions": 2,
                 "config": "cleanup.policy=delete" },
-              { "name": "test-delete", 
+              { "name": "test-delete",
                 "config": "cleanup.policy=delete,retention.ms=259200000" }
             ]
           }
