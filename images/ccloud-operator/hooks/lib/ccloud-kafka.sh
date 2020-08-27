@@ -33,8 +33,8 @@ function ccloud::kafka::apply_list() {
     }
     echo "Kafka cluster $kafka_id is ready"
 
-		local topic=$(echo $KAFKA | jq -r -c .topic)
-		ccloud::topic::apply_list kafka_id=$kafka_id topic="$topic"
+		#local topic=$(echo $KAFKA | jq -r -c .topic)
+		#ccloud::topic::apply_list kafka_id=$kafka_id topic="$topic"
 
     local acl=$(echo $KAFKA | jq -r -c .acl)
     [[ "$acl" != "null" ]] && ccloud::acl::apply_list kafka_id=$kafka_id acl="$acl"
