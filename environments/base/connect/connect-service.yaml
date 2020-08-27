@@ -32,16 +32,16 @@ spec:
           name: cc.shared-client-config
       - name: sasl-jaas-config-volume
         secret:
-          secretName: cc.sasl-jaas-config.connect-worker-client.kafka-devops.microservices-orders 
+          secretName: cc.sasl-jaas-config.connect-worker-client.kafka-devops.microservices-orders
       - name: bootstrap-config-volume
         secret:
-          secretName: cc.bootstrap-servers.kafka-devops.microservices-orders 
-      - name: schema-registry-basic-user-info-config-volume 
+          secretName: cc.bootstrap-servers.kafka-devops.microservices-orders
+      - name: schema-registry-basic-user-info-config-volume
         secret:
-          secretName: cc.schema-registry-basic-auth-user-info.kafka-devops-sr-client.kafka-devops 
-      - name: schema-registry-url-volume 
+          secretName: cc.schema-registry-basic-auth-user-info.kafka-devops-sr-client.kafka-devops
+      - name: schema-registry-url-volume
         secret:
-          secretName: cc.schema-registry-url.kafka-devops 
+          secretName: cc.schema-registry-url.kafka-devops
       containers:
       - name: connect-service
         image: cnfldemos/microservices-orders-connect:sha-349278f
@@ -51,26 +51,26 @@ spec:
         - name: CLASSPATH
           value: /usr/share/java/kafka-connect-jdbc/mysql-connector-java-8.0.21.jar
         - name: DUMP_CONFIG
-          value: true
+          value: "true"
         volumeMounts:
-        - name: shared-client-config-volume 
+        - name: shared-client-config-volume
           mountPath: /etc/config/connect/shared-client.properties
           subPath: shared-client.properties
           readOnly: true
-        - name: sasl-jaas-config-volume 
+        - name: sasl-jaas-config-volume
           mountPath: /etc/config/connect/sasl-jaas-config.properties
           subPath: sasl-jaas-config.properties
           readOnly: true
-        - name: bootstrap-config-volume 
+        - name: bootstrap-config-volume
           mountPath: /etc/config/connect/bootstrap-servers.properties
           subPath: bootstrap-servers.properties
           readOnly: true
-        - name: schema-registry-basic-user-info-config-volume 
+        - name: schema-registry-basic-user-info-config-volume
           mountPath: /etc/config/connect/schema-registry-basic-auth-user-info.properties
-          subPath: schema-registry-basic-auth-user-info.properties 
+          subPath: schema-registry-basic-auth-user-info.properties
           readOnly: true
         - name: schema-registry-url-volume
           mountPath: /etc/config/connect/schema-registry-url.properties
-          subPath: schema-registry-url.properties 
+          subPath: schema-registry-url.properties
           readOnly: true
 
