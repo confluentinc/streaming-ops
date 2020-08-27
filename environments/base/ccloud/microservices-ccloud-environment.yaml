@@ -58,7 +58,8 @@ data:
               }
             ],
             "api-key": [
-              { "service-account": "microservices-orders-client" }
+              { "service-account": "microservices-orders-client" },
+              { "service-account": "connect-worker-client" }
             ]
           },
           {
