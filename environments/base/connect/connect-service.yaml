@@ -44,12 +44,14 @@ spec:
           secretName: cc.schema-registry-url.kafka-devops 
       containers:
       - name: connect-service
-        image: cnfldemos/microservices-orders-connect:sha-e074157
+        image: cnfldemos/microservices-orders-connect:sha-
         ports:
         - containerPort: 8083
         env:
         - name: CLASSPATH
           value: /usr/share/java/kafka-connect-jdbc/mysql-connector-java-8.0.21.jar
+        - name: DUMP_CONFIG
+          value: true
         volumeMounts:
         - name: shared-client-config-volume 
           mountPath: /etc/config/connect/shared-client.properties
