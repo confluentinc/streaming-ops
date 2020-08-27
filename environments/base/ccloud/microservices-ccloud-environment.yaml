@@ -44,23 +44,32 @@ data:
               { "name": "orders-validations", "partitions": 3 },
               { "name": "payments", "partitions": 3 },
               { "name": "warehouse-inventory", "partitions": 3 },
-              { "name": "connect-configs", "partitions": 1,
-                "config": "cleanup.policy=compact" },
-              { "name": "connect-offsets", "partitions": 5,
-                "config": "cleanup.policy=compact" },
-              { "name": "connect-statuses", "partitions": 3,
-                "config": "cleanup.policy=compact" }
+              { "name": "connect-configs", "partitions": 1, "config": "cleanup.policy=compact" },
+              { "name": "connect-offsets", "partitions": 6, "config": "cleanup.policy=compact" },
+              { "name": "connect-statuses", "partitions": 1, "config": "cleanup.policy=compact" },
+              { "name": "_confluent-monitoring" },
+              { "name": "_confluent-command" }
             ],
             "acl": [
               { 
                 "service-account": "microservices-orders-client", 
-                "operation" : "read,write", "permission": "allow",
-                "resource": "topic", "name": "*"
+                "controls": [
+                  { "operation" : "read,write", "permission": "allow",
+                    "resource": "topic", "name": "*" }
+                ]
               },
               { 
                 "service-account": "connect-worker-client", 
-                "operation" : "read,write,create", "permission": "allow",
-                "resource": "topic", "name": "*"
+                "controls": [
+                  { "operation" : "read,write", "permission": "allow",
+                    "resource": "topic", "name": "connect-*", "prefix": true },
+                  { "operation" : "read,write", "permission": "allow",
+                    "resource": "topic", "name": "_confluent-*", "prefix": true },
+                  { "operation" : "read", "permission": "allow",
+                    "resource": "consumer-group", "name": "kafka-devops-connect" },
+                  { "operation" : "describe", "permission": "allow",
+                    "resource": "cluster-scope" }
+                ]
               }
             ],
             "api-key": [
