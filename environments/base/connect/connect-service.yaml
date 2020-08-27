@@ -32,7 +32,7 @@ spec:
           name: cc.shared-client-config
       - name: sasl-jaas-config-volume
         secret:
-          secretName: cc.sasl-jaas-config.microservices-orders-client.kafka-devops.microservices-orders 
+          secretName: cc.sasl-jaas-config.connect-worker-client.kafka-devops.microservices-orders 
       - name: bootstrap-config-volume
         secret:
           secretName: cc.bootstrap-servers.kafka-devops.microservices-orders 

@@ -12,6 +12,9 @@ data:
       }, {
         "name": "kafka-devops-sr-client",
         "description": "Account for client access to kafka-devlops environment scheuma registry"
+      }, {
+        "name": "connect-worker-client",
+        "description": "Account for connect worker client access"
       }
     ]
   environments: |
@@ -46,6 +49,11 @@ data:
               { 
                 "service-account": "microservices-orders-client", 
                 "operation" : "read,write", "permission": "allow",
+                "resource": "topic", "name": "*"
+              },
+              { 
+                "service-account": "connect-worker-client", 
+                "operation" : "read,write,create", "permission": "allow",
                 "resource": "topic", "name": "*"
               }
             ],
