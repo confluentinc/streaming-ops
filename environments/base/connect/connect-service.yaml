@@ -44,7 +44,7 @@ spec:
           secretName: cc.schema-registry-url.kafka-devops 
       containers:
       - name: connect-service
-        image: cnfldemos/microservices-orders-connect:sha-
+        image: cnfldemos/microservices-orders-connect:sha-349278f
         ports:
         - containerPort: 8083
         env:
