@@ -9,9 +9,9 @@ source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-api-key.sh
 function ccloud::kafka::apply_list() {
   local kafka environment_name
   local "${@}"
-	
+
 	for KAFKA_ENCODED in $(echo $kafka | jq -c -r '.[] | @base64'); do
-	
+
 		KAFKA=$(echo "${KAFKA_ENCODED}" | base64 -d)
 
 		local name=$(echo $KAFKA | jq -r .name)
@@ -21,9 +21,9 @@ function ccloud::kafka::apply_list() {
 		local kafka_id=$(ccloud::kafka::apply name="$name" cloud="$cloud" region="$region" environment_name="$environment_name")
 
 		echo "configured kafka cluster: $name, id = $kafka_id"
-	
+
     # When Kafka clusters are first created, they take time to initialize before they can be
-    # used properly.  We're going to use the `ccloud kafka topic` command to wait until 
+    # used properly.  We're going to use the `ccloud kafka topic` command to wait until
     # no error before proceeding
     ccloud kafka cluster use "$kafka_id"
     echo "Waiting for Kafka cluster $kafka_id to be ready"
@@ -33,15 +33,15 @@ function ccloud::kafka::apply_list() {
     }
     echo "Kafka cluster $kafka_id is ready"
 
-		local topic=$(echo $KAFKA | jq -r -c .topic)
-		ccloud::topic::apply_list kafka_id=$kafka_id topic="$topic"
+		#local topic=$(echo $KAFKA | jq -r -c .topic)
+		#ccloud::topic::apply_list kafka_id=$kafka_id topic="$topic"
 
     local acl=$(echo $KAFKA | jq -r -c .acl)
     [[ "$acl" != "null" ]] && ccloud::acl::apply_list kafka_id=$kafka_id acl="$acl"
 
-    local api_key=$(echo $KAFKA | jq -r -c '."api-key"')
-    [[ "$api_key" != "null" ]] && ccloud::kafka::apply_secret_from_api_key_list kafka_id="$kafka_id" api_key_list="$api_key" environment_name="$environment_name"
-     
+    #local api_key=$(echo $KAFKA | jq -r -c '."api-key"')
+    #[[ "$api_key" != "null" ]] && ccloud::kafka::apply_secret_from_api_key_list kafka_id="$kafka_id" api_key_list="$api_key" environment_name="$environment_name"
+
 	done
 
 	return 0
@@ -52,14 +52,14 @@ function ccloud::kafka::apply() {
 	local "${@}"
 
   # TODO: Determine if matching on name only is better, in the current case, changing cloud/region will
-  #   result in a new cluster which may not be the intent of the user	
+  #   result in a new cluster which may not be the intent of the user
 	local FOUND_CLUSTER=$(ccloud kafka cluster list -o json | \
       jq -c -r '.[] | select((.name == "'"$name"'") and (.provider == "'"$cloud"'") and (.region == "'"$region"'"))')
 
   [[ ! -z "$FOUND_CLUSTER" ]] && {
       local kafka_id=$(echo "$FOUND_CLUSTER" | jq -r .id)
   } || {
-    
+
     result=$(ccloud kafka cluster create "$name" --cloud "$cloud" --region "$region" -o json 2>&1)
 		retcode=$?
 
@@ -74,7 +74,7 @@ function ccloud::kafka::apply() {
 
   local secret_result=$(ccloud::kafka::apply_secret_for_endpoint kafka_id="$kafka_id" environment_name=$environment_name) && {
     echo $kafka_id
-    return 0 
+    return 0
   } || {
     local ret_code=$?
     echo "Error creating ccloud kafka secret: $secret_result"
@@ -85,9 +85,9 @@ function ccloud::kafka::apply() {
 function ccloud::kafka::apply_secret_from_api_key_list() {
   local kafka_id api_key_list environment_name
   local "${@}"
-  
+
 	for API_KEY_ENCODED in $(echo $api_key_list | jq -c -r '.[] | @base64'); do
-		
+
 		API_KEY=$(echo "${API_KEY_ENCODED}" | base64 -d)
 
     local service_account=$(echo $API_KEY | jq -r '."service-account"')
@@ -111,7 +111,7 @@ function ccloud::kafka::apply_secret_for_api_key() {
 
   local key=$(echo $ccloud_api_key | jq -r '.key')
   local secret=$(echo $ccloud_api_key | jq -r '.secret')
- 
+
   local kafka_description=$(ccloud kafka cluster describe $kafka_id -o json)
   local kafka_name=$(echo $kafka_description | jq -r '.name')
 
@@ -135,6 +135,6 @@ function ccloud::kafka::apply_secret_for_endpoint() {
 
   local result=$(kubectl create secret generic $secret_name --from-literal="bootstrap-servers.properties"="bootstrap.servers=$endpoint" -o yaml --dry-run=client | kubectl apply -f -)
   echo $result
-  
+
 }
 

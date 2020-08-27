@@ -62,9 +62,7 @@ data:
                 "service-account": "connect-worker-client",
                 "controls": [
                   { "operation" : "read,write", "permission": "allow",
-                    "resource": "topic", "name": "connect-*", "prefix": true },
-                  { "operation" : "read,write", "permission": "allow",
-                    "resource": "topic", "name": "_confluent-*", "prefix": true },
+                    "resource": "topic", "name": "*", "prefix": "true" },
                   { "operation" : "read", "permission": "allow",
                     "resource": "consumer-group", "name": "kafka-devops-connect" },
                   { "operation" : "describe", "permission": "allow",
