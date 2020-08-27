@@ -109,15 +109,15 @@ function ccloud::kafka::apply_secret_for_api_key() {
     return $retcode
   }
 
-  local key=$(echo $ccloud_api_key | jq -r .key)
-  local secret=$(echo $ccloud_api_key | jq -r .secret)
+  local key=$(echo $ccloud_api_key | jq -r '.key')
+  local secret=$(echo $ccloud_api_key | jq -r '.secret')
  
   local kafka_description=$(ccloud kafka cluster describe $kafka_id -o json)
   local kafka_name=$(echo $kafka_description | jq -r '.name')
 
   local secret_name="cc.sasl-jaas-config.$service_account.$environment_name.$kafka_name"
 
-  local result=$(kubectl create secret generic $secret_name --from-literal="sasl-jaas-config.properties"="sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username=$key password=$secret;" -o yaml --dry-run=client | kubectl apply -f -)
+  local result=$(kubectl create secret generic $secret_name --from-literal="sasl-jaas-config.properties"="sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username=\"$key\" password=\"$secret\";" -o yaml --dry-run=client | kubectl apply -f -)
 
 }
 

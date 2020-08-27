@@ -43,7 +43,13 @@ data:
               { "name": "orders-enriched", "partitions": 3 },
               { "name": "orders-validations", "partitions": 3 },
               { "name": "payments", "partitions": 3 },
-              { "name": "warehouse-inventory", "partitions": 3 }
+              { "name": "warehouse-inventory", "partitions": 3 },
+              { "name": "connect-configs", "partitions": 1,
+                "config": "cleanup.policy=compact" },
+              { "name": "connect-offsets", "partitions": 5,
+                "config": "cleanup.policy=compact" },
+              { "name": "connect-statuses", "partitions": 3,
+                "config": "cleanup.policy=compact" }
             ],
             "acl": [
               { 
