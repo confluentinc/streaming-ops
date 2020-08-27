@@ -45,7 +45,7 @@ function ccloud::acl::apply_topic() {
 
   local permission_flag=$([[ $permission == "allow" ]] && echo "--allow" || echo "--deny")
   local service_account_flag="--service-account $sa_id"
-  local topic_flag='--topic $topic'
+  local topic_flag="--topic $topic"
   local prefix_flag=$( [[ $prefix != "true" ]] && echo "" || echo "--prefix" )
 
   PREV_IFS=$IFS
@@ -72,7 +72,7 @@ function ccloud::acl::apply_consumer_group() {
 
   local permission_flag=$([[ $permission == "allow" ]] && echo "--allow" || echo "--deny")
   local service_account_flag="--service-account $sa_id"
-  local consumer_group_flag='--consumer-group $consumer_group'
+  local consumer_group_flag="--consumer-group $consumer_group"
   local prefix_flag=$([[ $prefix == "null" ]] || [[ $prefix != "true" ]] && echo "" | echo "--prefix")
 
   PREV_IFS=$IFS
