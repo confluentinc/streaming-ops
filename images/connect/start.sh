@@ -7,7 +7,8 @@ STARTUP_DELAY=${STARTUP_DELAY:-0}
 for f in /etc/config/connect/*.properties; do (cat "${f}"; echo) >> /etc/config/connect/kafka.properties; done
 
 CONFIG_FILE=${CONFIG_FILE:-"/etc/config/connect/kafka.properties"}
-cat $CONFIG_FILE 
+
+[[ ! -z "$DUMP_CONFIG" ]] && cat $CONFIG_FILE 
 
 BOOTSTRAP_SERVERS=$(grep "bootstrap.servers" $CONFIG_FILE | cut -d= -f2)
 SECURITY_PROTOCOL=$(grep "security.protocol" $CONFIG_FILE | cut -d= -f2)
