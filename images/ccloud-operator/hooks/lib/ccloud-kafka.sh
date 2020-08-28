@@ -33,14 +33,14 @@ function ccloud::kafka::apply_list() {
     }
     echo "Kafka cluster $kafka_id is ready"
 
-		#local topic=$(echo $KAFKA | jq -r -c .topic)
-		#ccloud::topic::apply_list kafka_id=$kafka_id topic="$topic"
+		local topic=$(echo $KAFKA | jq -r -c .topic)
+		ccloud::topic::apply_list kafka_id=$kafka_id topic="$topic"
 
     local acl=$(echo $KAFKA | jq -r -c .acl)
     [[ "$acl" != "null" ]] && ccloud::acl::apply_list kafka_id=$kafka_id acl="$acl"
 
-    #local api_key=$(echo $KAFKA | jq -r -c '."api-key"')
-    #[[ "$api_key" != "null" ]] && ccloud::kafka::apply_secret_from_api_key_list kafka_id="$kafka_id" api_key_list="$api_key" environment_name="$environment_name"
+    local api_key=$(echo $KAFKA | jq -r -c '."api-key"')
+    [[ "$api_key" != "null" ]] && ccloud::kafka::apply_secret_from_api_key_list kafka_id="$kafka_id" api_key_list="$api_key" environment_name="$environment_name"
 
 	done
 
