@@ -74,17 +74,6 @@ data:
               { "service-account": "microservices-orders-client" },
               { "service-account": "connect-worker-client" }
             ]
-          },
-          {
-            "name": "test-cluster",
-            "cloud": "gcp",
-            "region": "us-central1",
-            "topic": [
-              { "name": "test-compact", "partitions": 2,
-                "config": "cleanup.policy=delete" },
-              { "name": "test-delete",
-                "config": "cleanup.policy=delete,retention.ms=259200000" }
-            ]
           }
         ]
       }
