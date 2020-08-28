@@ -72,13 +72,17 @@ If you'd like to run a version of this repository in your own cluster, follow th
   * `REPO_GIT_USER=your-user` Update to your git username
   * `REPO_GIT_EMAIL=your-user@example.com` Update to your git email
 
-3.  To install all dependencies on a Mac. This command uses a combination of manual installations by downloading and install binaries to `/usr/local/bin` and Homebrew. You will be prompted for your adminstrative passwod to install files to `/usr/local/bin`.  You can skip this step if you'd like to install the dependencies manually.
+3.  Install all dependencies
+
+    On macOS a provided `make` target uses a combination of manual installations by downloading and install binaries to `/usr/local/bin` and Homebrew. You will be prompted for your adminstrative passwod to install files to `/usr/local/bin`.  You can skip this step if you'd like to install the dependencies manually.
 
     ```
     make install-deps 
     ```
 
-4. To create a local test cluster on Docker using k3d
+4. Create a local test cluster on Docker using k3d
+
+    If you want to run a demo of this project on a local K8s cluster, this `make` target can boostrap a `k3d` cluster for you.
 
     ```
     make cluster
@@ -98,6 +102,8 @@ If you'd like to run a version of this repository in your own cluster, follow th
 
 5. Install Bitnami Sealed Secret Controller into the cluster
 
+    Once you have a cluster configured for your local `kubectl` command, the following will install the secret controller
+
     ```
     make install-bitnami-secret-controller
     ```
@@ -108,23 +114,25 @@ If you'd like to run a version of this repository in your own cluster, follow th
     kubectl get -n kube-system deployment/sealed-secrets-controller -o json | jq '.status.availableReplicas'
     ```
 
-6. Retrieve the secret controller's public key for this environment. The public key is used to seal the secrets which are then committed to the Git repository.  Only the secret controller (which generated or is configured with this public key) can decrypt the sealed secrets inside the cluster.
+6. Retrieve the secret controller's public key for this environment
+
+    The public key is used to seal the secrets which are then committed to the Git repository.  Only the secret controller (which generated or is configured with this public key) can decrypt the sealed secrets inside the cluster.
    
-  If your cluster has public nodes (which is true for the local dev cluster setup in these instructions), you can obtain and save the public key using:
+    If your cluster has public nodes (which is true for the local dev cluster setup in these instructions), you can obtain and save the public key using:
 
-  ```
-  make get-public-key-dev
-  ```
+    ```
+    make get-public-key-dev
+    ```
+  
+    If you are using a private cluster, you will need to copy the secret controller's key from the secret controller's log file into the key file stored locally.  However you obtain the public key, it can be stored in `secrets/keys/<environment>.crt`, _but not checked into the repository_. The remaining scripts look in this location in order to seal secrets. If you have administrative login to the cluster with `kubectl`, you may be able to get the logs by executing the following substituting your controllers full pod name (`kubectl get pods -n kube-system`):
+  
+    ```
+    kubectl logs sealed-secrets-controller-6bf8c44ff9-x6skc -n kube-system
+    ```
+  
+    See the Bitnami docs for long term management of secrets and more details on private clusters (https://github.com/bitnami-labs/sealed-secrets/blob/master/docs/GKE.md#private-gke-clusters).
 
-  If you are using a private cluster, you will need to copy the secret controller's key from the secret controller's log file into the key file stored locally.  However you obtain the public key, it can be stored in `secrets/keys/<environment>.crt`, _but not checked into the repository_. The remaining scripts look in this location in order to seal secrets. If you have administrative login to the cluster with `kubectl`, you may be able to get the logs by executing the following substituting your controllers full pod name (`kubectl get pods -n kube-system`):
-
-  ```
-  kubectl logs sealed-secrets-controller-6bf8c44ff9-x6skc -n kube-system
-  ```
-
-  See the Bitnami docs for long term management of secrets and more details on private clusters (https://github.com/bitnami-labs/sealed-secrets/blob/master/docs/GKE.md#private-gke-clusters).
-
-7. Create and deploy the sealed secrets:
+7. Create and deploy the sealed secrets
 
     There are two external secrets required to utilize this project.  The following helps you create two secret files seal them for use inside the cluster. The namespace, secret name, and generic secret file name are related in the following commands, do not change them without understanding the seal script, executed next.
 
