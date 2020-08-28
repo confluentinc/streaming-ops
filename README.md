@@ -176,7 +176,7 @@ If you'd like to run a version of this repository in your own cluster, follow th
 8. Install Flux, the GitOps operator, into the cluster
 
     ```
-    make install-flux
+    make install-flux-dev
     ```
 
   * The script will install Flux into the cluster and then wait for you to add the shown key to your repository in the Settings->Deploy Keys section. Write access is required for Flux to manage Tags to control the syncronized state.  See the Flux documentation for more details.
