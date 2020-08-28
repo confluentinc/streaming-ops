@@ -41,13 +41,10 @@ function ccloud::acl::apply_topic() {
   local kafka_id permission service_account operation topic prefix
   local "${@}"
 
-  set -x
   local sa_id=$(ccloud::sa::get_id name=$service_account)
-
   local permission_flag=$([[ $permission == "allow" ]] && echo "--allow" || echo "--deny")
   local service_account_flag="--service-account $sa_id"
-  local topic_flag="--topic \"$topic\""
-  local prefix_flag=$( [[ $prefix != "true" ]] && echo "" || echo "--prefix" )
+  local prefix_flag=$( [[ "$prefix" != "true" ]] && echo "" || echo "--prefix" )
 
   PREV_IFS=$IFS
   IFS=","
@@ -58,12 +55,11 @@ function ccloud::acl::apply_topic() {
   done
   IFS=$PREV_IFS
 
-  local result=$(ccloud kafka acl create $permission_flag $service_account_flag $operation_flag $topic_flag --cluster $kafka_id -o json 2>&1) && {
+  local result=$(ccloud kafka acl create $permission_flag $service_account_flag $operation_flag --topic "$topic" --cluster $kafka_id -o json 2>&1) && {
     echo "configured acl: $service_account:$operation:topic:$topic:$prefix"
   } || {
     echo "error configuring acl: $service_account:$operation:topic:$topic:$prefix: $result"
   }
-  set +x
 }
 
 function ccloud::acl::apply_consumer_group() {
