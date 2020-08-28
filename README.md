@@ -126,23 +126,21 @@ If you'd like to run a version of this repository in your own cluster, follow th
 
 7. Create and deploy the sealed secrets:
 
-    * There are two external secrets required to utilize this project.
+    There are two external secrets required to utilize this project.  The following helps you create two secret files seal them for use inside the cluster. The namespace, secret name, and generic secret file name are related in the following commands, do not change them without understanding the seal script, executed next.
 
-    * `ccloud` CLI login credentials are used to manage the Confluent Cloud resources controlled using the [ccloud operator code](images/ccloud-operator). An example of the layout of the secrets file required can be found in the file [secrets/example-ccloud-secrets.props](secrets/example-ccloud-secrets.props).
-
-    * The microservices demo code utilizes a MySQL database to demonstrate Kafka Connect and Change Data Capture. Credentials for the database are required to be provided.  An example of the layout of this file can be found in the sample [secrets/example-connect-operator-secrets.props](secrets/example-connect-operator-secrets.props)
-
-    Create a local secrets files for your `ccloud` credentials, ensuring you do not commit them to any repository. Execte a `kubectl create secret` command like below for each file passing the path to your `ccloud` credentials file into the `--from-env-file` argument. There isn't a need to create a seperate file for the database credentials file as that service is ran entirely inside the demonstrations Kubernetes cluster and is not publically accessible.
-  
-    These commands will create generic secret files from your secrets files and put them into a staging area (`secrets/local-toseal`). _The namespace, secret name, and generic secret file name are related in this command, do not change them without understanding the seal script, executed next_.
+    * `ccloud` CLI login credentials are used to manage the Confluent Cloud resources controlled using the [ccloud operator code](images/ccloud-operator). An example of the layout of the secrets file required can be found in the file [secrets/example-ccloud-secrets.props](secrets/example-ccloud-secrets.props).  Create a local secrets files for your `ccloud` credentials, _ensuring you do not commit them to any repository_. Execte a `kubectl create secret` command as below passing the path to your `ccloud` credentials file into the `--from-env-file` argument. 
 
     ```
-    kubectl create secret generic cc.ccloud-secrets --namespace=default --from-env-file=./secrets/example-ccloud-secrets.props --dry-run=client -o yaml > secrets/local-toseal/dev/default-ccloud-secrets.yaml
+    kubectl create secret generic cc.ccloud-secrets --namespace=default --from-env-file=<path-to-your-file> --dry-run=client -o yaml > secrets/local-toseal/dev/default-ccloud-secrets.yaml
     ```
+
+    * The microservices demo code utilizes a MySQL database to demonstrate Kafka Connect and Change Data Capture. Credentials for the database are required to be provided.  An example of the layout of this file can be found in the sample [secrets/example-connect-operator-secrets.props](secrets/example-connect-operator-secrets.props). There isn't a need to create a seperate file for the database credentials file as that service is ran entirely inside the demonstrations Kubernetes cluster and is not publically accessible.
 
     ```
     kubectl create secret generic connect-operator-secrets --namespace=default --from-env-file=./secrets/example-connect-operator-secrets.props --dry-run=client -o yaml > secrets/local-toseal/dev/default-connect-operator-secrets.yaml 
     ```
+
+    These commands have created generic secret Kubernetes secret manifests from your secrets files and put them into a staging area (`secrets/local-toseal`).  
 
   * Seal the secrets, for the `dev` environment, with the following helper command which uses the `scripts/seal-secrets.sh` script. This command will place the sealed secret in `secrets/sealed/dev`, and these are the files which are safe to commit to the repository.
 
