@@ -28,19 +28,19 @@ yq:
 # Homebrew isn't great with installing specific version, so I'm using a direct git commit URL to pin to specific versions
 
 kubectl:
-	brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/9fec1d922fa734289eccaa495f13680587da8feb/Formula/kubernetes-cli.rb 
+	brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/9fec1d922fa734289eccaa495f13680587da8feb/Formula/kubernetes-cli.rb
 
 k3d:
 	brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/5fb0385f36ad62ffb051eb3256dceec9f3dbfdd2/Formula/k3d.rb
 
 jq:
-	brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/81e08b0d9ae47a9968fabde84378faab1f67e557/Formula/jq.rb 
+	brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/81e08b0d9ae47a9968fabde84378faab1f67e557/Formula/jq.rb
 
 kustomize:
-	brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/143e1af7c5a7fffc8e9ffa9be19396f24929a996/Formula/kustomize.rb 
+	brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/143e1af7c5a7fffc8e9ffa9be19396f24929a996/Formula/kustomize.rb
 
 helm:
-	brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/6796c57c9ea504e74e26a32a14ab8c5758bf6750/Formula/helm.rb 
+	brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/6796c57c9ea504e74e26a32a14ab8c5758bf6750/Formula/helm.rb
 
 install-deps: kubectl k3d kubeseal jq yq kustomize helm
 
@@ -64,7 +64,7 @@ wait-for-secret-controller:
 	@$(call print-prompt)
 	./scripts/wait-for-secret-controller.sh
 
-install-flux-%: 
+install-flux-%:
 	@$(call print-header,"Installing flux")
 	@$(call print-prompt)
 	ENVIRONMENT=$* ./scripts/flux-init.sh

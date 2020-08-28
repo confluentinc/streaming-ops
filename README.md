@@ -138,15 +138,16 @@ If you'd like to run a version of this repository in your own cluster, follow th
 
     * `ccloud` CLI login credentials are used to manage the Confluent Cloud resources controlled using the [ccloud operator code](images/ccloud-operator). An example of the layout of the secrets file required can be found in the file [secrets/example-ccloud-secrets.props](secrets/example-ccloud-secrets.props).  Create a local secrets files for your `ccloud` credentials, _ensuring you do not commit them to any repository_. Execte a `kubectl create secret` command as below passing the path to your `ccloud` credentials file into the `--from-env-file` argument. 
 
-    ```
-    kubectl create secret generic cc.ccloud-secrets --namespace=default --from-env-file=<path-to-your-file> --dry-run=client -o yaml > secrets/local-toseal/dev/default-ccloud-secrets.yaml
-    ```
+      ```
+      kubectl create secret generic cc.ccloud-secrets --namespace=default --from-env-file=<path-to-your-file> --dry-run=client -o yaml > secrets/local-toseal/dev/default-ccloud-secrets.yaml
+      ```
+
 
     * The microservices demo code utilizes a MySQL database to demonstrate Kafka Connect and Change Data Capture. Credentials for the database are required to be provided.  An example of the layout of this file can be found in the sample [secrets/example-connect-operator-secrets.props](secrets/example-connect-operator-secrets.props). There isn't a need to create a seperate file for the database credentials file as that service is ran entirely inside the demonstrations Kubernetes cluster and is not publically accessible.
 
-    ```
-    kubectl create secret generic connect-operator-secrets --namespace=default --from-env-file=./secrets/example-connect-operator-secrets.props --dry-run=client -o yaml > secrets/local-toseal/dev/default-connect-operator-secrets.yaml 
-    ```
+      ```
+      kubectl create secret generic connect-operator-secrets --namespace=default --from-env-file=./secrets/example-connect-operator-secrets.props --dry-run=client -o yaml > secrets/local-toseal/dev/default-connect-operator-secrets.yaml 
+      ```
 
     These commands have created generic secret Kubernetes secret manifests from your secrets files and put them into a staging area (`secrets/local-toseal`).  
 
