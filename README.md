@@ -61,14 +61,16 @@ _*TODO*_: Link to Docs for setting up ccloud and environment properly until auto
 
 # Usage 
 
+If you'd like to run a version of this repository in your own cluster, follow the below usage steps. We also plan to build and manage a deployment of this repository ourselves in order to allow public PRs to affect a running instance for demonstration purposes.
+
 1.  Fork this repository
 
 2.  Update the following variables in `scripts\flux-init.sh`
 
   * `ENVIRONMENT=dev` You'll complete this process for each environment you want.
-  * `REPO_URL=git@github.com:confluentinc/kafka-devops` Update to match your git remote URL
-  * `REPO_GIT_USER=rspurgeon` Update to your git username
-  * `REPO_GIT_EMAIL=rspurgeon@confluent.io` Update to your git email
+  * `REPO_URL=git@github.com:your-fork/kafka-devops` Update to match your git remote URL
+  * `REPO_GIT_USER=your-user` Update to your git username
+  * `REPO_GIT_EMAIL=your-user@example.com` Update to your git email
 
 3.  To install all dependencies on a Mac. This command uses a combination of manual installations by downloading and install binaries to `/usr/local/bin` and Homebrew. You will be prompted for your adminstrative passwod to install files to `/usr/local/bin`.  You can skip this step if you'd like to install the dependencies manually.
 
@@ -106,36 +108,46 @@ _*TODO*_: Link to Docs for setting up ccloud and environment properly until auto
     kubectl get -n kube-system deployment/sealed-secrets-controller -o json | jq '.status.availableReplicas'
     ```
 
-6. Retrieve the secret controller's public key for this environment. The public key is stored in `secrets/keys/<environment>.crt`, _but not checked into the repository_.  See the Bitnami docs for long term management of secrets.
+6. Retrieve the secret controller's public key for this environment. The public key is used to seal the secrets which are then committed to the Git repository.  Only the secret controller (which generated or is configured with this public key) can decrypt the sealed secrets inside the cluster.
+   
+  If your cluster has public nodes (which is true for the local dev cluster setup in these instructions), you can obtain and save the public key using:
 
-    ```
-    make get-public-key ENV=dev
-    ```
+  ```
+  make get-public-key-dev
+  ```
 
-7. Create and deploy the sealed secrets in 4 steps:
+  If you are using a private cluster, you will need to copy the secret controller's key from the secret controller's log file into the key file stored locally.  However you obtain the public key, it can be stored in `secrets/keys/<environment>.crt`, _but not checked into the repository_. The remaining scripts look in this location in order to seal secrets. If you have administrative login to the cluster with `kubectl`, you may be able to get the logs by executing the following substituting your controllers full pod name (`kubectl get pods -n kube-system`):
 
-  * There are two external secrets required to utilize this project.
+  ```
+  kubectl logs sealed-secrets-controller-6bf8c44ff9-x6skc -n kube-system
+  ```
 
-	  * `ccloud` CLI login credentials are used to manage the Confluent Cloud resources controlled using the [ccloud operator code](images/ccloud-operator). An example of the layout of the secrets file required can be found in the file [example-ccloud-secrets.props](secrets/example-ccloud-secrets.props).
+  See the Bitnami docs for long term management of secrets and more details on private clusters (https://github.com/bitnami-labs/sealed-secrets/blob/master/docs/GKE.md#private-gke-clusters).
 
-		* The microservices demo code utilizes a MySQL database to demonstrate Kafka Connect and Change Data Capture. Credentials for the database are required to be provided.  An exampmle of the layout of this file can be found in the sample [secrets/example-connect-operator-secrets.props](secrets/example-connect-operator-secrets.props)
+7. Create and deploy the sealed secrets:
 
-	Create a local secrets files for your `ccloud` credentials, ensuring you do not commit them to any repository. Execte a `kubectl create secret` command like below for each file passing the path to your `ccloud` credentials file into the `--from-env-file` argument. There isn't a need to create a seperate file for the database credentials file as that service is ran entirely inside the demonstrations Kubernetes cluster and is not publically accessible.
+    * There are two external secrets required to utilize this project.
+
+    * `ccloud` CLI login credentials are used to manage the Confluent Cloud resources controlled using the [ccloud operator code](images/ccloud-operator). An example of the layout of the secrets file required can be found in the file [secrets/example-ccloud-secrets.props](secrets/example-ccloud-secrets.props).
+
+    * The microservices demo code utilizes a MySQL database to demonstrate Kafka Connect and Change Data Capture. Credentials for the database are required to be provided.  An example of the layout of this file can be found in the sample [secrets/example-connect-operator-secrets.props](secrets/example-connect-operator-secrets.props)
+
+    Create a local secrets files for your `ccloud` credentials, ensuring you do not commit them to any repository. Execte a `kubectl create secret` command like below for each file passing the path to your `ccloud` credentials file into the `--from-env-file` argument. There isn't a need to create a seperate file for the database credentials file as that service is ran entirely inside the demonstrations Kubernetes cluster and is not publically accessible.
   
-	These commands will create generic secret files from your secrets files and put them into a staging area (`secrets/local-toseal`). _The namespace, secret name, and generic secret file name are related in this command, do not change them without understanding the seal script, executed next_.
+    These commands will create generic secret files from your secrets files and put them into a staging area (`secrets/local-toseal`). _The namespace, secret name, and generic secret file name are related in this command, do not change them without understanding the seal script, executed next_.
 
-	```
-	kubectl create secret generic cc.ccloud-secrets --namespace=default --from-env-file=./secrets/example-ccloud-secrets.props --dry-run=client -o yaml > secrets/local-toseal/dev/default-ccloud-secrets.yaml
-	```
-    
-	```
-	kubectl create secret generic connect-operator-secrets --namespace=default --from-env-file=./secrets/example-connect-operator-secrets.props --dry-run=client -o yaml > secrets/local-toseal/dev/default-connect-operator-secrets.yaml 
-	```
+    ```
+    kubectl create secret generic cc.ccloud-secrets --namespace=default --from-env-file=./secrets/example-ccloud-secrets.props --dry-run=client -o yaml > secrets/local-toseal/dev/default-ccloud-secrets.yaml
+    ```
+
+    ```
+    kubectl create secret generic connect-operator-secrets --namespace=default --from-env-file=./secrets/example-connect-operator-secrets.props --dry-run=client -o yaml > secrets/local-toseal/dev/default-connect-operator-secrets.yaml 
+    ```
 
   * Seal the secrets, for the `dev` environment, with the following helper command which uses the `scripts/seal-secrets.sh` script. This command will place the sealed secret in `secrets/sealed/dev`, and these are the files which are safe to commit to the repository.
 
     ```
-    make seal-dev
+    make seal-secrets-dev
     ```
 
   * Commit the sealed secret to the repository so that Flux can sync it to the K8s cluster:
