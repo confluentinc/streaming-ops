@@ -157,6 +157,14 @@ If you'd like to run a version of this repository in your own cluster, follow th
     make seal-secrets-dev
     ```
 
+    You should see the following:
+    ```
+    Sealing-secrets-----------------------------------
+    ➜ ./scripts/seal-secrets.sh dev
+    INFO - Successfully sealed secrets/local-toseal/dev/default-cc.ccloud-secrets.yaml
+    INFO - Successfully sealed secrets/local-toseal/dev/default-connect-operator-secrets.yaml
+    ```
+
   * Commit the sealed secret to the repository so that Flux can sync it to the K8s cluster:
 
     ```
