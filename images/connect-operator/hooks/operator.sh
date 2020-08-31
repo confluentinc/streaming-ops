@@ -88,28 +88,25 @@ kubernetes:
   jqFilter: ".data"
 EOF
 else
-  set -x
   load_configs
-  set +x
-  exit 0
-#  TYPE=$(jq -r .[0].type $BINDING_CONTEXT_PATH)
-#  EVENT=$(jq -r .[0].watchEvent $BINDING_CONTEXT_PATH)
-#
-#  if [[ "$TYPE" == "Synchronization" ]]; then
-#    KEYS=$(jq -c -r '.[0].objects | .[].object.data | keys | .[]' $BINDING_CONTEXT_PATH)
-#		for KEY in $KEYS; do
-#			CONFIG=$(jq -c -r ".[].objects | .[].object.data | select(has(\"$KEY\")) | .\"$KEY\"" $BINDING_CONTEXT_PATH)
-#			apply_connector "$CONFIG"
-#		done
-#  elif [[ "$TYPE" == "Event" ]]; then
-#    DATA=$(jq -r '.[0].object.data' $BINDING_CONTEXT_PATH)
-#    KEY=$(echo $DATA | jq -r -c 'keys | .[0]')
-#    CONFIG=$(echo $DATA | jq -r -c ".\"$KEY\"")
-#    if [[ "$EVENT" == "Deleted" ]]; then
-#      delete_connector "$CONFIG"
-#    else
-#		  apply_connector "$CONFIG"
-#    fi
-#  fi
+  TYPE=$(jq -r .[0].type $BINDING_CONTEXT_PATH)
+  EVENT=$(jq -r .[0].watchEvent $BINDING_CONTEXT_PATH)
+
+  if [[ "$TYPE" == "Synchronization" ]]; then
+    KEYS=$(jq -c -r '.[0].objects | .[].object.data | keys | .[]' $BINDING_CONTEXT_PATH)
+   for KEY in $KEYS; do
+   	CONFIG=$(jq -c -r ".[].objects | .[].object.data | select(has(\"$KEY\")) | .\"$KEY\"" $BINDING_CONTEXT_PATH)
+   	apply_connector "$CONFIG"
+   done
+  elif [[ "$TYPE" == "Event" ]]; then
+    DATA=$(jq -r '.[0].object.data' $BINDING_CONTEXT_PATH)
+    KEY=$(echo $DATA | jq -r -c 'keys | .[0]')
+    CONFIG=$(echo $DATA | jq -r -c ".\"$KEY\"")
+    if [[ "$EVENT" == "Deleted" ]]; then
+      delete_connector "$CONFIG"
+    else
+     apply_connector "$CONFIG"
+    fi
+  fi
 fi
 
