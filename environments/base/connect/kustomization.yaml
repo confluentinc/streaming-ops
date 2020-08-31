@@ -3,5 +3,5 @@ kind: Kustomization
 resources:
 - security.yaml
 - connect-service.yaml
-#- connect-operator.yaml
+- connect-operator.yaml
 - customers-jdbc-source-config.yaml

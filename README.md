@@ -9,72 +9,27 @@ For basic usage instructions on how to use this project, read on.
 
 # Tool prerequisites
 
-The included `Makefile` contains a target to install these on MacOS or they can be installed manually. Details for automated installation in the Usage section.
-
-## ccloud
-Required to interact with the Confluent Cloud components managed by this project
-
-https://docs.confluent.io/current/cloud/cli/install.html
-
-## kubectl
-Required to interact with your Kubernetes cluster, create secrets, etc...
-
-https://kubernetes.io/docs/tasks/tools/install-kubectl/
-
-## k3d
-If you'd like to run the project on a local Docker based Kubernetes cluster
-
-https://github.com/rancher/k3d#get
-
-## Kustomize
-Environments (dev, stg, prd, etc...) are created by using Kustomize style overlays
-
-https://github.com/kubernetes-sigs/kustomize
-
-## Helm 3
-Used to install Flux into the cluster
-
-https://helm.sh/docs/intro/install/
-
-## Bitnami Sealed Secrets Kubeseal
-The repository uses sealed secrets and the Bitnami controller for managing secret values. `kubeseal` is used in scripting to seal the secrets locally, which are then committed to the repository.
-
-https://github.com/bitnami-labs/sealed-secrets
-
-## jq
-`jq` is used for processing JSON
-
-https://stedolan.github.io/jq/
-
-## yq
-`yq` is used for processing YAML
-
-https://github.com/mikefarah/yq
+The tools required to utilize this project are detailed in [docs/prerequisites.md](docs/prerequisites.md).
 
 # Confluent Cloud
 
-This demo utilizes Confluent Cloud for Kafka, Schema Registry, ksqlDB services. In order to run this demo you will need a Confluent Cloud account, the `ccloud` CLI, as well as an environment and Kafka cluster setup. 
-
-In the future, all steps (besides account creation), will be automated and managed by operations in this repository. Until then, there are some setup steps to make the application function properly.
-
-_*TODO*_: Link to Docs for setting up ccloud and environment properly until automated...
+This demo utilizes [Confluent Cloud](https://www.confluent.io/confluent-cloud/) for Kafka and Schema Registry. In order to run this demo you will need a Confluent Cloud account and the `ccloud` CLI.  The automation provided by this project requires configuring Confluent Cloud credentials in order to manage the cloud services.
 
 # Usage 
 
-If you'd like to run a version of this repository in your own cluster, follow the below usage steps. We also plan to build and manage a deployment of this repository ourselves in order to allow public PRs to affect a running instance for demonstration purposes.
+If you'd like to run a version of this project in your own cluster, follow the below usage steps. 
 
 1.  Fork this repository
 
 2.  Update the following variables in `scripts\flux-init.sh`
 
-  * `ENVIRONMENT=dev` You'll complete this process for each environment you want.
   * `REPO_URL=git@github.com:your-fork/kafka-devops` Update to match your git remote URL
   * `REPO_GIT_USER=your-user` Update to your git username
   * `REPO_GIT_EMAIL=your-user@example.com` Update to your git email
 
 3.  Install all dependencies
 
-    On macOS a provided `make` target uses a combination of manual installations by downloading and install binaries to `/usr/local/bin` and Homebrew. You will be prompted for your adminstrative passwod to install files to `/usr/local/bin`.  You can skip this step if you'd like to install the dependencies manually.
+    On macOS, a provided `make` target uses a combination of manual installations by downloading and install binaries to `/usr/local/bin` and Homebrew. You will be prompted for your adminstrative passwod to install files to `/usr/local/bin`.  You can skip this step if you'd like to install the dependencies manually.  See [docs/prerequisites.md](docs/prerequisites.md) for details.
 
     ```
     make install-deps 

@@ -8,14 +8,11 @@ spec:
     image: cnfldemos/connect-operator:sha-fe33c8f
     env:
     - name: CONFIG_FILE_PATH
-      value: /etc/config/kafka/kafka.properties
+      value: /etc/config/connect-operator/
     envFrom:
     - secretRef:
         name: connect-operator-secrets
     volumeMounts:
-    - name: kafka-properties-volume
-      mountPath: /etc/config/kafka/
-      readOnly: true
   serviceAccountName: connect-admin-sa
   restartPolicy: OnFailure
   volumes:

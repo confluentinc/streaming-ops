@@ -1,26 +1,46 @@
 #!/usr/bin/env bash
 
-: "${CONFIG_FILE_PATH?Need to set CONFIG_FILE_PATH}"
-
 BASE_URL=${BASE_URL:-http://connect}
+CONFIG_FILE_PATH=${CONFIG_FILE_PATH:-/etc/config/connect-operator}
 
+# Converts the Java properties style files located
+# in CONFIG_FILE_PATH, into a string of arguments that can be passed
+# into jq for file templating.
 function load_configs() {
+
+  # create a new file aggregating the lines from all of the .properties files currently
+  # in CONFIG_FILE_PATH
+  local CONFIG_FILE=$(mktemp $CONFIG_FILE_PATH/connector-operator.properties.$(date "+%Y-%m-%d").XXXXX)
+  for f in "$CONFIG_FILE_PATH/*.properties"; do (cat "${f}"; echo) >> $CONFIG_FILE; done
+
+  # read all the lines from the aggregate properties file and load them
+  # up into arguments with keys and values
   JQ_ARGS_FROM_CONFIG_FILE=$(
   while read line
   do
-  	[[ ! -z "$line" ]] && { 
+  	[[ ! -z "$line" ]] && {
+      # this will turn a java properties file key like:
+      # schema.registry.basic.auth.user.info
+      # into
+      # SCHEMA_REGISTRY_BASIC_AUTH_USER_INFO
   		KEY=$(echo ${line} | cut -d= -f1 | tr '[a-z]' '[A-Z]' | tr '.' '_')
   		VALUE=$(echo ${line} | cut -d= -f2)
   		echo -n "--arg ${KEY} \"${VALUE}\" "
   	}
-  done < $CONFIG_FILE_PATH)
+  done < $CONFIG_FILE)
+
+  # The end result is, JQ_ARGS_FROM_CONFIG_FILE looks something like this:
+  #
+  # echo $JQ_ARGS_FROM_CONFIG_FILE
+  # --arg BOOTSTRAP_SERVERS abc.us-east2.confluent.cloud:9092 --arg SCHEMA_REGISTRY_URL https://sr.us-east2.confluent.cloud
+
 }
 
 function delete_connector() {
 	trap 'rm -f "$TMPFILE"' EXIT
 	TMPFILE=$(mktemp) || exit 1
   echo $1 > $TMPFILE
- 
+
 	TEMPLATE_COMMAND="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $TMPFILE"
 
   DESIRED_CONNECTOR_CONFIG=$(eval $TEMPLATE_COMMAND | jq -c '.config')
@@ -33,7 +53,7 @@ function apply_connector() {
 	trap 'rm -f "$TMPFILE"' EXIT
 	TMPFILE=$(mktemp) || exit 1
   echo $1 > $TMPFILE
- 
+
 	TEMPLATE_COMMAND="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $TMPFILE"
 
   DESIRED_CONNECTOR_CONFIG=$(eval $TEMPLATE_COMMAND)
@@ -44,7 +64,7 @@ function apply_connector() {
 		CURRENT_CONNECTOR_CONFIG=$(curl -s -XGET -H "Content-Type: application/json" "$BASE_URL/connectors/$CONNECTOR_NAME/config")
 		if cmp -s <(echo $DESIRED_CONNECTOR_CONFIG | jq -S -c .) <(echo $CURRENT_CONNECTOR_CONFIG | jq -S -c .); then
 			echo "No config changes for $CONNECTOR_NAME"
-		else		
+		else
 			echo "Updating existing connector config: $CONNECTOR_NAME"
       DESIRED_CONNECTOR_CONFIG=$(echo $DESIRED_CONNECTOR_CONFIG | jq -S -c '.config')
     	curl -s -o /dev/null -XPUT -H "Content-Type: application/json" --data "$DESIRED_CONNECTOR_CONFIG" "$BASE_URL/connectors/$CONNECTOR_NAME/config"
@@ -81,7 +101,7 @@ else
 		for KEY in $KEYS; do
 			CONFIG=$(jq -c -r ".[].objects | .[].object.data | select(has(\"$KEY\")) | .\"$KEY\"" $BINDING_CONTEXT_PATH)
 			apply_connector "$CONFIG"
-		done	
+		done
   elif [[ "$TYPE" == "Event" ]]; then
     DATA=$(jq -r '.[0].object.data' $BINDING_CONTEXT_PATH)
     KEY=$(echo $DATA | jq -r -c 'keys | .[0]')
