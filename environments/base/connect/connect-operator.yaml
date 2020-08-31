@@ -22,8 +22,6 @@ spec:
   containers:
   - name: connect-operator
     image: cnfldemos/connect-operator:sha-14637ba
-    env:
-    envFrom:
     volumeMounts:
     - name: shared-client-config-volume
       mountPath: /etc/config/connect-operator/shared-client.properties
