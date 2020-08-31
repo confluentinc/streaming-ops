@@ -39,23 +39,23 @@ spec:
             image: cnfldemos/add-inventory:sha-a6d601e
             volumeMounts:
             - name: shared-client-config-volume
-              mountPath: /etc/config/orders-service/shared-client.properties
+              mountPath: /etc/config/add-inventory/shared-client.properties
               subPath: shared-client.properties
               readOnly: true
             - name: sasl-jaas-config-volume
-              mountPath: /etc/config/orders-service/sasl-jaas-config.properties
+              mountPath: /etc/config/add-inventory/sasl-jaas-config.properties
               subPath: sasl-jaas-config.properties
               readOnly: true
             - name: bootstrap-config-volume
-              mountPath: /etc/config/orders-service/bootstrap-servers.properties
+              mountPath: /etc/config/add-inventory/bootstrap-servers.properties
               subPath: bootstrap-servers.properties
               readOnly: true
             - name: schema-registry-basic-user-info-config-volume
-              mountPath: /etc/config/orders-service/schema-registry-basic-auth-user-info.properties
+              mountPath: /etc/config/add-inventory/schema-registry-basic-auth-user-info.properties
               subPath: schema-registry-basic-auth-user-info.properties
               readOnly: true
             - name: schema-registry-url-volume
-              mountPath: /etc/config/orders-service/schema-registry-url.properties
+              mountPath: /etc/config/add-inventory/schema-registry-url.properties
               subPath: schema-registry-url.properties
               readOnly: true
 
