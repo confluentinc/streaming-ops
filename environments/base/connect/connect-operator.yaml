@@ -21,7 +21,7 @@ spec:
         secretName: cc.schema-registry-url.kafka-devops
   containers:
   - name: connect-operator
-    image: cnfldemos/connect-operator:sha-d4ad43a
+    image: cnfldemos/connect-operator:sha-656e615
     env:
     - name: DEBUG
       value: "true"
