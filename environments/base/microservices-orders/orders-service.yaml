@@ -28,6 +28,8 @@ spec:
         app: orders-service
         app-group: microservices-orders
     spec:
+      securityContext:
+        fsGroup: 1001
       volumes:
       - name: shared-client-config-volume
         configMap:
@@ -45,8 +47,6 @@ spec:
         secret:
           secretName: cc.schema-registry-url.kafka-devops
       containers:
-      securityContext:
-        fsGroup: 1001
       - name: orders-service
         image: cnfldemos/orders-service:sha-a972ec9
         env:
