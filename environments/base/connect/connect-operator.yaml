@@ -25,6 +25,9 @@ spec:
     env:
     - name: DEBUG
       value: "true"
+    envFrom:
+    - secretRef:
+      name: connect-operator-secrets
     volumeMounts:
     - name: shared-client-config-volume
       mountPath: /etc/config/connect-operator/shared-client.properties
