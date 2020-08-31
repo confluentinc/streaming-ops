@@ -46,7 +46,7 @@ spec:
           secretName: cc.schema-registry-url.kafka-devops
       containers:
       - name: orders-service
-        image: cnfldemos/orders-service:sha-98ca470
+        image: cnfldemos/orders-service:sha-e4eeccd
         volumeMounts:
         - name: shared-client-config-volume
           mountPath: /etc/config/orders-service/shared-client.properties
