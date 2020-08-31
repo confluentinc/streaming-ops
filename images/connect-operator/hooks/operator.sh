@@ -88,6 +88,7 @@ kubernetes:
   jqFilter: ".data"
 EOF
 else
+  if [ ! -z ${DEBUG+x} ]; then set -x; fi
   load_configs
   TYPE=$(jq -r .[0].type $BINDING_CONTEXT_PATH)
   EVENT=$(jq -r .[0].watchEvent $BINDING_CONTEXT_PATH)
@@ -108,5 +109,6 @@ else
      apply_connector "$CONFIG"
     fi
   fi
+  set +x
 fi
 

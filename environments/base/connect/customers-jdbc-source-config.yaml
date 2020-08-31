@@ -7,9 +7,9 @@ metadata:
 data:
   customers-jdbc-source-connector.json: |-
     {
-      "name": "jdbc-customers-2",
+      "name": "jdbc-customers",
       "config": {
-        "name": "jdbc-customers-2",
+        "name": "jdbc-customers",
         "connector.class": "io.confluent.connect.jdbc.JdbcSourceConnector",
         "connection.url": "jdbc:mysql://mysql:3306",
         "connection.user": env.MYSQL_CONNECTION_USER,

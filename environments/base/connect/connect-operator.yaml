@@ -22,6 +22,9 @@ spec:
   containers:
   - name: connect-operator
     image: cnfldemos/connect-operator:sha-d4ad43a
+    env:
+    - name: DEBUG
+      value: "true"
     volumeMounts:
     - name: shared-client-config-volume
       mountPath: /etc/config/connect-operator/shared-client.properties
