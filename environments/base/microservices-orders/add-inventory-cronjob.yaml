@@ -1,8 +1,8 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: add-inventory 
-  labels: 
+  name: add-inventory
+  labels:
     app: add-inventory
     app-group: microservices-orders
 spec:
@@ -17,16 +17,45 @@ spec:
             app: add-inventory
             app-group: microservices-orders
         spec:
+          volumes:
+          - name: shared-client-config-volume
+            configMap:
+              name: cc.shared-client-config
+          - name: sasl-jaas-config-volume
+            secret:
+              secretName: cc.sasl-jaas-config.microservices-orders-client.kafka-devops.microservices-orders
+          - name: bootstrap-config-volume
+            secret:
+              secretName: cc.bootstrap-servers.kafka-devops.microservices-orders
+          - name: schema-registry-basic-user-info-config-volume
+            secret:
+              secretName: cc.schema-registry-basic-auth-user-info.kafka-devops-sr-client.kafka-devops
+          - name: schema-registry-url-volume
+            secret:
+              secretName: cc.schema-registry-url.kafka-devops
+          restartPolicy: OnFailure
           containers:
           - name: add-inventory-runner
             image: cnfldemos/add-inventory:sha-b8a8682
             volumeMounts:
-            - name: kafka-properties-volume
-              mountPath: /etc/config/kafka/
+            - name: shared-client-config-volume
+              mountPath: /etc/config/orders-service/shared-client.properties
+              subPath: shared-client.properties
               readOnly: true
-          restartPolicy: OnFailure
-          volumes:
-          - name: kafka-properties-volume
-            secret:
-              secretName: kafka-secrets
+            - name: sasl-jaas-config-volume
+              mountPath: /etc/config/orders-service/sasl-jaas-config.properties
+              subPath: sasl-jaas-config.properties
+              readOnly: true
+            - name: bootstrap-config-volume
+              mountPath: /etc/config/orders-service/bootstrap-servers.properties
+              subPath: bootstrap-servers.properties
+              readOnly: true
+            - name: schema-registry-basic-user-info-config-volume
+              mountPath: /etc/config/orders-service/schema-registry-basic-auth-user-info.properties
+              subPath: schema-registry-basic-auth-user-info.properties
+              readOnly: true
+            - name: schema-registry-url-volume
+              mountPath: /etc/config/orders-service/schema-registry-url.properties
+              subPath: schema-registry-url.properties
+              readOnly: true
 

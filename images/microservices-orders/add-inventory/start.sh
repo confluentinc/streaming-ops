@@ -1,6 +1,8 @@
 #!/bin/bash
 
-CONFIG_FILE=${CONFIG_FILE:-/etc/config/kafka/kafka.properties}
+for f in /etc/config/add-inventory/*.properties; do (cat "${f}"; echo) >> /etc/config/add-inventory/add-inventory.properties; done
+
+CONFIG_FILE=${CONFIG_FILE:-/etc/config/add-inventory/add-inventory.properties}
 
 BOOTSTRAP_SERVERS=$(grep "bootstrap.servers" $CONFIG_FILE | cut -d= -f2)
 SCHEMA_REGISTRY_URL=$(grep "schema.registry.url" $CONFIG_FILE | cut -d= -f2)
