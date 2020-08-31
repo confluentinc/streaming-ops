@@ -48,7 +48,7 @@ spec:
           secretName: cc.schema-registry-url.kafka-devops
       containers:
       - name: orders-service
-        image: cnfldemos/orders-service:sha-a972ec9
+        image: cnfldemos/orders-service:sha-844f538
         env:
         - name: STARTUP_DELAY
           value: "60"
