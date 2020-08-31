@@ -21,7 +21,7 @@ spec:
         secretName: cc.schema-registry-url.kafka-devops
   containers:
   - name: connect-operator
-    image: cnfldemos/connect-operator:sha-fe33c8f
+    image: cnfldemos/connect-operator:sha-14637ba
     env:
     envFrom:
     volumeMounts:
