@@ -36,7 +36,7 @@ spec:
           restartPolicy: OnFailure
           containers:
           - name: add-inventory-runner
-            image: cnfldemos/add-inventory:sha-b8a8682
+            image: cnfldemos/add-inventory:sha-a6d601e
             volumeMounts:
             - name: shared-client-config-volume
               mountPath: /etc/config/orders-service/shared-client.properties
