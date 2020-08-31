@@ -21,7 +21,7 @@ spec:
         secretName: cc.schema-registry-url.kafka-devops
   containers:
   - name: connect-operator
-    image: cnfldemos/connect-operator:sha-cd2c1f3
+    image: cnfldemos/connect-operator:sha-d4ad43a
     volumeMounts:
     - name: shared-client-config-volume
       mountPath: /etc/config/connect-operator/shared-client.properties
