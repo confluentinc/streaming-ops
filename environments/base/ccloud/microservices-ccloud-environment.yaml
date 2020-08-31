@@ -56,8 +56,8 @@ data:
                 "controls": [
                   { "operation" : "read,write", "permission": "allow",
                     "resource": "topic", "name": "*" },
-                  { "operation" : "read,write", "permission": "allow",
-                    "resource": "consumer-group", "name": "*", "prefix": "true" }
+                  { "operation" : "read", "permission": "allow",
+                    "resource": "consumer-group", "name": "OrdersService" }
                 ]
               },
               {
