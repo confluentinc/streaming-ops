@@ -54,10 +54,14 @@ data:
               {
                 "service-account": "microservices-orders-client",
                 "controls": [
-                  { "operation" : "read,write", "permission": "allow",
+                  { "operation" : "read,write,create,describe,describe-configs", "permission": "allow",
                     "resource": "topic", "name": "*" },
-                  { "operation" : "read", "permission": "allow",
-                    "resource": "consumer-group", "name": "OrdersService" }
+                  { "operation" : "read,write,create", "permission": "allow",
+                    "resource": "consumer-group", "name": "OrdersService" },
+                  { "operation" : "write,describe", "permission": "allow",
+                    "resource": "transactional-id", "name": "*" },
+                  { "operation" : "idempotent-write", "permission": "allow",
+                    "resource": "cluster-scope" }
                 ]
               },
               {
