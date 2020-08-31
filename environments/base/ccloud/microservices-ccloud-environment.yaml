@@ -55,7 +55,9 @@ data:
                 "service-account": "microservices-orders-client",
                 "controls": [
                   { "operation" : "read,write", "permission": "allow",
-                    "resource": "topic", "name": "*" }
+                    "resource": "topic", "name": "*" },
+                  { "operation" : "read,write", "permission": "allow",
+                    "resource": "consumer-group", "name": "*", "prefix": "true" }
                 ]
               },
               {
