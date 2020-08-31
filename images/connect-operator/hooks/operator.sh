@@ -1,17 +1,13 @@
 #!/usr/bin/env bash
 
 BASE_URL=${BASE_URL:-http://connect}
-CONFIG_FILE_PATH=${CONFIG_FILE_PATH:-/etc/config/connect-operator}
 
 # Converts the Java properties style files located
 # in CONFIG_FILE_PATH, into a string of arguments that can be passed
 # into jq for file templating.
 function load_configs() {
 
-  # create a new file aggregating the lines from all of the .properties files currently
-  # in CONFIG_FILE_PATH
-  local CONFIG_FILE=$(mktemp $CONFIG_FILE_PATH/connector-operator.properties.$(date "+%Y-%m-%d").XXXXX)
-  for f in "$CONFIG_FILE_PATH/*.properties"; do (cat "${f}"; echo) >> $CONFIG_FILE; done
+  for f in /etc/config/connect-operator/*.properties; do (cat "${f}"; echo) >> /etc/config/connect-operator/connect-operator.properties; done
 
   # read all the lines from the aggregate properties file and load them
   # up into arguments with keys and values
@@ -27,7 +23,7 @@ function load_configs() {
   		VALUE=$(echo ${line} | cut -d= -f2)
   		echo -n "--arg ${KEY} \"${VALUE}\" "
   	}
-  done < $CONFIG_FILE)
+  done < /etc/config/connect-operator/connect-operator.properties)
 
   # The end result is, JQ_ARGS_FROM_CONFIG_FILE looks something like this:
   #
@@ -92,25 +88,28 @@ kubernetes:
   jqFilter: ".data"
 EOF
 else
+  set -x
   load_configs
-  TYPE=$(jq -r .[0].type $BINDING_CONTEXT_PATH)
-  EVENT=$(jq -r .[0].watchEvent $BINDING_CONTEXT_PATH)
-
-  if [[ "$TYPE" == "Synchronization" ]]; then
-    KEYS=$(jq -c -r '.[0].objects | .[].object.data | keys | .[]' $BINDING_CONTEXT_PATH)
-		for KEY in $KEYS; do
-			CONFIG=$(jq -c -r ".[].objects | .[].object.data | select(has(\"$KEY\")) | .\"$KEY\"" $BINDING_CONTEXT_PATH)
-			apply_connector "$CONFIG"
-		done
-  elif [[ "$TYPE" == "Event" ]]; then
-    DATA=$(jq -r '.[0].object.data' $BINDING_CONTEXT_PATH)
-    KEY=$(echo $DATA | jq -r -c 'keys | .[0]')
-    CONFIG=$(echo $DATA | jq -r -c ".\"$KEY\"")
-    if [[ "$EVENT" == "Deleted" ]]; then
-      delete_connector "$CONFIG"
-    else
-		  apply_connector "$CONFIG"
-    fi
-  fi
+  set +x
+  exit 0
+#  TYPE=$(jq -r .[0].type $BINDING_CONTEXT_PATH)
+#  EVENT=$(jq -r .[0].watchEvent $BINDING_CONTEXT_PATH)
+#
+#  if [[ "$TYPE" == "Synchronization" ]]; then
+#    KEYS=$(jq -c -r '.[0].objects | .[].object.data | keys | .[]' $BINDING_CONTEXT_PATH)
+#		for KEY in $KEYS; do
+#			CONFIG=$(jq -c -r ".[].objects | .[].object.data | select(has(\"$KEY\")) | .\"$KEY\"" $BINDING_CONTEXT_PATH)
+#			apply_connector "$CONFIG"
+#		done
+#  elif [[ "$TYPE" == "Event" ]]; then
+#    DATA=$(jq -r '.[0].object.data' $BINDING_CONTEXT_PATH)
+#    KEY=$(echo $DATA | jq -r -c 'keys | .[0]')
+#    CONFIG=$(echo $DATA | jq -r -c ".\"$KEY\"")
+#    if [[ "$EVENT" == "Deleted" ]]; then
+#      delete_connector "$CONFIG"
+#    else
+#		  apply_connector "$CONFIG"
+#    fi
+#  fi
 fi
 
