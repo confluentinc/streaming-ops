@@ -49,7 +49,7 @@ spec:
         image: cnfldemos/orders-service:sha-a972ec9
         env:
         - name: STARTUP_DELAY
-          value: 60
+          value: "60"
         volumeMounts:
         - name: shared-client-config-volume
           mountPath: /etc/config/orders-service/shared-client.properties
