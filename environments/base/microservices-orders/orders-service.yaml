@@ -29,7 +29,7 @@ spec:
         app-group: microservices-orders
     spec:
       securityContext:
-        fsGroup: 1001
+        fsGroup: 1000
       volumes:
       - name: shared-client-config-volume
         configMap:
