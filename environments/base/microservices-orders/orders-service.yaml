@@ -48,7 +48,7 @@ spec:
       - name: orders-service
         image: cnfldemos/orders-service:sha-a972ec9
         securityContext:
-          fsGroup: 1000
+          fsGroup: 1001
         env:
         - name: STARTUP_DELAY
           value: "60"
