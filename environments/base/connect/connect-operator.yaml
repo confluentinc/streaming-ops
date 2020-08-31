@@ -3,20 +3,48 @@ kind: Pod
 metadata:
   name: connect-operator
 spec:
+  volumes:
+    - name: shared-client-config-volume
+      configMap:
+        name: cc.shared-client-config
+    - name: sasl-jaas-config-volume
+      secret:
+        secretName: cc.sasl-jaas-config.connect-worker-client.kafka-devops.microservices-orders
+    - name: bootstrap-config-volume
+      secret:
+        secretName: cc.bootstrap-servers.kafka-devops.microservices-orders
+    - name: schema-registry-basic-user-info-config-volume
+      secret:
+        secretName: cc.schema-registry-basic-auth-user-info.kafka-devops-sr-client.kafka-devops
+    - name: schema-registry-url-volume
+      secret:
+        secretName: cc.schema-registry-url.kafka-devops
   containers:
   - name: connect-operator
     image: cnfldemos/connect-operator:sha-fe33c8f
     env:
-    - name: CONFIG_FILE_PATH
-      value: /etc/config/connect-operator/
     envFrom:
-    - secretRef:
-        name: connect-operator-secrets
     volumeMounts:
+    - name: shared-client-config-volume
+      mountPath: /etc/config/connect/shared-client.properties
+      subPath: shared-client.properties
+      readOnly: true
+    - name: sasl-jaas-config-volume
+      mountPath: /etc/config/connect/sasl-jaas-config.properties
+      subPath: sasl-jaas-config.properties
+      readOnly: true
+    - name: bootstrap-config-volume
+      mountPath: /etc/config/connect/bootstrap-servers.properties
+      subPath: bootstrap-servers.properties
+      readOnly: true
+    - name: schema-registry-basic-user-info-config-volume
+      mountPath: /etc/config/connect/schema-registry-basic-auth-user-info.properties
+      subPath: schema-registry-basic-auth-user-info.properties
+      readOnly: true
+    - name: schema-registry-url-volume
+      mountPath: /etc/config/connect/schema-registry-url.properties
+      subPath: schema-registry-url.properties
+      readOnly: true
   serviceAccountName: connect-admin-sa
   restartPolicy: OnFailure
-  volumes:
-  - name: kafka-properties-volume
-    secret:
-      secretName: kafka-secrets
 
