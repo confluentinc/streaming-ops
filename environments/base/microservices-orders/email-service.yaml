@@ -14,14 +14,43 @@ spec:
         app-group: microservices-orders
     spec:
       volumes:
-      - name: kafka-properties-volume
+      - name: shared-client-config-volume
+        configMap:
+          name: cc.shared-client-config
+      - name: sasl-jaas-config-volume
         secret:
-          secretName: kafka-secrets
+          secretName: cc.sasl-jaas-config.microservices-orders-client.kafka-devops.microservices-orders
+      - name: bootstrap-config-volume
+        secret:
+          secretName: cc.bootstrap-servers.kafka-devops.microservices-orders
+      - name: schema-registry-basic-user-info-config-volume
+        secret:
+          secretName: cc.schema-registry-basic-auth-user-info.kafka-devops-sr-client.kafka-devops
+      - name: schema-registry-url-volume
+        secret:
+          secretName: cc.schema-registry-url.kafka-devops
       containers:
       - name: email-service
         image: cnfldemos/email-service:sha-4230ab7
         volumeMounts:
-        - name: kafka-properties-volume
-          mountPath: /etc/config/kafka/
+        - name: shared-client-config-volume
+          mountPath: /etc/config/email-service/shared-client.properties
+          subPath: shared-client.properties
+          readOnly: true
+        - name: sasl-jaas-config-volume
+          mountPath: /etc/config/email-service/sasl-jaas-config.properties
+          subPath: sasl-jaas-config.properties
+          readOnly: true
+        - name: bootstrap-config-volume
+          mountPath: /etc/config/email-service/bootstrap-servers.properties
+          subPath: bootstrap-servers.properties
+          readOnly: true
+        - name: schema-registry-basic-user-info-config-volume
+          mountPath: /etc/config/email-service/schema-registry-basic-auth-user-info.properties
+          subPath: schema-registry-basic-auth-user-info.properties
+          readOnly: true
+        - name: schema-registry-url-volume
+          mountPath: /etc/config/email-service/schema-registry-url.properties
+          subPath: schema-registry-url.properties
           readOnly: true
 

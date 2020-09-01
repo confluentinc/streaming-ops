@@ -66,6 +66,8 @@ data:
                     "resource": "consumer-group", "name": "OrderDetailsService" },
                   { "operation" : "read,write,create", "permission": "allow",
                     "resource": "consumer-group", "name": "ValidationsAggregatorService" },
+                  { "operation" : "read,write,create", "permission": "allow",
+                    "resource": "consumer-group", "name": "EmailService" },
                   { "operation" : "write,describe", "permission": "allow",
                     "resource": "transactional-id", "name": "*" },
                   { "operation" : "idempotent-write", "permission": "allow",
