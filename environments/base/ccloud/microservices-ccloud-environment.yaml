@@ -41,7 +41,7 @@ data:
               { "name": "customers", "partitions": 3 },
               { "name": "orders", "partitions": 3 },
               { "name": "orders-enriched", "partitions": 3 },
-              { "name": "orders-validations", "partitions": 3 },
+              { "name": "order-validations", "partitions": 3 },
               { "name": "payments", "partitions": 3 },
               { "name": "warehouse-inventory", "partitions": 3 },
               { "name": "connect-configs", "partitions": 1, "config": "cleanup.policy=compact" },
