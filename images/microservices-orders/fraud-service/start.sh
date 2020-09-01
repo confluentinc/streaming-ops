@@ -1,5 +1,9 @@
 #!/bin/bash
 
+STARTUP_DELAY=${STARTUP_DELAY:-0}
+
+for f in /etc/config/fraud-service/*.properties; do (cat "${f}"; echo) >> /etc/config/fraud-service/fraud-service.properties; done
+
 CONFIG_FILE=${CONFIG_FILE:-/etc/config/kafka/kafka.properties}
 
 BOOTSTRAP_SERVERS=$(grep "bootstrap.servers" $CONFIG_FILE | cut -d= -f2)
@@ -11,6 +15,8 @@ ADDITIONAL_ARGS=${ADDITIONAL_ARGS:-""}
 
 echo "starting fraud-service"
 env
+
+sleep $STARTUP_DELAY
 
 java -cp $JAR io.confluent.examples.streams.microservices.FraudService --bootstrap-servers $BOOTSTRAP_SERVERS --schema-registry $SCHEMA_REGISTRY_URL $CONFIG_FILE_ARG $ADDITIONAL_ARGS
 
