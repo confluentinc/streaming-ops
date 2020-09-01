@@ -4,7 +4,7 @@ STARTUP_DELAY=${STARTUP_DELAY:-0}
 
 for f in /etc/config/fraud-service/*.properties; do (cat "${f}"; echo) >> /etc/config/fraud-service/fraud-service.properties; done
 
-CONFIG_FILE=${CONFIG_FILE:-/etc/config/kafka/kafka.properties}
+CONFIG_FILE=${CONFIG_FILE:-/etc/config/fraud-service/fraud-service.properties}
 
 BOOTSTRAP_SERVERS=$(grep "bootstrap.servers" $CONFIG_FILE | cut -d= -f2)
 SCHEMA_REGISTRY_URL=$(grep "schema.registry.url" $CONFIG_FILE | cut -d= -f2)
