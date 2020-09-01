@@ -4,7 +4,7 @@ STARTUP_DELAY=${STARTUP_DELAY:-0}
 
 for f in /etc/config/validations-aggregator-service/*.properties; do (cat "${f}"; echo) >> /etc/config/validations-aggregator-service/validations-aggregator-service.properties; done
 
-CONFIG_FILE=${CONFIG_FILE:-/etc/config/validations-aggregator/validations-aggregator-service.properties}
+CONFIG_FILE=${CONFIG_FILE:-/etc/config/validations-aggregator-service/validations-aggregator-service.properties}
 
 BOOTSTRAP_SERVERS=$(grep "bootstrap.servers" $CONFIG_FILE | cut -d= -f2)
 SCHEMA_REGISTRY_URL=$(grep "schema.registry.url" $CONFIG_FILE | cut -d= -f2)
