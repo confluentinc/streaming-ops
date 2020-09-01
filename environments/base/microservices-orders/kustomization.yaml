@@ -6,6 +6,6 @@ resources:
 - inventory-service.yaml
 - fraud-service.yaml
 - order-details-service.yaml
-# - validations-aggregator-service.yaml
+- validations-aggregator-service.yaml
 # - email-service.yaml
 # - orders-and-payments-simulator.yaml
