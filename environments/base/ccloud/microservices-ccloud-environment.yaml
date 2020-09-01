@@ -60,6 +60,8 @@ data:
                     "resource": "consumer-group", "name": "OrdersService" },
                   { "operation" : "read,write,create", "permission": "allow",
                     "resource": "consumer-group", "name": "InventoryService" },
+                  { "operation" : "read,write,create", "permission": "allow",
+                    "resource": "consumer-group", "name": "FraudService" },
                   { "operation" : "write,describe", "permission": "allow",
                     "resource": "transactional-id", "name": "*" },
                   { "operation" : "idempotent-write", "permission": "allow",
