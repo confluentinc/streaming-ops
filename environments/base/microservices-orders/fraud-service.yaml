@@ -31,7 +31,7 @@ spec:
           secretName: cc.schema-registry-url.kafka-devops
       containers:
       - name: fraud-service
-        image: cnfldemos/fraud-service:sha-be061e9
+        image: cnfldemos/fraud-service:sha-bed1e46
         volumeMounts:
         - name: shared-client-config-volume
           mountPath: /etc/config/orders-service/shared-client.properties
