@@ -30,10 +30,6 @@ spec:
         secret:
           secretName: cc.schema-registry-url.kafka-devops
       containers:
-      volumes:
-      - name: kafka-properties-volume
-        secret:
-          secretName: kafka-secrets
       - name: inventory-service
         image: cnfldemos/inventory-service:sha-a5bbd36
         volumeMounts:
