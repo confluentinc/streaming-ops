@@ -79,7 +79,7 @@ If you'd like to run a version of this project in your own cluster, follow the b
     make get-public-key-dev
     ```
   
-    If you are using a private cluster, you will need to copy the secret controller's key from the secret controller's log file into the key file stored locally.  However you obtain the public key, it can be stored in `secrets/keys/<environment>.crt`, _but not checked into the repository_. The remaining scripts look in this location in order to seal secrets. If you have administrative login to the cluster with `kubectl`, you may be able to get the logs by executing the following substituting your controllers full pod name (`kubectl get pods -n kube-system`):
+    If you are using a private cluster, you will need to copy the secret controller's key from the secret controller's log file into the key file stored locally.  This file need not be checked into the repository, however it is not secret information. However you obtain the public key, it can be stored in `secrets/keys/<environment>.crt`.  The remaining scripts look in this location in order to seal secrets. If you have administrative login to the cluster with `kubectl`, you may be able to get the logs by executing the following substituting your controllers full pod name (`kubectl get pods -n kube-system`):
   
     ```
     kubectl logs sealed-secrets-controller-6bf8c44ff9-x6skc -n kube-system
