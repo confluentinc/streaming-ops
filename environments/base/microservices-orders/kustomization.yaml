@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
 - orders-service.yaml
 - add-inventory-cronjob.yaml
-# - inventory-service.yaml
+- inventory-service.yaml
 # - fraud-service.yaml
 # - order-details-service.yaml
 # - validations-aggregator-service.yaml
