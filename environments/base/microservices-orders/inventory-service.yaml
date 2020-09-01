@@ -35,7 +35,7 @@ spec:
         secret:
           secretName: kafka-secrets
       - name: inventory-service
-        image: cnfldemos/inventory-service:sha-cb1f046
+        image: cnfldemos/inventory-service:sha-a5bbd36
         volumeMounts:
         - name: shared-client-config-volume
           mountPath: /etc/config/add-inventory/shared-client.properties
