@@ -14,22 +14,42 @@ spec:
         app-group: microservices-orders
     spec:
       volumes:
-      - name: kafka-properties-volume
+      - name: shared-client-config-volume
         configMap:
-          name: kafka-properties
-      - name: sasl-jaas-config-volume 
+          name: cc.shared-client-config
+      - name: sasl-jaas-config-volume
         secret:
-          secretName: microservices-orders-client-sasl-jaas-config
+          secretName: cc.sasl-jaas-config.microservices-orders-client.kafka-devops.microservices-orders
+      - name: bootstrap-config-volume
+        secret:
+          secretName: cc.bootstrap-servers.kafka-devops.microservices-orders
+      - name: schema-registry-basic-user-info-config-volume
+        secret:
+          secretName: cc.schema-registry-basic-auth-user-info.kafka-devops-sr-client.kafka-devops
+      - name: schema-registry-url-volume
+        secret:
+          secretName: cc.schema-registry-url.kafka-devops
       containers:
       - name: order-details-service
-        image: cnfldemos/order-details-service:sha-f0467e7
+        image: cnfldemos/order-details-service:sha-920d586
         volumeMounts:
-        - name: kafka-properties-volume
-          mountPath: /etc/config/kafka/
-          subPath: kafka.properties
+        - name: shared-client-config-volume
+          mountPath: /etc/config/order-details-service/shared-client.properties
+          subPath: shared-client.properties
           readOnly: true
         - name: sasl-jaas-config-volume
-          mountPath: /etc/config/kafka/
-          subPath: sasl-jaas.properties
+          mountPath: /etc/config/order-details-service/sasl-jaas-config.properties
+          subPath: sasl-jaas-config.properties
           readOnly: true
-
+        - name: bootstrap-config-volume
+          mountPath: /etc/config/order-details-service/bootstrap-servers.properties
+          subPath: bootstrap-servers.properties
+          readOnly: true
+        - name: schema-registry-basic-user-info-config-volume
+          mountPath: /etc/config/order-details-service/schema-registry-basic-auth-user-info.properties
+          subPath: schema-registry-basic-auth-user-info.properties
+          readOnly: true
+        - name: schema-registry-url-volume
+          mountPath: /etc/config/order-details-service/schema-registry-url.properties
+          subPath: schema-registry-url.properties
+          readOnly: true
