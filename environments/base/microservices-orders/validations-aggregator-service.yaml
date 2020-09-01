@@ -31,7 +31,7 @@ spec:
           secretName: cc.schema-registry-url.kafka-devops
       containers:
       - name: validations-aggregator-service
-        image: cnfldemos/validations-aggregator-service:sha-5c608b0
+        image: cnfldemos/validations-aggregator-service:sha-b62fa8c
         volumeMounts:
         - name: shared-client-config-volume
           mountPath: /etc/config/validations-aggregator-service/shared-client.properties
