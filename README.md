@@ -121,7 +121,7 @@ If you'd like to run a version of this project in your own cluster, follow the b
     The process for sealing secrets will follow this pattern, example commands follow this explanation:
 
       1. Create a local text file containing the secrets that are to be sealed. This file contains the raw secret data and should be protected like any secret.
-      1. Create a local Kubernetes Secret manifest file using the `kubectl create secret file` and put the file into a staging area.  This puts the secret data into a Kubernetes Secret manifest form to be used by the `kubeseal` tool. This file contains raw secret data (in base64 encoding) and should be protected like any secret.
+      1. Create a local Kubernetes Secret manifest file using the `kubectl create secret file` and put the file into a staging area.  This puts the secret data into a Kubernetes Secret manifest file to be used by the `kubeseal` tool. This file contains raw secret data (in base64 encoding) and should be protected like any secret.
       1. The `kubeseal` command is ran with the secret controllers public key and the Kubernetes Secret file. This encrypts and creates a sealed secret file. This file contains the sealed secret and can be safely commited to a git repostory as only the secret controller can decrypt the secret with it's internal private key.
       1. Commit and push the sealed secret files to the repository.
       1. The Sealed Secret controller, in your cluster, observes new Sealed Secrets and unseals them inside the Kubernetes Cluster for use by applications inside the cluster. Only the secret controller that produced the public key used to seal the secrets can unseal them.
