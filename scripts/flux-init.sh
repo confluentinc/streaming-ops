@@ -17,10 +17,15 @@ if [[ ! -x "$(command -v fluxctl)" ]]; then
     exit 1
 fi
 
+if [ -z ${GHUSER+x} ]; then
+  echo "The GHUSER variable must be set to install FluxCD into the Kubernetes cluster"
+  exit 1
+fi
+
 ENVIRONMENT=${ENVIRONMENT:-dev}
-REPO_URL=git@github.com:confluentinc/kafka-devops
-REPO_GIT_USER=rspurgeon
-REPO_GIT_EMAIL=rspurgeon@confluent.io
+REPO_URL=${REPO_URL:-git@github.com:confluentinc/kafka-devops}
+REPO_GIT_USER=${GHUSER}
+REPO_GIT_EMAIL=${GHUSER}@users.noreply.github.com
 
 REPO_GIT_INIT_PATHS="environments/${ENVIRONMENT}\,secrets/sealed/${ENVIRONMENT}"
 REPO_BRANCH=master
@@ -50,7 +55,7 @@ helm upgrade -i flux fluxcd/flux --wait \
 if [ "$WAIT_FOR_DEPLOY" == "true" ]; then
 	echo ">>> GitHub deploy key"
 	kubectl -n flux logs deployment/flux | grep identity.pub | cut -d '"' -f2
-	
+
 	# wait until flux is able to sync with repo
 	echo ">>> Waiting on user to add above deploy key to Github with write access"
 	until kubectl logs -n flux deployment/flux | grep event=refreshed
@@ -58,6 +63,6 @@ if [ "$WAIT_FOR_DEPLOY" == "true" ]; then
 	  sleep 5
 	done
 	echo ">>> Github deploy key is ready"
-	
+
 	echo ">>> Cluster bootstrap done!"
 fi

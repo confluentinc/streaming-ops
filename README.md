@@ -19,25 +19,33 @@ This demo utilizes [Confluent Cloud](https://www.confluent.io/confluent-cloud/) 
 
 If you'd like to run a version of this project in your own cluster, follow the below usage steps. 
 
-1.  Fork this repository
+1.  This project highlights a GitOps workflow for operating microservices on Kubernetes. Using GitOps will require automation to have read/write access to the repository. Use the GitHub Fork function to create a personal fork of the project and clone it locally so you can experiment with it.
 
-2.  Update the following variables in `scripts\flux-init.sh`
+1.  For GitOps workflows, this project uses [FluxCD](https://www.weave.works/technologies/gitops/).  FluxCD requires read/write access into the code repository in order to perform it's function as the Continuous Delivery (CD) controller.  
 
-  * `REPO_URL=git@github.com:your-fork/kafka-devops` Update to match your git remote URL
-  * `REPO_GIT_USER=your-user` Update to your git username
-  * `REPO_GIT_EMAIL=your-user@example.com` Update to your git email
+    FluxCD is deployed from the `scripts/flux-init.sh` script, the following steps configure Flux.
 
-3.  Install all dependencies
+    * Export the `REPO_URL` variable to point to the git URL of your forked repository from step 1
 
-    On macOS, a provided `make` target uses a combination of manual installations by downloading and install binaries to `/usr/local/bin` and Homebrew. You will be prompted for your adminstrative passwod to install files to `/usr/local/bin`.  You can skip this step if you'd like to install the dependencies manually.  See [docs/prerequisites.md](docs/prerequisites.md) for details.
+      `export REPO_URL=git@github.com:your-fork/kafka-devops`
+
+    * Export the `GHUSER` variable with your GitHub username
+
+      `export GHUSER="YOUUSER"`
+
+1.  Install dependencies
+
+    This project requires some local tools to function, see [docs/prerequisites.md](docs/prerequisites.md) for the full list and in order to proceed these tools will need to be installed.
+
+    On macOS you can use a provided `make` target to install the dependencies for you using a combination of manual installations by downloading and install binaries to `/usr/local/bin` and Homebrew. You will be prompted for your adminstrative passwod to install files to `/usr/local/bin`.  
+
+    If you are using another operating system or prefer to manually install the dependencies, you can skip this step.
 
     ```
     make install-deps 
     ```
 
-4. Create a local test cluster on Docker using k3d
-
-    If you want to run a demo of this project on a local K8s cluster, this `make` target can boostrap a `k3d` cluster for you.
+1. The project uses Kubernetes to host applications connected to Confluent Cloud Kafka and Schema Registry.  If you'd like to use an existing Kubernetes cluster, you only need to ensure your `kubectl` command is configured to administer it.   If you'd like to create a new local Kubernetes cluster on Docker with [k3d](https://github.com/rancher/k3d) you can use this provided make target:
 
     ```
     make cluster
@@ -47,15 +55,16 @@ If you'd like to run a version of this project in your own cluster, follow the b
 
     ```
     kubectl get nodes
-
+    ```
+    ```
     NAME                        STATUS   ROLES    AGE   VERSION
-    k3d-kafka-gitops-server-0   Ready    master   24s   v1.18.4+k3s1
-    k3d-kafka-gitops-server-1   Ready    master   15s   v1.18.4+k3s1
-    k3d-kafka-gitops-server-2   Ready    master   12s   v1.18.4+k3s1
-    k3d-kafka-gitops-server-3   Ready    master   10s   v1.18.4+k3s1 
+    k3d-kafka-devops-server-0   Ready    master   24s   v1.18.4+k3s1
+    k3d-kafka-devops-server-1   Ready    master   15s   v1.18.4+k3s1
+    k3d-kafka-devops-server-2   Ready    master   12s   v1.18.4+k3s1
+    k3d-kafka-devops-server-3   Ready    master   10s   v1.18.4+k3s1 
     ```
 
-5. Install Bitnami Sealed Secret Controller into the cluster
+1. Install Bitnami Sealed Secret Controller into the cluster
 
     Once you have a cluster configured for your local `kubectl` command, the following will install the secret controller
 
@@ -69,7 +78,7 @@ If you'd like to run a version of this project in your own cluster, follow the b
     kubectl get -n kube-system deployment/sealed-secrets-controller -o json | jq '.status.availableReplicas'
     ```
 
-6. Retrieve the secret controller's public key for this environment
+1. Retrieve the secret controller's public key for this environment
 
     The public key is used to seal the secrets which are then committed to the Git repository.  Only the secret controller (which generated or is configured with this public key) can decrypt the sealed secrets inside the cluster.
    
@@ -87,7 +96,7 @@ If you'd like to run a version of this project in your own cluster, follow the b
   
     See the Bitnami docs for long term management of secrets and more details on private clusters (https://github.com/bitnami-labs/sealed-secrets/blob/master/docs/GKE.md#private-gke-clusters).
 
-7. Create and deploy the sealed secrets
+1. Create and deploy the sealed secrets
 
     There are two external secrets required to utilize this project.  The following helps you create two secret files seal them for use inside the cluster. The namespace, secret name, and generic secret file name are related in the following commands, do not change them without understanding the seal script, executed next.
 
@@ -128,7 +137,7 @@ If you'd like to run a version of this project in your own cluster, follow the b
     git push origin master # (or to the appropriate branch if you are doing GitOps by PR already!)
     ```
 
-8. Install Flux, the GitOps operator, into the cluster
+1. Install Flux, the GitOps operator, into the cluster
 
     ```
     make install-flux-dev
@@ -143,7 +152,7 @@ If you'd like to run a version of this project in your own cluster, follow the b
       >>> Cluster bootstrap done!
       ```
 
-9. Verify secrets are available
+1. Verify secrets are available
 
     ```
     kubectl get sealedsecrets.bitnami.com
@@ -156,7 +165,7 @@ If you'd like to run a version of this project in your own cluster, follow the b
     kubectl get secrets/kafka-secrets -o json | jq -r '.data."kafka.properties"' | base64 -d
     ```
 
-10. Verify the system is deployed
+1. Verify the system is deployed
 
     ```
     kubectl get all

@@ -16,43 +16,31 @@ printf "\n%-50s\n" $1 | tr ' ~' '- '
 endef
 
 kubeseal:
-	wget https://github.com/bitnami-labs/sealed-secrets/releases/download/${KUBESEAL_VERSION}/kubeseal-darwin-amd64
-	sudo install -m 755 kubeseal-darwin-amd64 /usr/local/bin/kubeseal
-	rm -f kubeseal-darwin-amd64
+	@echo "Installing kubeseal"
+	@wget -q https://github.com/bitnami-labs/sealed-secrets/releases/download/${KUBESEAL_VERSION}/kubeseal-darwin-amd64
+	@sudo install -m 755 kubeseal-darwin-amd64 /usr/local/bin/kubeseal
+	@rm -f kubeseal-darwin-amd64
+	@echo ""
 
 yq:
-	wget https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_darwin_amd64
-	sudo install -m 755 yq_darwin_amd64 /usr/local/bin/yq
-	rm -f yq_darwin_amd64
+	@echo "Installing yq"
+	@wget -q https://github.com/mikefarah/yq/releases/download/${YQ_VERSION}/yq_darwin_amd64
+	@sudo install -m 755 yq_darwin_amd64 /usr/local/bin/yq
+	@rm -f yq_darwin_amd64
+	@echo ""
 
-# Homebrew isn't great with installing specific version, so I'm using a direct git commit URL to pin to specific versions
-
-kubectl:
-	-brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/9fec1d922fa734289eccaa495f13680587da8feb/Formula/kubernetes-cli.rb
-
-k3d:
-	-brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/5fb0385f36ad62ffb051eb3256dceec9f3dbfdd2/Formula/k3d.rb
-
-jq:
-	-brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/81e08b0d9ae47a9968fabde84378faab1f67e557/Formula/jq.rb
-
-kustomize:
-	-brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/143e1af7c5a7fffc8e9ffa9be19396f24929a996/Formula/kustomize.rb
-
-helm:
-	-brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/6796c57c9ea504e74e26a32a14ab8c5758bf6750/Formula/helm.rb
-
-install-deps: kubectl k3d kubeseal jq yq kustomize helm
+install-deps: kubeseal yq
+	@brew bundle
 
 cluster:
 	@$(call print-header,"creating new k3d cluster")
 	@$(call print-prompt)
-	k3d cluster create kafka-gitops --servers 4 --volume $(PWD)/.data:/var/lib/host --wait
+	k3d cluster create kafka-devops --servers 4 --volume $(PWD)/.data:/var/lib/host --wait
 
 destroy-cluster:
 	@$(call print-header,"deleting k3d cluster")
 	@$(call print-prompt)
-	-(k3d cluster list | grep kafka-gitops) && k3d cluster delete kafka-gitops
+	-(k3d cluster list | grep kafka-devops) && k3d cluster delete kafka-devops
 
 install-bitnami-secret-controller:
 	@$(call print-header,"Installing bitnami secret controller")

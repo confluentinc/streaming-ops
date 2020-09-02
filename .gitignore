@@ -1,6 +1,8 @@
 .test/*
 !.test/.gitkeep
 
+Brewfile.lock.json
+
 secrets/keys/*.crt
 secrets/local-sealed/**/*.yaml
 secrets/local-sealed/**/*.yml
