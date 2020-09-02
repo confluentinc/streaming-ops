@@ -12,6 +12,12 @@ Required to interact with your Kubernetes cluster, create secrets, etc...
 
 https://kubernetes.io/docs/tasks/tools/install-kubectl/
 
+## fluxctl
+
+Required to interact with the FluxCD controller inside the Kubernetes cluster
+
+https://docs.fluxcd.io/en/1.18.0/references/fluxctl.html
+
 ## k3d
 If you'd like to run the project on a local Docker based Kubernetes cluster
 
