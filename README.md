@@ -172,14 +172,16 @@ If you'd like to run a version of this project in your own cluster, follow the b
     make install-flux-dev
     ```
 
-    * The script will install Flux into the cluster and then wait for you to add the shown key to your repository in the Settings->Deploy Keys section. Write access is required for Flux to manage Tags to control the syncronized state.  See the [Flux documentation](https://docs.fluxcd.io/en/1.17.1/tutorials/get-started.html#giving-write-access) for more details.
+    * The script will install FluxCD into the cluster.  FluxCD requires access to your Git repository in order to faciliate GitOps based continuous delivery.  After installation, FluxCD is waiting for access to the configured GitHub repository.  The script presents you with a deploy key that FluxCD generated. Add this deploy key to your GitHub forked repository under Settings->Deploy keys, giving the key write access to the repository.  Write access is required for Flux to manage Tags to control the syncronized state.  See the [Flux documentation](https://docs.fluxcd.io/en/1.17.1/tutorials/get-started.html#giving-write-access) for more details.
 
-    * You will see the following if the syncronization between Flux and the repository is setup properly:
+    * After configuring the Deploy Key, you should see the following if the syncronization between Flux and the GitHub repository is setup properly:
 
       ```
       >>> Github deploy key is ready
       >>> Cluster bootstrap done!
       ```
+
+    * FluxCD now has the ability to perform GitOps based CD and the Kubernetes cluster should begin to materialize with running software.
 
 1. Verify secrets are available
 
@@ -194,7 +196,7 @@ If you'd like to run a version of this project in your own cluster, follow the b
     kubectl get secrets/kafka-secrets -o json | jq -r '.data."kafka.properties"' | base64 -d
     ```
 
-1. Verify the system is deployed
+1. Verify the system is deployed, this will show you various Kubernetes resources deployed in the `default` namespace.
 
     ```
     kubectl get all
