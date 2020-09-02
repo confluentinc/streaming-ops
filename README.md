@@ -172,9 +172,9 @@ If you'd like to run a version of this project in your own cluster, follow the b
     make install-flux-dev
     ```
 
-  * The script will install Flux into the cluster and then wait for you to add the shown key to your repository in the Settings->Deploy Keys section. Write access is required for Flux to manage Tags to control the syncronized state.  See the [Flux documentation](https://docs.fluxcd.io/en/1.17.1/tutorials/get-started.html#giving-write-access) for more details.
+    * The script will install Flux into the cluster and then wait for you to add the shown key to your repository in the Settings->Deploy Keys section. Write access is required for Flux to manage Tags to control the syncronized state.  See the [Flux documentation](https://docs.fluxcd.io/en/1.17.1/tutorials/get-started.html#giving-write-access) for more details.
 
-  * You will see the following if the syncronization between Flux and the repository is setup properly:
+    * You will see the following if the syncronization between Flux and the repository is setup properly:
 
       ```
       >>> Github deploy key is ready
