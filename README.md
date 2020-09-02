@@ -118,7 +118,7 @@ If you'd like to run a version of this project in your own cluster, follow the b
 
 1. Create and deploy secrets
 
-    The process for sealing secrets will follow this pattern:
+    The process for sealing secrets will follow this pattern, example commands follow this explanation:
 
       1. Create a local text file containing the secrets that are to be sealed. This file conatins the raw secret data and should be protected like any secret.
       1. Create a local Kubernetes Secret manifest file using the `kubectl create secret file` and put the file into a staging area.  This puts the secret data into a Kubernetes Secret manifest form to be used by the `kubeseal` tool.
