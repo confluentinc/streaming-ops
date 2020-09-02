@@ -80,7 +80,7 @@ If you'd like to run a version of this project in your own cluster, follow the b
 
 1. Retrieve the secret controller's public key for this environment
 
-    The public key is used to seal the secrets which are then committed to the Git repository.  Only the secret controller (which generated or is configured with this public key) can decrypt the sealed secrets inside the cluster.
+    The public key is used to seal the secrets which are then committed to the Git repository.  Only the secret controller, which generated a public/private key pair, can decrypt the sealed secrets inside the Kubernetes cluster.
    
     If your cluster has public nodes (which is true for the local dev cluster setup in these instructions), you can obtain and save the public key using:
 
@@ -88,13 +88,33 @@ If you'd like to run a version of this project in your own cluster, follow the b
     make get-public-key-dev
     ```
   
-    If you are using a private cluster, you will need to copy the secret controller's key from the secret controller's log file into the key file stored locally.  This file need not be checked into the repository, however it is not secret information. However you obtain the public key, it can be stored in `secrets/keys/dev.crt` (the `dev` portion represents the environment you are configuring, these instructions only deal with `dev`).  The remaining setup scripts look in this location for the key in order to encrypt secrets. If you have administrative login to the cluster with `kubectl`, you may be able to get the logs by executing the following command substituting your controllers full pod name (`kubectl get pods -n kube-system`):
+    If you are using a private cluster, you will need to copy the secret controller's key from the secret controller's log file into the key file stored locally.  This file need not be checked into the repository, however it is not secret information. However you obtain the public key, it can be stored in `secrets/keys/dev.crt` (the `dev` portion represents the environment you are configuring, these instructions only deal with `dev`).  
+
+    The remaining setup scripts look in the `secrets/keys/dev.crt` location for the public key in order to encrypt secrets. If you have administrative login to the cluster with `kubectl`, you may be able to get the logs by executing the following command substituting your controllers full pod name (`kubectl get pods -n kube-system`):
   
     ```
     kubectl logs sealed-secrets-controller-6bf8c44ff9-x6skc -n kube-system
     ```
   
     See the Bitnami docs for long term management of secrets and more details on private clusters (https://github.com/bitnami-labs/sealed-secrets/blob/master/docs/GKE.md#private-gke-clusters).
+
+    You can validate your `secrets/key/dev.crt` file contents with:
+
+    ```
+    cat secrets/keys/dev.crt
+    ```
+ 
+    ```
+    -----BEGIN CERTIFICATE-----
+    MIIErTCCApWgAwIBAgIQH5QEHe0tYPRHi2fPNkCZITANBgkqhkiG9w0BAQsFADAA
+    MB4XDTIwMDkwMjE0MDcwOFoXDTMwMDgzMTE0MDcwOFowADCCAiIwDQYJKoZIhvcN
+    AQEBBQADggIPADCCAgoCggIBAKoUaCGavOp4Aqz9b3eTDibdytlq46jsBpBGfF7R
+    ...
+    pzdWVMSumzZnWE/bu9+OQ4TX0d2p6ka/paOXuOObGOlJclex3lEc3Hw06iL9TnJJ
+    K4qei3kT6H/QlcjslyWaJtPO5liZLbjBBitXjONM3A8vLfKXA+3IVHG4QAr39jtv
+    2Q==
+    -----END CERTIFICATE-----
+    ```
 
 1. Create and deploy secrets
 
