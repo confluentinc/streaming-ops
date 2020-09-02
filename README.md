@@ -19,7 +19,7 @@ This demo utilizes [Confluent Cloud](https://www.confluent.io/confluent-cloud/) 
 
 If you'd like to run a version of this project in your own cluster, follow the below usage steps. 
 
-1.  This project highlights a GitOps workflow for operating microservices on Kubernetes. Using GitOps will require automation to have read/write access to the repository. Use the GitHub Fork function to create a personal fork of the project and clone it locally so you can experiment with it.
+1.  This project highlights a GitOps workflow for operating microservices on Kubernetes. Using GitOps will require automation to have read/write access to the repository. Use the GitHub Fork function to create a personal fork of the project and clone it locally.
 
 1.  For GitOps workflows, this project uses [FluxCD](https://www.weave.works/technologies/gitops/).  FluxCD requires read/write access into the code repository in order to perform it's function as the Continuous Delivery (CD) controller.  
 
@@ -66,13 +66,13 @@ If you'd like to run a version of this project in your own cluster, follow the b
 
 1. Install Bitnami Sealed Secret Controller into the cluster
 
-    Once you have a cluster configured for your local `kubectl` command, the following will install the secret controller
+    This project uses [Bitnami Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets) to manage secret data. Now that local `kubectl` command is configured for the Kubernetes cluster you will use, install the sealed secret controller with:
 
     ```
     make install-bitnami-secret-controller
     ```
 
-    Wait for the controller to be ready. This will transition from `null` to `1` (available replica):
+    Wait for the sealed secret controller to be ready. Run this command until the return value transitions from `null` to `1` (available replica):
 
     ```
     kubectl get -n kube-system deployment/sealed-secrets-controller -o json | jq '.status.availableReplicas'
