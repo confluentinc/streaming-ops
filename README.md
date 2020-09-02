@@ -118,7 +118,7 @@ If you'd like to run a version of this project in your own cluster, follow the b
 
 1. Create and deploy secrets
 
-    There are two types secrets required to utilize this project.  The process for sealing secrets will follow this pattern:
+    The process for sealing secrets will follow this pattern:
 
       1. Create a local text file containing the secrets that are to be sealed. This file conatins the raw secret data and should be protected like any secret.
       1. Create a local Kubernetes Secret manifest file using the `kubectl create secret file` and put the file into a staging area.  This puts the secret data into a Kubernetes Secret manifest form to be used by the `kubeseal` tool.
@@ -127,6 +127,8 @@ If you'd like to run a version of this project in your own cluster, follow the b
       1. The Sealed Secret controller, in your cluster, observes new Sealed Secrets and unseals them inside the Kubernetes Cluster for use by applications inside the cluster. Only the secret controller that produced the public key used to seal the secrets can unseal them.
 
       The following helps you execute these steps.  In the below commands, the namespace, secret name, and generic secret file name are specific and linked to subsequent commands. Do not change these values without understanding the [scripts/seal-secrets.sh script](scripts/seal-secrets.sh), executed later.
+
+    There are two types secrets required to utilize this project.  
 
     * `ccloud` CLI login credentials are used to manage the Confluent Cloud resources controlled using the [ccloud operator code](images/ccloud-operator). An example of the layout of the secrets file required can be found in the file [secrets/example-ccloud-secrets.props](secrets/example-ccloud-secrets.props).  Create a local secrets files for your `ccloud` credentials, _ensuring you do not commit them to any repository_. Execte the  `kubectl create secret` command as below passing the path to your `ccloud` credentials file into the `--from-env-file` argument. 
 
