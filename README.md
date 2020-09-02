@@ -202,6 +202,54 @@ If you'd like to run a version of this project in your own cluster, follow the b
     kubectl get all
     ```
 
+    Which should show you something like the following: 
+
+    ```
+    NAME                                                  READY   STATUS      RESTARTS   AGE
+    pod/add-inventory-1599062700-x98dd                    0/1     Completed   0          3m29s
+    pod/ccloud-operator                                   1/1     Running     0          44h
+    pod/connect-operator                                  1/1     Running     0          46h
+    pod/connect-service-66b8988b6d-j2fgq                  1/1     Running     0          47h
+    pod/email-service-7457445bcb-vqzbv                    1/1     Running     0          26h
+    pod/fraud-service-7dbdb87689-hzhpk                    1/1     Running     0          27h
+    pod/inventory-service-6c85b9769-j489p                 1/1     Running     1          27h
+    pod/mysql-5f97b96f84-xp6gs                            1/1     Running     0          4d18h
+    pod/order-details-service-68fb4bd656-whwff            1/1     Running     0          27h
+    pod/orders-and-payments-simulator-fb9ccbc75-6bsww     1/1     Running     1          26h
+    pod/orders-service-754d77d5c5-szksg                   1/1     Running     0          43h
+    pod/validations-aggregator-service-6f8f5ddb9d-cjss2   1/1     Running     3          26h
+    
+    NAME                     TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)    AGE
+    service/connect          ClusterIP   10.66.4.37   <none>        80/TCP     4d18h
+    service/kubernetes       ClusterIP   10.66.0.1    <none>        443/TCP    5d1h
+    service/mysql            ClusterIP   None         <none>        3306/TCP   4d18h
+    service/orders-service   ClusterIP   10.66.6.78   <none>        80/TCP     46h
+    
+    NAME                                             READY   UP-TO-DATE   AVAILABLE   AGE
+    deployment.apps/connect-service                  1/1     1            1           4d18h
+    deployment.apps/email-service                    1/1     1            1           26h
+    deployment.apps/fraud-service                    1/1     1            1           27h
+    deployment.apps/inventory-service                1/1     1            1           27h
+    deployment.apps/mysql                            1/1     1            1           4d18h
+    deployment.apps/order-details-service            1/1     1            1           27h
+    deployment.apps/orders-and-payments-simulator    1/1     1            1           26h
+    deployment.apps/orders-service                   1/1     1            1           46h
+    deployment.apps/validations-aggregator-service   1/1     1            1           26h
+    
+    NAME                                                        DESIRED   CURRENT   READY   AGE
+    replicaset.apps/connect-service-66b8988b6d                  1         1         1       4d18h
+    replicaset.apps/email-service-7457445bcb                    1         1         1       26h
+    ...
+    replicaset.apps/validations-aggregator-service-6f8f5ddb9d   1         1         1       26h
+    replicaset.apps/validations-aggregator-service-7557d6cc48   0         0         0       26h
+    
+    NAME                                 COMPLETIONS   DURATION   AGE
+    job.batch/add-inventory-1599062700   1/1           5s         3m29s
+    
+    NAME                          SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+    cronjob.batch/add-inventory   */5 * * * *   False     0        3m38s           43h
+    ```
+
 ## Info
 
 * FluxCD is configured to sync with the repository once per minute, you can force a syncronization with the command: `make sync`
