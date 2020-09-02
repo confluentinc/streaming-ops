@@ -143,9 +143,9 @@ If you'd like to run a version of this project in your own cluster, follow the b
       kubectl create secret generic connect-operator-secrets --namespace=default --from-env-file=./secrets/example-connect-operator-secrets.props --dry-run=client -o yaml > secrets/local-toseal/dev/default-connect-operator-secrets.yaml 
       ```
 
-    These commands have created generic secret Kubernetes secret manifests from your secrets files and put them into a staging area (`secrets/local-toseal`).  
+    These commands have created generic secret Kubernetes secret manifests from your plain text secrets files and put them into a staging area (`secrets/local-toseal/dev`).  
 
-  * Seal the secrets, for the `dev` environment, with the following helper command which uses the `scripts/seal-secrets.sh` script. This command will place the sealed secret in `secrets/sealed/dev`, and these are the files which are safe to commit to the repository.
+  * Seal the secrets, for the `dev` environment, with the following helper command which uses the `scripts/seal-secrets.sh` script. This command will place the sealed secret in `secrets/sealed/dev`, and these are the files which are safe to commit to the repository. This command will also clear the unsealed secrets from the staging area (`secrets/local-toseal/dev`):
 
     ```
     make seal-secrets-dev
