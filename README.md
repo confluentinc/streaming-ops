@@ -88,7 +88,7 @@ If you'd like to run a version of this project in your own cluster, follow the b
     make get-public-key-dev
     ```
   
-    If you are using a private cluster, you will need to copy the secret controller's key from the secret controller's log file into the key file stored locally.  This file need not be checked into the repository, however it is not secret information. However you obtain the public key, it can be stored in `secrets/keys/<environment>.crt`.  The remaining scripts look in this location in order to seal secrets. If you have administrative login to the cluster with `kubectl`, you may be able to get the logs by executing the following substituting your controllers full pod name (`kubectl get pods -n kube-system`):
+    If you are using a private cluster, you will need to copy the secret controller's key from the secret controller's log file into the key file stored locally.  This file need not be checked into the repository, however it is not secret information. However you obtain the public key, it can be stored in `secrets/keys/dev.crt` (the `dev` portion represents the environment you are configuring, these instructions only deal with `dev`).  The remaining setup scripts look in this location for the key in order to encrypt secrets. If you have administrative login to the cluster with `kubectl`, you may be able to get the logs by executing the following command substituting your controllers full pod name (`kubectl get pods -n kube-system`):
   
     ```
     kubectl logs sealed-secrets-controller-6bf8c44ff9-x6skc -n kube-system
@@ -96,18 +96,18 @@ If you'd like to run a version of this project in your own cluster, follow the b
   
     See the Bitnami docs for long term management of secrets and more details on private clusters (https://github.com/bitnami-labs/sealed-secrets/blob/master/docs/GKE.md#private-gke-clusters).
 
-1. Create and deploy the sealed secrets
+1. Create and deploy secrets
 
-    There are two external secrets required to utilize this project.  The following helps you create two secret files seal them for use inside the cluster. The namespace, secret name, and generic secret file name are related in the following commands, do not change them without understanding the seal script, executed next.
+    There are two secrets required to utilize this project.  The following helps you create two secret files and seal them for use inside the cluster. In the below commands, the namespace, secret name, and generic secret file name are specific and linked to subsequent commands. Do not change these values without understanding the [scripts/seal-secrets.sh script](scripts/seal-secrets.sh), executed later.
 
-    * `ccloud` CLI login credentials are used to manage the Confluent Cloud resources controlled using the [ccloud operator code](images/ccloud-operator). An example of the layout of the secrets file required can be found in the file [secrets/example-ccloud-secrets.props](secrets/example-ccloud-secrets.props).  Create a local secrets files for your `ccloud` credentials, _ensuring you do not commit them to any repository_. Execte a `kubectl create secret` command as below passing the path to your `ccloud` credentials file into the `--from-env-file` argument. 
+    * `ccloud` CLI login credentials are used to manage the Confluent Cloud resources controlled using the [ccloud operator code](images/ccloud-operator). An example of the layout of the secrets file required can be found in the file [secrets/example-ccloud-secrets.props](secrets/example-ccloud-secrets.props).  Create a local secrets files for your `ccloud` credentials, _ensuring you do not commit them to any repository_. Execte the  `kubectl create secret` command as below passing the path to your `ccloud` credentials file into the `--from-env-file` argument. 
 
       ```
       kubectl create secret generic cc.ccloud-secrets --namespace=default --from-env-file=<path-to-your-file> --dry-run=client -o yaml > secrets/local-toseal/dev/default-cc.ccloud-secrets.yaml
       ```
 
 
-    * The microservices demo code utilizes a MySQL database to demonstrate Kafka Connect and Change Data Capture. Credentials for the database are required to be provided.  An example of the layout of this file can be found in the sample [secrets/example-connect-operator-secrets.props](secrets/example-connect-operator-secrets.props). There isn't a need to create a seperate file for the database credentials file as that service is ran entirely inside the demonstrations Kubernetes cluster and is not publically accessible.
+    * The microservices demo code utilizes a MySQL database to demonstrate Kafka Connect and Change Data Capture. Credentials for the database are required to be provided.  An example of the layout of this file can be found in the sample [secrets/example-connect-operator-secrets.props](secrets/example-connect-operator-secrets.props). There isn't a need to create a personal copy of the database credentials file as that service is ran entirely inside the demonstrations Kubernetes cluster and is not publically accessible.
 
       ```
       kubectl create secret generic connect-operator-secrets --namespace=default --from-env-file=./secrets/example-connect-operator-secrets.props --dry-run=client -o yaml > secrets/local-toseal/dev/default-connect-operator-secrets.yaml 
