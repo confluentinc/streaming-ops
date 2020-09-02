@@ -145,7 +145,7 @@ If you'd like to run a version of this project in your own cluster, follow the b
 
     These commands have created generic secret Kubernetes secret manifests from your plain text secrets files and put them into a staging area (`secrets/local-toseal/dev`).  
 
-  * Seal the secrets, for the `dev` environment, with the following helper command which uses the `scripts/seal-secrets.sh` script. This command will place the sealed secret in `secrets/sealed/dev`, and these are the files which are safe to commit to the repository. This command will also clear the unsealed secrets from the staging area (`secrets/local-toseal/dev`):
+    * Seal the secrets, for the `dev` environment, with the following helper command which uses the `scripts/seal-secrets.sh` script. This command will place the sealed secret in `secrets/sealed/dev`, and these are the files which are safe to commit to the repository. This command will also clear the unsealed secrets from the staging area (`secrets/local-toseal/dev`):
 
     ```
     make seal-secrets-dev
@@ -159,7 +159,7 @@ If you'd like to run a version of this project in your own cluster, follow the b
     INFO - Successfully sealed secrets/local-toseal/dev/default-connect-operator-secrets.yaml
     ```
 
-  * Commit the sealed secret to the repository so that Flux can sync it to the K8s cluster:
+    * Commit the sealed secret to the repository so that Flux can sync it to the K8s cluster:
 
     ```
     git add secrets/sealed/dev/.
@@ -173,7 +173,7 @@ If you'd like to run a version of this project in your own cluster, follow the b
     make install-flux-dev
     ```
 
-  * The script will install Flux into the cluster and then wait for you to add the shown key to your repository in the Settings->Deploy Keys section. Write access is required for Flux to manage Tags to control the syncronized state.  See the Flux documentation for more details.
+  * The script will install Flux into the cluster and then wait for you to add the shown key to your repository in the Settings->Deploy Keys section. Write access is required for Flux to manage Tags to control the syncronized state.  See the [Flux documentation](https://docs.fluxcd.io/en/1.17.1/tutorials/get-started.html#giving-write-access) for more details.
 
   * You will see the following if the syncronization between Flux and the repository is setup properly:
 
