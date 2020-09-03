@@ -8,7 +8,7 @@ data:
   environments: |
     [
       {
-        "name": "kafka-devops-dev",
+        "name": "kafka-devops",
         "schema-registry": {
           "cloud": "gcp",
           "geo": "us",
