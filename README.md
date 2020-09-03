@@ -196,7 +196,7 @@ If you'd like to run a version of this project in your own cluster, follow the b
     kubectl get secrets/kafka-secrets -o json | jq -r '.data."kafka.properties"' | base64 -d
     ```
 
-1. Verify the system is deployed, this will show you various Kubernetes resources deployed in the `default` namespace.
+1. FluxCD will begin to deploy the Kubernetes resources.  It takes a minute or two for FluxCD to complete this job and for the applications to initialize.  After a short period of time, verify the applications are deployed with the below command which will show you various Kubernetes resources deployed in the `default` namespace.
 
     ```
     kubectl get all
