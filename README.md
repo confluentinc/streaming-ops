@@ -23,7 +23,7 @@ If you'd like to run a version of this project in your own cluster, follow the b
 
 1.  For GitOps workflows, this project uses [FluxCD](https://www.weave.works/technologies/gitops/).  FluxCD requires read/write access into the code repository in order to perform it's function as the Continuous Delivery (CD) controller.  
 
-    FluxCD is deployed from the `scripts/flux-init.sh` script, the following steps configure Flux.
+    FluxCD is deployed from inside the `scripts/flux-init.sh` script which will uses the following variables to configure Flux for your forked repository.
 
     * Export the `REPO_URL` variable to point to the git URL of your forked repository from step 1
 
