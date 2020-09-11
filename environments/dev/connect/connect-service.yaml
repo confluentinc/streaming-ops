@@ -3,4 +3,4 @@ kind: Deployment
 metadata:
   name: connect-service
 spec:
-  replicas: 1
+  replicas: 2
