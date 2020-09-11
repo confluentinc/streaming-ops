@@ -4,14 +4,14 @@ LIB_CCLOUD_SA=`date`
 source $SHELL_OPERATOR_HOOKS_DIR/lib/ccloud-common.sh
 
 ####################################################################
-# Apply a *json array* of service accounts to the configured ccloud, 
+# Apply a *json array* of service accounts to the configured ccloud,
 # passed in arg 2.
 # The data model of what this function expects is
 # in the Service Account ConfigMap
 ####################################################################
 function ccloud::sa::apply_list() {
-	# we encode, then decode, the list into base64 so that we can 
-	# iterate over them using a bash for loop, otherwise the spaces 
+	# we encode, then decode, the list into base64 so that we can
+	# iterate over them using a bash for loop, otherwise the spaces
 	# would break up the loop elements
 	for SA_ENCODED in $(echo $1 | jq -c -r '.[] | @base64'); do
 		SA=$(echo "${SA_ENCODED}" | base64 -d)
@@ -25,7 +25,7 @@ function ccloud::sa::apply_list() {
 ####################################################################
 # Apply a service account configuration with the named parameters;
 # name
-# description 
+# description
 ####################################################################
 function ccloud::sa::apply() {
 	local name description
@@ -50,7 +50,7 @@ function ccloud::sa::get_id() {
 
 ##################################
 # Delete a given service account
-# name to the configured ccloud 
+# name to the configured ccloud
 ##################################
 function ccloud::sa::delete() {
 	local id
