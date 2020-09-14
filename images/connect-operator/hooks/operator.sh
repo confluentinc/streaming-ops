@@ -5,8 +5,10 @@ source $SHELL_OPERATOR_HOOKS_DIR/lib/common.sh
 BASE_URL=${BASE_URL:-http://connect}
 
 # Converts the Java properties style files located
-# in CONFIG_FILE_PATH, into a string of arguments that can be passed
+# in /etc/config/connect-operator into a string of arguments that can be passed
 # into jq for file templating.
+#
+# Currently sets the global variable JQ_ARGS_FROM_CONFIG_FILE as it's "output"
 function load_configs() {
 
   for f in /etc/config/connect-operator/*.properties; do (cat "${f}"; echo) >> /etc/config/connect-operator/connect-operator.properties; done
@@ -47,6 +49,11 @@ function delete_connector() {
 	curl -s -o /dev/null -XDELETE "$BASE_URL/connectors/$CONNECTOR_NAME"
 }
 
+# Accepts a single JSON string parameter representing a
+# Kafka Connnect configurations.
+# The function will pass string through the jq program in order to fill
+# in any variables from either the current environment or from the
+# values in the JQ_ARGS_FROM_CONFIG_FILE variable which is set on startup
 function apply_connector() {
 	trap 'rm -f "$TMPFILE"' EXIT
 	TMPFILE=$(mktemp) || exit 1
@@ -76,10 +83,20 @@ function apply_connector() {
 hook::run() {
   if [ ! -z ${DEBUG+x} ]; then set -x; fi
   load_configs
+
+  # shell-operator gives us a wrapper around the resource we are monitoring
+  # so first we pull out the type of update we are getting from Kubernetes
   TYPE=$(jq -r .[0].type $BINDING_CONTEXT_PATH)
   EVENT=$(jq -r .[0].watchEvent $BINDING_CONTEXT_PATH)
 
+  # A "Syncronization" Type event indicates we need to syncronize with the
+  # current state of the resource, otherwise we'll get an "Event" type event.
+  #
+  # The EVENT variable will containe either Added, Updated, or Deleted in the
+  # case where TYPE == Event
   if [[ "$TYPE" == "Synchronization" ]]; then
+    # In the Syncronization phase, we maybe receive many object instances,
+    # so we pull out each one and process them indpendently
     KEYS=$(jq -c -r '.[0].objects | .[].object.data | keys | .[]' $BINDING_CONTEXT_PATH)
    for KEY in $KEYS; do
    	CONFIG=$(jq -c -r ".[].objects | .[].object.data | select(has(\"$KEY\")) | .\"$KEY\"" $BINDING_CONTEXT_PATH)
