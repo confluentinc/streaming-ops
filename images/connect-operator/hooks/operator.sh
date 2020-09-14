@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+source $SHELL_OPERATOR_HOOKS_DIR/lib/common.sh
+
 BASE_URL=${BASE_URL:-http://connect}
 
 # Converts the Java properties style files located
@@ -71,23 +73,7 @@ function apply_connector() {
   }
 }
 
-if [[ $1 == "--config" ]]; then
-  cat <<EOF
-configVersion: v1
-kubernetes:
-- name: ConnectConfigMapMonitor
-  apiVersion: v1
-  kind: ConfigMap
-  executeHookOnEvent: ["Added","Deleted","Modified"]
-  labelSelector:
-    matchLabels:
-      destination: connect
-  namespace:
-    nameSelector:
-      matchNames: ["default"]
-  jqFilter: ".data"
-EOF
-else
+hook::run() {
   if [ ! -z ${DEBUG+x} ]; then set -x; fi
   load_configs
   TYPE=$(jq -r .[0].type $BINDING_CONTEXT_PATH)
@@ -109,6 +95,8 @@ else
      apply_connector "$CONFIG"
     fi
   fi
-  set +x
-fi
+  if [ ! -z ${DEBUG+x} ]; then set +x; fi
+}
+
+common::run_hook "$@"
 
