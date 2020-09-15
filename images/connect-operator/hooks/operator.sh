@@ -36,6 +36,9 @@ function load_configs() {
 
 }
 
+# Accepts a single JSON string parameter representing a
+# Kafka Connnect configuration and deletes it from the Kafka Connect
+# cluster located at $BASE_URL
 function delete_connector() {
 	trap 'rm -f "$TMPFILE"' EXIT
 	TMPFILE=$(mktemp) || exit 1
@@ -50,10 +53,13 @@ function delete_connector() {
 }
 
 # Accepts a single JSON string parameter representing a
-# Kafka Connnect configurations.
+# Kafka Connnect configuration and applies it to the Kafka Connect
+# cluster located at $BASE_URL
+#
 # The function will pass string through the jq program in order to fill
 # in any variables from either the current environment or from the
 # values in the JQ_ARGS_FROM_CONFIG_FILE variable which is set on startup
+# See load_configs for how those values are provided at runtime
 function apply_connector() {
 	trap 'rm -f "$TMPFILE"' EXIT
 	TMPFILE=$(mktemp) || exit 1
