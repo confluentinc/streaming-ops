@@ -41,6 +41,12 @@ hook::delete() {
 
 hook::run() {
 	ccloud::login
+
+  # shell-operator gives us a wrapper around the resource we are monitoring
+  # in a file located at the path of $BINDING_CONTEXT_PATH
+  # The data model for this object can be found here:
+  # https://github.com/flant/shell-operator/blob/master/pkg/hook/binding_context/binding_context.go
+
   ARRAY_COUNT=`jq -r '. | length-1' $BINDING_CONTEXT_PATH`
   for I in `seq 0 $ARRAY_COUNT`
   do

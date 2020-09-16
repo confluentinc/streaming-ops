@@ -6,7 +6,6 @@
 : "${ORG?Need to set ORG with the GitHub organization of the repository}"
 
 USERNAME=${USERNAME:-$(whoami)}
-ORG=${ORG:-"confluentinc"}
 
 DATA=$(jq -n --arg title "$NAME" --arg key "$KEY" --arg read_only "false" '{title: $title, key: $key, read_only: $read_only}')
 

@@ -91,15 +91,15 @@ hook::run() {
   load_configs
 
   # shell-operator gives us a wrapper around the resource we are monitoring
+  # in a file located at the path of $BINDING_CONTEXT_PATH
+  # The data model for this object can be found here:
+  # https://github.com/flant/shell-operator/blob/master/pkg/hook/binding_context/binding_context.go
+
   # so first we pull out the type of update we are getting from Kubernetes
   TYPE=$(jq -r .[0].type $BINDING_CONTEXT_PATH)
-  EVENT=$(jq -r .[0].watchEvent $BINDING_CONTEXT_PATH)
 
   # A "Syncronization" Type event indicates we need to syncronize with the
   # current state of the resource, otherwise we'll get an "Event" type event.
-  #
-  # The EVENT variable will containe either Added, Updated, or Deleted in the
-  # case where TYPE == Event
   if [[ "$TYPE" == "Synchronization" ]]; then
     # In the Syncronization phase, we maybe receive many object instances,
     # so we pull out each one and process them indpendently
@@ -109,6 +109,9 @@ hook::run() {
    	apply_connector "$CONFIG"
    done
   elif [[ "$TYPE" == "Event" ]]; then
+    # The EVENT variable will containe either Added, Updated, or Deleted in the
+    # case where TYPE == Event
+    EVENT=$(jq -r .[0].watchEvent $BINDING_CONTEXT_PATH)
     DATA=$(jq -r '.[0].object.data' $BINDING_CONTEXT_PATH)
     KEY=$(echo $DATA | jq -r -c 'keys | .[0]')
     CONFIG=$(echo $DATA | jq -r -c ".\"$KEY\"")

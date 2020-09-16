@@ -15,6 +15,13 @@ define print-header =
 printf "\n%-50s\n" $1 | tr ' ~' '- '
 endef
 
+ccloud:
+	@echo "Installing ccloud"
+	@curl -L -s --http1.1 https://cnfl.io/ccloud-cli | sh -s -- -b .
+	@sudo install -m 755 ccloud /usr/local/bin/ccloud
+	@rm -f ccloud
+	@echo ""
+
 kubeseal:
 	@echo "Installing kubeseal"
 	@wget -q https://github.com/bitnami-labs/sealed-secrets/releases/download/${KUBESEAL_VERSION}/kubeseal-darwin-amd64
@@ -29,7 +36,7 @@ yq:
 	@rm -f yq_darwin_amd64
 	@echo ""
 
-install-deps: kubeseal yq
+install-deps: ccloud kubeseal yq
 	@brew bundle
 
 cluster:
@@ -96,6 +103,7 @@ ifndef GH_TOKEN
 	$(error GH_TOKEN is not set)
 endif
 	@-make --no-print-directory destroy-cluster
+	@sleep 30
 	@make --no-print-directory cluster
 	@make --no-print-directory install-bitnami-secret-controller
 	@make --no-print-directory wait-for-secret-controller
