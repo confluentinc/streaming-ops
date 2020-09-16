@@ -9,7 +9,7 @@ This project is the subject of the following Confluent Blog post discussing the 
 
 The full usage documentation for this project can be found on the Confluent documentation site:
 
-https://docs.confluent.io/latest/tutorials/kafka-devops/index.html
+https://docs.confluent.io/current/tutorials/kafka-devops/index.html
 
 ## Credits / Links
 * Significant portions of the repository are based on the work of Steven Wade @ https://github.com/swade1987
