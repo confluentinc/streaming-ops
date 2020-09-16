@@ -17,7 +17,7 @@ kind: Deployment
 metadata:
   name: connect-service
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: connect-service
