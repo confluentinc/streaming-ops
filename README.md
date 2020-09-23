@@ -9,7 +9,7 @@ https://docs.confluent.io/current/tutorials/kafka-devops/index.html
 
 This project is the subject of the following Confluent Blog post discussing the concepts of DevOps with Kubernetes and Event Streaming Platforms:
 
-[Kafka DevOps with Kubernetes and GitOps](https://blog.confluent.io)
+[Kafka DevOps with Kubernetes and GitOps](https://www.confluent.io/blog/kafka-devops-with-confluent-kubernetes-and-gitops/)
 
 ## Credits / Links
 * Significant portions of the repository are based on the work of Steven Wade @ https://github.com/swade1987
