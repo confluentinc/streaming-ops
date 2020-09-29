@@ -1,4 +1,4 @@
-FROM cnfldemos/kafka-streams-examples:5.5.1-DEVX-1881-PR346
+FROM confluentinc/kafka-streams-examples:6.0.0
 
 USER root
 ADD start.sh /opt/docker/start.sh
