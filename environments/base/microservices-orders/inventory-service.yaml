@@ -31,7 +31,7 @@ spec:
           secretName: cc.schema-registry-url.kafka-devops
       containers:
       - name: inventory-service
-        image: cnfldemos/inventory-service:sha-a5bbd36
+        image: cnfldemos/inventory-service:sha-93c0516
         volumeMounts:
         - name: shared-client-config-volume
           mountPath: /etc/config/inventory-service/shared-client.properties
