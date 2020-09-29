@@ -51,7 +51,7 @@ CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_BASIC_AUTH_USER_INFO=${CONNECT_VALUE_CON
 CONNECT_INTERNAL_KEY_CONVERTER=${CONNECT_INTERNAL_KEY_CONVERTER:-"org.apache.kafka.connect.json.JsonConverter"}
 CONNECT_INTERNAL_VALUE_CONVERTER=${CONNECT_INTERNAL_VALUE_CONVERTER:-"org.apache.kafka.connect.json.JsonConverter"}
 
-CLASSPATH=${CLASSPATH:-"/usr/share/java/monitoring-interceptors/monitoring-interceptors-5.5.1.jar"}
+CLASSPATH=${CLASSPATH:-"/usr/share/java/monitoring-interceptors/monitoring-interceptors-6.0.0.jar"}
 CONNECT_PLUGIN_PATH=${CONNECT_PLUGIN_PATH:-'/usr/share/java,/usr/share/confluent-hub-components/,/connectors/'}
 
 CONNECT_PRODUCER_SECURITY_PROTOCOL=${CONNECT_PRODUCER_SECURITY_PROTOCOL:-$SECURITY_PROTOCOL}
