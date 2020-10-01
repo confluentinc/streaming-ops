@@ -4,3 +4,5 @@ commonLabels:
   variant: prd
 resources:
 - ../base/
+patchesStrategicMerge:
+- ccloud/microservices-ccloud-environment.yaml
