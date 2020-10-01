@@ -11,3 +11,4 @@ patchesStrategicMerge:
 - microservices-orders/email-service.yaml
 - microservices-orders/fraud-service.yaml
 - microservices-orders/order-details-service.yaml
+- microservices-orders/orders-and-payments-simulator.yaml
