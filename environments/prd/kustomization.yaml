@@ -9,3 +9,4 @@ patchesStrategicMerge:
 - microservices-orders/orders-service.yaml
 - microservices-orders/inventory-service.yaml
 - microservices-orders/email-service.yaml
+- microservices-orders/fraud-service.yaml
