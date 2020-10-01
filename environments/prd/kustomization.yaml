@@ -13,3 +13,4 @@ patchesStrategicMerge:
 - microservices-orders/order-details-service.yaml
 - microservices-orders/orders-and-payments-simulator.yaml
 - microservices-orders/validations-aggregator-service.yaml
+- connect/connect-service.yaml
