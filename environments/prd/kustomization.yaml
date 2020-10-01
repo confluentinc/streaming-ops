@@ -12,3 +12,4 @@ patchesStrategicMerge:
 - microservices-orders/fraud-service.yaml
 - microservices-orders/order-details-service.yaml
 - microservices-orders/orders-and-payments-simulator.yaml
+- microservices-orders/validations-aggregator-service.yaml
