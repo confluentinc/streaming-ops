@@ -6,4 +6,5 @@ resources:
 - ../base/
 patchesStrategicMerge:
 - ccloud/microservices-ccloud-environment.yaml
-- microservices-orders/
+- microservices-orders/orders-service.yaml
+- microservices-orders/inventory-service.yaml
