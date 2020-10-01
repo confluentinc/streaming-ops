@@ -15,3 +15,4 @@ patchesStrategicMerge:
 - microservices-orders/validations-aggregator-service.yaml
 - microservices-orders/add-inventory-cronjob.yaml
 - connect/connect-service.yaml
+- connect/connect-operator.yaml
