@@ -1,0 +1,28 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: add-inventory
+  labels:
+    app: add-inventory
+    app-group: microservices-orders
+spec:
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          volumes:
+          - name: shared-client-config-volume
+            configMap:
+              name: cc.shared-client-config
+          - name: sasl-jaas-config-volume
+            secret:
+              secretName: cc.sasl-jaas-config.microservices-orders-client.kafka-devops-prd.microservices-orders
+          - name: bootstrap-config-volume
+            secret:
+              secretName: cc.bootstrap-servers.kafka-devops-prd.microservices-orders
+          - name: schema-registry-basic-user-info-config-volume
+            secret:
+              secretName: cc.schema-registry-basic-auth-user-info.kafka-devops-sr-client.kafka-devops-prd
+          - name: schema-registry-url-volume
+            secret:
+              secretName: cc.schema-registry-url.kafka-devops-prd
