@@ -6,7 +6,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.util.concurrent.ListenableFuture;
+
+import java.util.concurrent.CompletableFuture;
 
 @Service
 public class OrderProducer {
@@ -19,9 +24,10 @@ public class OrderProducer {
   @Autowired
   private KafkaTemplate<String, Order> kafkaTemplate;
 
-  public void produceOrder(Order order) {
+  @Async
+  public ListenableFuture<SendResult<String, Order>> produceOrder(Order order) {
     logger.info("producing {} to {}", order, topic);
-    kafkaTemplate.send(this.topic, order.getId(), order);
+    return kafkaTemplate.send(this.topic, order.getId(), order);
   }
 
 }

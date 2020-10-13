@@ -23,8 +23,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @EmbeddedKafka
@@ -41,8 +39,9 @@ public class OrderProducerTests {
   @Test
   public void testSend() throws InterruptedException {
     Order o1 = new Order("123", 123L, OrderState.CREATED, Product.UNDERPANTS, 1, 8.34);
+    Order o2 = new Order("123", 123L, OrderState.CREATED, Product.UNDERPANTS, 1, 8.34);
 
-    List<Order> producedOrders = List.of(o1);
+    List<Order> producedOrders = List.of(o1, o2);
     producedOrders.forEach(producer::produceOrder);
 
     Consumer<String, Order> consumer = new DefaultKafkaConsumerFactory<String, Order>(

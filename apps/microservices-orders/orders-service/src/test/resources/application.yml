@@ -17,5 +17,11 @@ spring:
       value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
     template:
       default-topic:
+  cloud.stream.kafka.streams:
+    binder.configuration:
+      commit.interval.ms: 1000
+      default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+      default.value.serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
+    bindings.
 logging:
   level.root: INFO
