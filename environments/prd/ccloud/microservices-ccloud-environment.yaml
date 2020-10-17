@@ -42,7 +42,7 @@ data:
               {
                 "service-account": "microservices-orders-client",
                 "controls": [
-                  { "operation" : "read,write,create,describe,describe-configs", "permission": "allow",
+                  { "operation" : "read,write,create,describe,describe-configs,delete", "permission": "allow",
                     "resource": "topic", "name": "*" },
                   { "operation" : "read,write,create", "permission": "allow",
                     "resource": "consumer-group", "name": "OrdersService" },
