@@ -11,23 +11,26 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.util.concurrent.ListenableFuture;
 
-import java.util.concurrent.CompletableFuture;
-
 @Service
 public class OrderProducer {
 
   private static final Logger logger = LoggerFactory.getLogger(OrderProducer.class);
 
-  @Value("${orders-topic.name}")
   private String topic;
 
+  private KafkaTemplate<String, Order> kafka;
+
   @Autowired
-  private KafkaTemplate<String, Order> kafkaTemplate;
+  public OrderProducer(final KafkaTemplate<String, Order> kafkaTemplate,
+                       @Value("${orders-topic.name}") final String kafkaTopic) {
+    this.topic = kafkaTopic;
+    this.kafka = kafkaTemplate;
+  }
 
   @Async
   public ListenableFuture<SendResult<String, Order>> produceOrder(Order order) {
     logger.info("producing {} to {}", order, topic);
-    return kafkaTemplate.send(this.topic, order.getId(), order);
+    return kafka.send(this.topic, order.getId(), order);
   }
 
 }

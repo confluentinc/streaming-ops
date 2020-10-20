@@ -2,27 +2,3 @@ logging:
   level.root: INFO
 orders-topic:
   name: orders
-spring:
-  kafka:
-    bootstrap-servers:
-      - localhost:9092
-    properties:
-      schema.registry.url: http://localhost:8081
-    consumer:
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-      properties:
-        specific.avro.reader: true
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
-  streams.application-id: orders-table
-
-spring.cloud.stream.kafka.streams:
-  binder:
-    configuration:
-      default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
-      default.value.serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
-  bindings:
-    orders-table.consumer.application-id: orders-table

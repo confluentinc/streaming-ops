@@ -1,6 +1,8 @@
 package io.confluent.kafkadevops.microservicesorders.ordersservice;
 
 import io.confluent.examples.streams.avro.microservices.Order;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.slf4j.Logger;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.binder.kafka.streams.InteractiveQueryService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.kafka.config.StreamsBuilderFactoryBean;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.concurrent.ListenableFutureCallback;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @RestController
@@ -23,27 +27,33 @@ import java.util.Optional;
 public class OrdersServiceController {
 
   private final OrderProducer producer;
-  private final InteractiveQueryService queryService;
 
   private final Logger logger = LoggerFactory.getLogger(OrdersServiceController.class);
 
+  private final StoreQueryParameters<ReadOnlyKeyValueStore<String, Order>> stateStoreQuery =
+    StoreQueryParameters.fromNameAndType(OrdersProcessor.STATE_STORE, QueryableStoreTypes.keyValueStore());
+  private final StreamsBuilderFactoryBean streamsFactory;
+
   @Autowired
-  OrdersServiceController(OrderProducer orderProducer, InteractiveQueryService iqs) {
+  OrdersServiceController(final OrderProducer orderProducer,
+                          final StreamsBuilderFactoryBean kafkaStreamsFactory) {
+    Objects.requireNonNull(kafkaStreamsFactory);
+    Objects.requireNonNull(orderProducer);
     this.producer = orderProducer;
-    this.queryService = iqs;
+    this.streamsFactory = kafkaStreamsFactory;
   }
 
   @GetMapping(value = "/orders/{id}",
     produces = "application/json")
-  public Order getOrder(@PathVariable String id,
+  public ResponseEntity<Order> getOrder(@PathVariable String id,
                          @RequestParam Optional<Long> timeout) {
-    // TODO: Read from appropriate state store, or delegate to proper colleague
+
+    // TODO: Or delegate to proper colleague
     logger.info("getOrder: id:{}\ttimeout:{}", id, timeout);
-    ReadOnlyKeyValueStore<String, Order> store =
-      queryService.getQueryableStore(OrdersProcessor.STATE_STORE, QueryableStoreTypes.keyValueStore());
-    Order rv = store.get(id);
+    Order rv = streamsFactory.getKafkaStreams().store(stateStoreQuery).get(id);
     logger.info("Retrieved: {}", rv);
-    return rv;
+
+    return ResponseEntity.ok(rv);
   }
 
   @GetMapping(value = "/orders/{id}/validated",
