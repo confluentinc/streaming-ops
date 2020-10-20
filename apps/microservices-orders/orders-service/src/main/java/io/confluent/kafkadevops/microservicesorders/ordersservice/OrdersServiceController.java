@@ -1,16 +1,17 @@
 package io.confluent.kafkadevops.microservicesorders.ordersservice;
 
+import com.fasterxml.jackson.databind.MapperFeature;
 import io.confluent.examples.streams.avro.microservices.Order;
-import org.apache.kafka.streams.KafkaStreams;
 import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.stream.binder.kafka.streams.InteractiveQueryService;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.kafka.config.StreamsBuilderFactoryBean;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Async;
@@ -33,6 +34,15 @@ public class OrdersServiceController {
   private final StoreQueryParameters<ReadOnlyKeyValueStore<String, Order>> stateStoreQuery =
     StoreQueryParameters.fromNameAndType(OrdersProcessor.STATE_STORE, QueryableStoreTypes.keyValueStore());
   private final StreamsBuilderFactoryBean streamsFactory;
+
+  @Bean
+  public Jackson2ObjectMapperBuilder objectMapperBuilder() {
+    Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
+    // configure ObjectMapper here
+    //builder.serializationInclusion(JsonInclude.Include.NON_NULL);
+    builder.featuresToEnable(MapperFeature.REQUIRE_SETTERS_FOR_GETTERS);
+    return builder;
+  }
 
   @Autowired
   OrdersServiceController(final OrderProducer orderProducer,
