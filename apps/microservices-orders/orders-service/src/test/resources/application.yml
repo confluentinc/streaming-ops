@@ -1,27 +1,4 @@
 orders-topic:
   name: orders
-spring:
-  kafka:
-    bootstrap-servers: ${spring.embedded.kafka.brokers}
-    properties:
-      schema.registry.url: mock://orders-service
-    consumer:
-      group-id: test-orders-consumer-group
-      auto-offset-reset: earliest
-      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
-      properties:
-        specific.avro.reader: true
-    producer:
-      key-serializer: org.apache.kafka.common.serialization.StringSerializer
-      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
-    template:
-      default-topic:
-  cloud.stream.kafka.streams:
-    binder.configuration:
-      commit.interval.ms: 1000
-      default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
-      default.value.serde: io.confluent.kafka.streams.serdes.avro.SpecificAvroSerde
-    bindings.
 logging:
   level.root: INFO

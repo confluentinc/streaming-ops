@@ -44,6 +44,6 @@ public class OrdersProcessor {
     builder.table(
       this.topic,
       Consumed.with(Serdes.String(), orderValueSerde()),
-      Materialized.as(STATE_STORE));
+      Materialized.as(STATE_STORE)).toStream().peek((k,v) -> logger.info("Table Peek: {}", v));
   }
 }

@@ -1,7 +1,6 @@
 package io.confluent.kafkadevops.microservicesorders.ordersservice;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 

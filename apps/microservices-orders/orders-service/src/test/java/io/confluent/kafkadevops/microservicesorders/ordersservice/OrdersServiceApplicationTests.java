@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
+import org.springframework.kafka.annotation.EnableKafka;
+import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -22,6 +24,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest(
   webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @EmbeddedKafka
+@EnableKafka
+@EnableKafkaStreams
 class OrdersServiceApplicationTests {
 
   @LocalServerPort
@@ -80,7 +84,8 @@ class OrdersServiceApplicationTests {
 
     Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
 
-    Thread.sleep(15000);
+    Thread.sleep(15000*3);
+
     Order responseOrder = this.restTemplate.getForObject(
       "http://localhost:" + port + "/v1/orders/" + ordId,
       Order.class);

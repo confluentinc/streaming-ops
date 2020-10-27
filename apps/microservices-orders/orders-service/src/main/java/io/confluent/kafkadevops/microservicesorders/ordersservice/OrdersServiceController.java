@@ -35,11 +35,14 @@ public class OrdersServiceController {
     StoreQueryParameters.fromNameAndType(OrdersProcessor.STATE_STORE, QueryableStoreTypes.keyValueStore());
   private final StreamsBuilderFactoryBean streamsFactory;
 
+  /**
+   * Configuring this Bean allows Avro objects to be seraizlied by
+   * Jackson, otherwise, it attempts to serialize non-data values
+   * @return
+   */
   @Bean
   public Jackson2ObjectMapperBuilder objectMapperBuilder() {
     Jackson2ObjectMapperBuilder builder = new Jackson2ObjectMapperBuilder();
-    // configure ObjectMapper here
-    //builder.serializationInclusion(JsonInclude.Include.NON_NULL);
     builder.featuresToEnable(MapperFeature.REQUIRE_SETTERS_FOR_GETTERS);
     return builder;
   }
