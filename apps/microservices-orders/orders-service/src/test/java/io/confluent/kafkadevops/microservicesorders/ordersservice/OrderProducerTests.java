@@ -86,8 +86,7 @@ public class OrderProducerTests {
       Object o = consumingTask.get();
       assertEquals(producedOrders, actual);
     } catch (ExecutionException ex) {
-      logger.error(ex.getMessage());
-      fail();
+      fail(ex.getMessage());
     }
   }
 }
