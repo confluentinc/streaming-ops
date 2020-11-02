@@ -1,4 +1,4 @@
-orders-topic:
-  name: orders
 logging:
   level.root: INFO
+orders-topic:
+  name: orders

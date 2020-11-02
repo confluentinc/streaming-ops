@@ -3,6 +3,7 @@ package io.confluent.kafkadevops.microservicesorders.ordersservice;
 import io.confluent.examples.streams.avro.microservices.Order;
 import io.confluent.examples.streams.avro.microservices.OrderState;
 import io.confluent.examples.streams.avro.microservices.Product;
+import org.awaitility.Awaitility;
 import org.junit.Assert;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -13,12 +14,18 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.*;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
+import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.context.junit4.SpringRunner;
+import scala.concurrent.Await;
 
+import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
@@ -34,6 +41,9 @@ class OrdersServiceApplicationTests {
   @Autowired
   private TestRestTemplate restTemplate;
 
+  @Autowired
+  private EmbeddedKafkaBroker testBroker;
+
   @Test
   void shouldBeHealthy() throws Exception {
     var result = this.restTemplate.getForObject(
@@ -47,7 +57,7 @@ class OrdersServiceApplicationTests {
     var response = this.restTemplate.exchange(
       "http://localhost:" + port + "/orders/" + missingOrderId,
       HttpMethod.GET, HttpEntity.EMPTY, String.class);
-    Assert.assertEquals(404, response.getStatusCodeValue());
+    assertEquals(404, response.getStatusCodeValue());
   }
   @Test
   void postOrderShouldReturn_201() throws Exception {
@@ -64,10 +74,12 @@ class OrdersServiceApplicationTests {
       request,
       String.class);
 
-    Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    assertEquals(HttpStatus.CREATED, response.getStatusCode());
   }
   @Test
-  void postOrderTheGetOrderShouldWork() throws Exception {
+  void postOrderThenGetOrderShouldWork() throws Exception {
+
+    testBroker.addTopics("orders");
 
     String ordId = UUID.randomUUID().toString();
     Order testOrder = new Order(ordId, 123L,
@@ -77,19 +89,29 @@ class OrdersServiceApplicationTests {
     headers.add("Content-Type", MediaType.APPLICATION_JSON_VALUE);
     HttpEntity<String> request = new HttpEntity<String>(testOrder.toString(), headers);
 
-    ResponseEntity<String> response = this.restTemplate.postForEntity(
+    ResponseEntity<String> postResponse = this.restTemplate.postForEntity(
       "http://localhost:" + port + "/v1/orders",
       request,
       String.class);
 
-    Assert.assertEquals(HttpStatus.CREATED, response.getStatusCode());
+    assertEquals(HttpStatus.CREATED, postResponse.getStatusCode());
 
-    Thread.sleep(15000*3);
+    Optional<Order> responseOrder = Optional.empty();
+    int maxRetry = 10, tries = 0;
+    while(responseOrder.isEmpty() && tries <= maxRetry) {
+      tries = tries + 1;
+      ResponseEntity<Order> getResponse = restTemplate.getForEntity(
+        "http://localhost:" + port + "/v1/orders/" + ordId,
+        Order.class);
+      if (getResponse.getStatusCode() == HttpStatus.OK) {
+        responseOrder = Optional.of(getResponse.getBody());
+      }
+      else {
+        Thread.sleep(1000);
+      }
+    }
 
-    Order responseOrder = this.restTemplate.getForObject(
-      "http://localhost:" + port + "/v1/orders/" + ordId,
-      Order.class);
-
-    Assert.assertEquals(testOrder, responseOrder);
+    assertFalse(responseOrder.isEmpty());
+    assertEquals(testOrder, responseOrder.get());
   }
 }
