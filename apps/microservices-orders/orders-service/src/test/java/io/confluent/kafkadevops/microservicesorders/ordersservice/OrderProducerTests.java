@@ -65,7 +65,6 @@ public class OrderProducerTests {
     Consumer<String, Order> consumer = new DefaultKafkaConsumerFactory<String, Order>(configs).createConsumer();
     consumer.subscribe(Collections.singleton("orders"));
 
-
     ExecutorService service = Executors.newSingleThreadExecutor();
     Future<List<Order>> consumingTask = service.submit(() -> {
       List<Order> actual = new CopyOnWriteArrayList<>();

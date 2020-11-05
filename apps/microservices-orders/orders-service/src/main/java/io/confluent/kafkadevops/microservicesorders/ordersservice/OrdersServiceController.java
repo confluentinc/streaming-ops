@@ -2,6 +2,7 @@ package io.confluent.kafkadevops.microservicesorders.ordersservice;
 
 import com.fasterxml.jackson.databind.MapperFeature;
 import io.confluent.examples.streams.avro.microservices.Order;
+import io.confluent.examples.streams.avro.microservices.OrderState;
 import org.apache.kafka.streams.StoreQueryParameters;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
@@ -71,10 +72,16 @@ public class OrdersServiceController {
 
   @GetMapping(value = "/orders/{id}/validated",
     produces = "application/json")
-  public Order getValidatedOrder(@PathVariable String id,
-                                 @RequestParam Optional<Long> timeout) {
+  public ResponseEntity<Order> getValidatedOrder(@PathVariable String id,
+                                                 @RequestParam Optional<Long> timeout) {
     logger.info("getValidatedOrder: id:{}\ttimeout:{}", id, timeout);
-    return null;
+    Order rv = streamsFactory.getKafkaStreams().store(stateStoreQuery).get(id);
+    logger.info(rv.toString());
+
+    if (rv == null || rv.getState() == OrderState.VALIDATED || rv.getState() == OrderState.FAILED)
+      return ResponseEntity.ok(rv);
+    else
+      return ResponseEntity.notFound().build();
   }
 
   @PostMapping(value = "/orders")

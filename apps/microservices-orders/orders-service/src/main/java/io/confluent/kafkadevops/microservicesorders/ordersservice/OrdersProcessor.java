@@ -41,9 +41,12 @@ public class OrdersProcessor {
   @Autowired
   public void orderTable(final StreamsBuilder builder) {
     logger.info("Building orderTable");
-    builder.table(
-      this.topic,
-      Consumed.with(Serdes.String(), orderValueSerde()),
-      Materialized.as(STATE_STORE)).toStream().peek((k,v) -> logger.info("Table Peek: {}", v));
+    builder
+      .table(
+        this.topic,
+        Consumed.with(Serdes.String(), orderValueSerde()),
+        Materialized.as(STATE_STORE))
+      .toStream()
+      .peek((k,v) -> logger.info("Table Peek: {}", v));
   }
 }
