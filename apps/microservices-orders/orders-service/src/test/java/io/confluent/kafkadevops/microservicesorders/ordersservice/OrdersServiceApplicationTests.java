@@ -5,29 +5,40 @@ import io.confluent.examples.streams.avro.microservices.OrderState;
 import io.confluent.examples.streams.avro.microservices.Product;
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
+import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.awaitility.Awaitility;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
+import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
+import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.context.junit4.SpringRunner;
 import scala.concurrent.Await;
 
@@ -40,13 +51,21 @@ import java.util.concurrent.TimeUnit;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
+/**
+ * Used the DEFINED_PORT because I had issues designing and organizing the tests and the app code in such
+ * a way that I could pull in the configured, or dynamically allocated, port and have it read at config
+ * time for OrderServiceConfig to cache the port for InteractiveQueries usage.
+ */
 @RunWith(SpringRunner.class)
 @SpringBootTest(
-  webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@EmbeddedKafka
+  webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@EmbeddedKafka(topics = "orders")
 @EnableKafka
 @EnableKafkaStreams
+@ActiveProfiles("test")
 class OrdersServiceApplicationTests {
+
+  private Logger logger = LoggerFactory.getLogger(OrdersServiceApplicationTests.class);
 
   @LocalServerPort
   private int port;
@@ -67,8 +86,6 @@ class OrdersServiceApplicationTests {
 
   @Test
   public void shouldGetValidatedOrderOnRequest() throws Exception {
-
-    testBroker.addTopics("orders");
 
     String ordId = UUID.randomUUID().toString();
     Order testOrder = new Order(ordId, 123L,

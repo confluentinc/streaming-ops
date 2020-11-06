@@ -5,6 +5,8 @@ import io.confluent.examples.streams.avro.microservices.OrderState;
 import io.confluent.examples.streams.avro.microservices.Product;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
@@ -14,6 +16,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -24,11 +27,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(
-  webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@EmbeddedKafka
+  webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@EmbeddedKafka(topics = "orders")
 @EnableKafka
 @EnableKafkaStreams
+@ActiveProfiles("test")
 public class OrdersServiceRESTTests {
+
+  private Logger logger = LoggerFactory.getLogger(OrdersServiceRESTTests.class);
+
   @LocalServerPort
   private int port;
 
@@ -37,12 +44,6 @@ public class OrdersServiceRESTTests {
 
   @Autowired
   private EmbeddedKafkaBroker testBroker;
-
-  @BeforeTestClass
-  public void before() {
-    System.out.println("Adding orders topic");
-    testBroker.addTopics("orders");
-  }
 
   @Test
   public void shouldBeHealthy() throws Exception {

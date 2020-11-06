@@ -1,19 +1,21 @@
 package io.confluent.kafkadevops.microservicesorders.ordersservice;
 
 import com.fasterxml.jackson.databind.MapperFeature;
+import fj.data.Either;
 import io.confluent.examples.streams.avro.microservices.Order;
 import io.confluent.examples.streams.avro.microservices.OrderState;
-import org.apache.kafka.streams.StoreQueryParameters;
-import org.apache.kafka.streams.state.QueryableStoreTypes;
-import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
+import org.apache.kafka.streams.StreamsConfig;
+import org.apache.kafka.streams.state.HostInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.kafka.config.StreamsBuilderFactoryBean;
+import org.springframework.kafka.config.KafkaStreamsConfiguration;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.concurrent.ListenableFutureCallback;
@@ -21,23 +23,28 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.time.Duration;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
+
+import static java.lang.Integer.parseInt;
 
 @RestController
 @RequestMapping(value = "/v1")
 public class OrdersServiceController {
 
-  private final OrderProducer producer;
-
   private final Logger logger = LoggerFactory.getLogger(OrdersServiceController.class);
 
-  private final StoreQueryParameters<ReadOnlyKeyValueStore<String, Order>> stateStoreQuery =
-    StoreQueryParameters.fromNameAndType(OrdersProcessor.STATE_STORE, QueryableStoreTypes.keyValueStore());
-  private final StreamsBuilderFactoryBean streamsFactory;
+  private final OrderProducer producer;
+  private final DistributedOrderStore ordersStore;
 
   /**
-   * Configuring this Bean allows Avro objects to be seraizlied by
+   * Configuring this Bean allows Avro objects to be serialized by
    * Jackson, otherwise, it attempts to serialize non-data values
    * @return
    */
@@ -50,38 +57,65 @@ public class OrdersServiceController {
 
   @Autowired
   OrdersServiceController(final OrderProducer orderProducer,
-                          final StreamsBuilderFactoryBean kafkaStreamsFactory) {
-    Objects.requireNonNull(kafkaStreamsFactory);
+                          final DistributedOrderStore store) {
     Objects.requireNonNull(orderProducer);
+    Objects.requireNonNull(store);
     this.producer = orderProducer;
-    this.streamsFactory = kafkaStreamsFactory;
+    this.ordersStore = store;
   }
 
   @GetMapping(value = "/orders/{id}",
     produces = "application/json")
-  public ResponseEntity<Order> getOrder(@PathVariable String id,
+  public DeferredResult<ResponseEntity<Order>> getOrder(@PathVariable String id,
                          @RequestParam Optional<Long> timeout) {
 
-    // TODO: Or delegate to proper colleague
-    logger.info("getOrder: id:{}\ttimeout:{}", id, timeout);
-    Order rv = streamsFactory.getKafkaStreams().store(stateStoreQuery).get(id);
-    logger.info("Retrieved: {}", rv);
+    final DeferredResult<ResponseEntity<Order>> httpResult = new DeferredResult<>(timeout.orElse(5000L));
 
-    return ResponseEntity.ok(rv);
+    logger.info("getOrder: id:{}\ttimeout:{}", id, timeout);
+
+    ordersStore
+      .getAsync(id)
+      .thenAcceptAsync((orderResult) -> {
+        if (orderResult.isLeft()) {
+          logger.error(String.format("Error retrieving order for id: {}",id), orderResult.left().value());
+          httpResult.setResult(ResponseEntity.notFound().build());
+        }
+        else {
+          httpResult.setResult(ResponseEntity.ok(orderResult.right().value()));
+        }
+      });
+
+    return httpResult;
   }
 
   @GetMapping(value = "/orders/{id}/validated",
     produces = "application/json")
-  public ResponseEntity<Order> getValidatedOrder(@PathVariable String id,
+  public DeferredResult<ResponseEntity<Order>> getValidatedOrder(@PathVariable String id,
                                                  @RequestParam Optional<Long> timeout) {
-    logger.info("getValidatedOrder: id:{}\ttimeout:{}", id, timeout);
-    Order rv = streamsFactory.getKafkaStreams().store(stateStoreQuery).get(id);
-    logger.info(rv.toString());
 
-    if (rv == null || rv.getState() == OrderState.VALIDATED || rv.getState() == OrderState.FAILED)
-      return ResponseEntity.ok(rv);
-    else
-      return ResponseEntity.notFound().build();
+    final DeferredResult<ResponseEntity<Order>> httpResult = new DeferredResult<>(timeout.orElse(5000L));
+
+    logger.info("getValidatedOrder: id:{}\ttimeout:{}", id, timeout);
+
+    ordersStore
+      .getAsync(id)
+      .thenAcceptAsync((orderResult) -> {
+        if (orderResult.isLeft()) {
+          logger.error(String.format("Error retrieving order for id: {}",id), orderResult.left().value());
+          httpResult.setResult(ResponseEntity.notFound().build());
+        }
+        else {
+          Order foundOrder = orderResult.right().value();
+          if (foundOrder.getState() == OrderState.VALIDATED || foundOrder.getState() == OrderState.FAILED) {
+            httpResult.setResult(ResponseEntity.ok(foundOrder));
+          }
+          else {
+            httpResult.setResult(ResponseEntity.notFound().build());
+          }
+        } })
+      .orTimeout(timeout.orElse(5000L*3L), TimeUnit.MILLISECONDS);
+
+    return httpResult;
   }
 
   @PostMapping(value = "/orders")
