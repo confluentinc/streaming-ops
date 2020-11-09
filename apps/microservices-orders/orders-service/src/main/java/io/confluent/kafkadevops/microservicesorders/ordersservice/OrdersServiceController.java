@@ -1,21 +1,15 @@
 package io.confluent.kafkadevops.microservicesorders.ordersservice;
 
 import com.fasterxml.jackson.databind.MapperFeature;
-import fj.data.Either;
 import io.confluent.examples.streams.avro.microservices.Order;
 import io.confluent.examples.streams.avro.microservices.OrderState;
-import org.apache.kafka.streams.StreamsConfig;
-import org.apache.kafka.streams.state.HostInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
-import org.springframework.kafka.config.KafkaStreamsConfiguration;
 import org.springframework.kafka.support.SendResult;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.util.concurrent.ListenableFutureCallback;
@@ -23,16 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.time.Duration;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
-
-import static java.lang.Integer.parseInt;
 
 @RestController
 @RequestMapping(value = "/v1")
@@ -77,11 +64,15 @@ public class OrdersServiceController {
       .getAsync(id)
       .thenAcceptAsync((orderResult) -> {
         if (orderResult.isLeft()) {
-          logger.error(String.format("Error retrieving order for id: {}",id), orderResult.left().value());
-          httpResult.setResult(ResponseEntity.notFound().build());
+          orderResult
+            .swap()
+            .forEach((ex) -> {
+              logger.error(String.format("Error retrieving order for id: %s",id), ex);
+              httpResult.setResult(ResponseEntity.notFound().build());
+            });
         }
         else {
-          httpResult.setResult(ResponseEntity.ok(orderResult.right().value()));
+          orderResult.forEach((order) -> httpResult.setResult(ResponseEntity.ok(order)));
         }
       });
 
@@ -101,18 +92,24 @@ public class OrdersServiceController {
       .getAsync(id)
       .thenAcceptAsync((orderResult) -> {
         if (orderResult.isLeft()) {
-          logger.error(String.format("Error retrieving order for id: {}",id), orderResult.left().value());
-          httpResult.setResult(ResponseEntity.notFound().build());
+          orderResult
+            .swap()
+            .forEach((ex) -> {
+              logger.error(String.format("Error retrieving order for id: %s", id), ex);
+              httpResult.setResult(ResponseEntity.notFound().build());
+            });
         }
         else {
-          Order foundOrder = orderResult.right().value();
-          if (foundOrder.getState() == OrderState.VALIDATED || foundOrder.getState() == OrderState.FAILED) {
-            httpResult.setResult(ResponseEntity.ok(foundOrder));
-          }
-          else {
-            httpResult.setResult(ResponseEntity.notFound().build());
-          }
-        } })
+          orderResult
+            .forEach((order) -> {
+              if (order.getState() == OrderState.VALIDATED || order.getState() == OrderState.FAILED) {
+                httpResult.setResult(ResponseEntity.ok(order));
+              } else {
+                httpResult.setResult(ResponseEntity.notFound().build());
+              }
+            });
+        }
+      })
       .orTimeout(timeout.orElse(5000L*3L), TimeUnit.MILLISECONDS);
 
     return httpResult;

@@ -16,6 +16,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -31,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EmbeddedKafka(topics = "orders")
 @EnableKafka
 @EnableKafkaStreams
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 @ActiveProfiles("test")
 public class OrdersServiceRESTTests {
 
@@ -56,7 +58,15 @@ public class OrdersServiceRESTTests {
   public void shouldNotReturnOrder() throws Exception {
     var missingOrderId = UUID.randomUUID().toString();
     var response = this.restTemplate.exchange(
-      "http://localhost:" + port + "/orders/" + missingOrderId,
+      "http://localhost:" + port + "/v1/orders/" + missingOrderId,
+      HttpMethod.GET, HttpEntity.EMPTY, String.class);
+    assertEquals(404, response.getStatusCodeValue());
+  }
+  @Test
+  public void shouldNotReturnValidatedOrder() throws Exception {
+    var missingOrderId = UUID.randomUUID().toString();
+    var response = this.restTemplate.exchange(
+      "http://localhost:" + port + "/v1/orders/" + missingOrderId + "/validated",
       HttpMethod.GET, HttpEntity.EMPTY, String.class);
     assertEquals(404, response.getStatusCodeValue());
   }
