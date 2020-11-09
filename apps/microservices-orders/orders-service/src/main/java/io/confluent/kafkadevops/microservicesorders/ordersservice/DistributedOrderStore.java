@@ -60,17 +60,21 @@ public class DistributedOrderStore {
     if (keyMeta.getActiveHost().equals(localInstanceHostInfo))
       return getLocalOrder(id);
     else {
-      // TODO: Implement standby replicas and other host lookup
-      Either<Exception, Order> rv = Either.left(new Exception(String.format("Order %s not found", id)));
-      for (HostInfo hi : keyMeta.getStandbyHosts()) {
-        try {
-          rv = Either.right(getOrderFromRemote(id, hi).block());
-          break;
-        } catch (Exception ex) {
-          rv = Either.left(ex);
-        }
+      try {
+        return Either.right(getOrderFromRemote(id, keyMeta.getActiveHost()).block());
+        //// TODO: Implement standby host retrieval
+        //Either<Exception, Order> rv = Either.left(new Exception(String.format("Order %s not found", id)));
+        //for (HostInfo hi : keyMeta.getStandbyHosts()) {
+        //  try {
+        //    rv = Either.right(getOrderFromRemote(id, hi).block());
+        //    break;
+        //  } catch (Exception ex) {
+        //    rv = Either.left(ex);
+        //  }
+        //}
+      } catch (Exception ex) {
+        return Either.left(ex);
       }
-      return rv;
     }
   }
   private Either<Exception, Order> getOrderGlobally(String id) {
