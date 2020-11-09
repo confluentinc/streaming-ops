@@ -2,4 +2,4 @@ logging:
   level.root: INFO
 orders-topic:
   name: orders
-server.port: 9001
+server.port: 9002

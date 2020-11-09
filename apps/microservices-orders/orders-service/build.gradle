@@ -11,6 +11,7 @@ plugins {
 	id 'org.springframework.boot' version '2.3.4.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
 	id 'java'
+  id "com.github.johnrengelman.shadow" version "6.1.0"
 }
 
 group = 'io.confluent.kafka-devops.microservices-orders'
