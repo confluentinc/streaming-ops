@@ -61,17 +61,19 @@ public class DistributedOrderStore {
       return getLocalOrder(id);
     else {
       try {
+        // TODO: Right now this uses a blocking function on the REST call to find
+        //    the remote order.  Rework this so that non-blocking code can be used throughout.
         return Either.right(getOrderFromRemote(id, keyMeta.getActiveHost()).block());
-        //// TODO: Implement standby host retrieval
-        //Either<Exception, Order> rv = Either.left(new Exception(String.format("Order %s not found", id)));
-        //for (HostInfo hi : keyMeta.getStandbyHosts()) {
-        //  try {
-        //    rv = Either.right(getOrderFromRemote(id, hi).block());
-        //    break;
-        //  } catch (Exception ex) {
-        //    rv = Either.left(ex);
-        //  }
-        //}
+        // TODO: Implement standby host retrieval
+        //    Psudeo code...
+        //      for (HostInfo hi : keyMeta.getStandbyHosts()) {
+        //        try {
+        //          rv = Either.right(getOrderFromRemote(id, hi).block());
+        //          break;
+        //        } catch (Exception ex) {
+        //          rv = Either.left(ex);
+        //        }
+        //      }
       } catch (Exception ex) {
         return Either.left(ex);
       }
