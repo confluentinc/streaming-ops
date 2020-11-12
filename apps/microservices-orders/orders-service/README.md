@@ -18,4 +18,4 @@ The project contains a `Makefile` for managing build and package.
 ## Configuring
 
 This application is built on the Spring Framework and uses [Spring Application Property Files](https://docs.spring.io/spring-boot/docs/current/reference/html/spring-boot-features.html#boot-features-external-config-application-property-files).
-Configuration can be overriden using many methods [(docs)](https://docs.spring.io/spring-boot/docs/1.5.6.RELEASE/reference/html/boot-features-external-config.html).
+Configuration can be overridden using many methods [(docs)](https://docs.spring.io/spring-boot/docs/1.5.6.RELEASE/reference/html/boot-features-external-config.html).
