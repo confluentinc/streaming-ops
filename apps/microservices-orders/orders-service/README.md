@@ -9,7 +9,7 @@ The project contains a `Makefile` for managing build and package.
 
 |            |                                           |
 |------------|-------------------------------------------|
-| `make clean` |will clean build artifiacts|
+| `make clean` |will clean build artifacts|
 | `make test`  |will run provide unit and integration tests|
 | `make build` |will build a single shadow jar for running the application|
 | `make package` |will build a Docker image|
