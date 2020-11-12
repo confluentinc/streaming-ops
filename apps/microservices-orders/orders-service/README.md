@@ -1,6 +1,6 @@
 ## Orders Service
 
-This is a re-write of the OrdersService found in the Cofnluent [Microservices Demos examples](https://github.com/confluentinc/kafka-streams-examples/tree/6.0.0-post/src/main/java/io/confluent/examples/streams/microservices)
+This is a re-write of the OrdersService found in the Confluent [Microservices Demos examples](https://github.com/confluentinc/kafka-streams-examples/tree/6.0.0-post/src/main/java/io/confluent/examples/streams/microservices)
 using the Spring Framework.
 
 ## Building
