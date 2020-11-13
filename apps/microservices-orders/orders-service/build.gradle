@@ -11,8 +11,6 @@ plugins {
 	id 'org.springframework.boot' version '2.3.4.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
 	id 'java'
-  id "com.github.johnrengelman.shadow" version "6.1.0"
-  id 'com.google.cloud.tools.jib' version '2.6.0'
 }
 
 group = 'io.confluent.kafka-devops.microservices-orders'
@@ -42,7 +40,7 @@ dependencies {
   implementation 'org.projectlombok:lombok'
   implementation 'org.apache.avro:avro:1.10.0'
   implementation 'io.confluent:kafka-streams-avro-serde:6.0.0'
-  compile "io.vavr:vavr:0.10.3"
+  implementation "io.vavr:vavr:0.10.3"
   testImplementation 'org.awaitility:awaitility'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
@@ -63,9 +61,4 @@ test {
   testLogging {
     events "passed", "skipped", "failed"
   }
-}
-
-jib.to {
-  image = 'cnfldemos/orders-service'
-  tags = [version]
 }
