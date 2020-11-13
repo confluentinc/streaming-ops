@@ -18,7 +18,6 @@ import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.UUID;
@@ -36,7 +35,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 public class OrdersServiceRESTTests {
 
-  private Logger logger = LoggerFactory.getLogger(OrdersServiceRESTTests.class);
+  private final Logger logger = LoggerFactory.getLogger(OrdersServiceRESTTests.class);
 
   @LocalServerPort
   private int port;

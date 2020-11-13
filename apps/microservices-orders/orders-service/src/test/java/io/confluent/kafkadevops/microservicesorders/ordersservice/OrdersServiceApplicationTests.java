@@ -3,21 +3,11 @@ package io.confluent.kafkadevops.microservicesorders.ordersservice;
 import io.confluent.examples.streams.avro.microservices.Order;
 import io.confluent.examples.streams.avro.microservices.OrderState;
 import io.confluent.examples.streams.avro.microservices.Product;
-import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
-import org.apache.kafka.clients.admin.NewTopic;
-import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
-import org.apache.kafka.common.KafkaException;
-import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.awaitility.Awaitility;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -26,28 +16,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.*;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
-import org.springframework.kafka.config.TopicBuilder;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
-import org.springframework.kafka.listener.ContainerProperties;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.context.junit4.SpringRunner;
-import scala.concurrent.Await;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
@@ -67,7 +50,7 @@ import static org.junit.Assert.*;
 @ActiveProfiles("test")
 class OrdersServiceApplicationTests {
 
-  private Logger logger = LoggerFactory.getLogger(OrdersServiceApplicationTests.class);
+  private final Logger logger = LoggerFactory.getLogger(OrdersServiceApplicationTests.class);
 
   @LocalServerPort
   private int port;
@@ -104,7 +87,7 @@ class OrdersServiceApplicationTests {
 
     assertEquals(HttpStatus.CREATED, postResponse.getStatusCode());
 
-    Thread.sleep(5000);
+    Thread.sleep(2000);
 
     //Simulate the order being validated
     Map<String, Object> configs = new HashMap<>(
@@ -123,7 +106,7 @@ class OrdersServiceApplicationTests {
     RecordMetadata produceResult = producer
       .send(new ProducerRecord<>("orders", validatedOrder.getId(), validatedOrder)).get();
 
-    Thread.sleep(5000);
+    Thread.sleep(2000);
 
     Optional<Order> responseOrder = Optional.empty();
     int maxRetry = 10, tries = 0;

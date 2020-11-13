@@ -16,9 +16,9 @@ public class OrderProducer {
 
   private static final Logger logger = LoggerFactory.getLogger(OrderProducer.class);
 
-  private String topic;
+  private final String topic;
 
-  private KafkaTemplate<String, Order> kafka;
+  private final KafkaTemplate<String, Order> kafka;
 
   @Autowired
   public OrderProducer(final KafkaTemplate<String, Order> kafkaTemplate,

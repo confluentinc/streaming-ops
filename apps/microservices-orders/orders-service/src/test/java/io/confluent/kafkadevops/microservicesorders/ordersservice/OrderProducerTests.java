@@ -13,8 +13,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 
-import static org.hamcrest.Matchers.anyOf;
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -38,7 +36,7 @@ import java.util.concurrent.*;
 @EmbeddedKafka
 public class OrderProducerTests {
 
-  private Logger logger = LoggerFactory.getLogger(OrderProducerTests.class);
+  private final Logger logger = LoggerFactory.getLogger(OrderProducerTests.class);
 
   @Autowired
   private OrderProducer producer;
@@ -68,7 +66,7 @@ public class OrderProducerTests {
     ExecutorService service = Executors.newSingleThreadExecutor();
     Future<List<Order>> consumingTask = service.submit(() -> {
       List<Order> actual = new CopyOnWriteArrayList<>();
-      while (actual.size() < producedOrders.size() && Thread.currentThread().isInterrupted() == false) {
+      while (actual.size() < producedOrders.size() && !Thread.currentThread().isInterrupted()) {
         ConsumerRecords<String, Order> records = KafkaTestUtils.getRecords(consumer, 100);
         for (ConsumerRecord<String, Order> rec : records) {
           actual.add(rec.value());
