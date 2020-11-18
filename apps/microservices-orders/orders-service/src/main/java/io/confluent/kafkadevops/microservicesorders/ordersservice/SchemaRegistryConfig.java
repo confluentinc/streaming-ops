@@ -1,5 +1,6 @@
 package io.confluent.kafkadevops.microservicesorders.ordersservice;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -12,8 +13,19 @@ import java.util.Properties;
 @Scope("singleton")
 public class SchemaRegistryConfig {
 
-  @Value("${spring.kafka.properties.schema.registry.url}")
-  public String url;
+  public final String url;
+  public final String basicAuthCredentialsSource;
+  public final String basicAuthUserInfo;
+
+  @Autowired
+  public SchemaRegistryConfig(
+    @Value("${spring.kafka.properties.schema.registry.url}") final String url,
+    @Value("${spring.kafka.properties.basic.auth.credentials.source}") final String basicAuthCredentialsSource,
+    @Value("${spring.kafka.properties.schema.registry.basic.auth.user.info}") final String basicAuthUserInfo) {
+    this.url = url;
+    this.basicAuthCredentialsSource = basicAuthCredentialsSource;
+    this.basicAuthUserInfo = basicAuthUserInfo;
+  }
 
   public Properties buildProperties() {
     return buildProperties(this);
@@ -21,6 +33,8 @@ public class SchemaRegistryConfig {
   public static Properties buildProperties(SchemaRegistryConfig config) {
     final Properties rv = new Properties();
     rv.put("schema.registry.url", config.url);
+    rv.put("basic.auth.credentials.source", config.basicAuthCredentialsSource);
+    rv.put("schema.registry.basic.auth.user.info", config.basicAuthUserInfo);
     return rv;
   }
 
