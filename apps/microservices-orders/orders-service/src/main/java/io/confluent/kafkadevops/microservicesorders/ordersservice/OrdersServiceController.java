@@ -72,7 +72,9 @@ public class OrdersServiceController {
             });
         }
         else {
-          orderResult.forEach((order) -> httpResult.setResult(ResponseEntity.ok(order)));
+          orderResult.forEach((maybeOrder) -> {
+            httpResult.setResult(ResponseEntity.of(maybeOrder));
+          });
         }
       });
 
@@ -90,9 +92,9 @@ public class OrdersServiceController {
 
     ordersStore
       .getAsync(id)
-      .thenAcceptAsync((orderResult) -> {
-        if (orderResult.isLeft()) {
-          orderResult
+      .thenAcceptAsync((getResult) -> {
+        if (getResult.isLeft()) {
+          getResult
             .swap()
             .forEach((ex) -> {
               logger.error(String.format("Error retrieving order for id: %s", id), ex);
@@ -100,13 +102,17 @@ public class OrdersServiceController {
             });
         }
         else {
-          orderResult
-            .forEach((order) -> {
-              if (order.getState() == OrderState.VALIDATED || order.getState() == OrderState.FAILED) {
-                httpResult.setResult(ResponseEntity.ok(order));
-              } else {
-                httpResult.setResult(ResponseEntity.notFound().build());
-              }
+          getResult
+            .forEach((maybeOrder) -> {
+              maybeOrder.ifPresentOrElse(
+                (foundOrder) -> {
+                  if (foundOrder.getState() ==  OrderState.VALIDATED || foundOrder.getState() == OrderState.FAILED) {
+                    httpResult.setResult(ResponseEntity.ok(foundOrder));
+                  } else {
+                    httpResult.setResult(ResponseEntity.notFound().build());
+                  }
+                },
+                () -> httpResult.setResult(ResponseEntity.notFound().build()));
             });
         }
       })
