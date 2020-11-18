@@ -41,18 +41,9 @@ dependencies {
   implementation 'io.confluent:kafka-streams-avro-serde:6.0.0'
   implementation "io.vavr:vavr:0.10.3"
   testImplementation 'org.awaitility:awaitility'
-  testImplementation('org.springframework.boot:spring-boot-starter-test') {
-    exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-  }
-  testImplementation 'org.springframework.cloud:spring-cloud-stream-test-support'
+  testImplementation 'org.springframework.boot:spring-boot-starter-test'
   testImplementation 'org.springframework.kafka:spring-kafka-test'
   testImplementation 'org.apache.kafka:kafka-streams-test-utils'
-}
-
-dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
 }
 
 test {

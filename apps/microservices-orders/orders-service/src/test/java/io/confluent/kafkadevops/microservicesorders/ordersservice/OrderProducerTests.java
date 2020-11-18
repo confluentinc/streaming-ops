@@ -23,6 +23,7 @@ import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.test.EmbeddedKafkaBroker;
 import org.springframework.kafka.test.context.EmbeddedKafka;
 import org.springframework.kafka.test.utils.KafkaTestUtils;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Collections;
@@ -34,6 +35,7 @@ import java.util.concurrent.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @EmbeddedKafka
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 public class OrderProducerTests {
 
   private final Logger logger = LoggerFactory.getLogger(OrderProducerTests.class);
