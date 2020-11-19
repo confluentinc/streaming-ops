@@ -29,7 +29,7 @@ version:
 package:
 	@./gradlew bootBuildImage --imageName $(IMAGE_FULL_NAME)
 
-publish:
+publish: package
 	@docker push $(IMAGE_FULL_NAME)
 
 help:
