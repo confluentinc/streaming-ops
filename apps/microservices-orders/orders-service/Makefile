@@ -20,13 +20,13 @@ clean:
 test:
 	@./gradlew test
 
-build:
+build: test
 	@./gradlew bootJar
 
 version:
 	@printf "%s" $(VERSION)
 
-package:
+package: build
 	@./gradlew bootBuildImage --imageName $(IMAGE_FULL_NAME)
 
 publish: package
