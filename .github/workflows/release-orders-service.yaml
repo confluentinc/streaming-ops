@@ -24,6 +24,8 @@ jobs:
           java-version: 1.11
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+      - name: Test orders-service
+        run: make test
       - name: Package Docker image
         run: make package
       - name: Login to DockerHub
