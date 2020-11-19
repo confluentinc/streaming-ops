@@ -6,8 +6,12 @@ name: Build Orders Service
 on:
   push:
     branches: [ master ]
+    paths:
+    - 'apps/microservices-orders/orders-service/**'
   pull_request:
     branches: [ master ]
+    paths:
+    - 'apps/microservices-orders/orders-service/**'
 
 jobs:
   build:
