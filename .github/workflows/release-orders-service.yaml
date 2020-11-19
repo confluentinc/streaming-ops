@@ -26,8 +26,6 @@ jobs:
         run: chmod +x gradlew
       - name: Test orders-service
         run: make test
-      - name: Package Docker image
-        run: make package
       - name: Login to DockerHub
         uses: docker/login-action@v1
         with:
