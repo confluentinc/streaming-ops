@@ -1,0 +1,6 @@
+logging:
+  level.root: INFO
+orders-topic:
+  name: orders
+server:
+  port: 9000

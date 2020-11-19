@@ -1,0 +1,55 @@
+buildscript {
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath "com.commercehub.gradle.plugin:gradle-avro-plugin:0.21.0"
+  }
+}
+
+plugins {
+	id 'org.springframework.boot' version '2.3.4.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+	id 'java'
+}
+
+group = 'io.confluent.kafka-devops.microservices-orders'
+version = '10.0.0-SNAPSHOT'
+sourceCompatibility = '11'
+
+repositories {
+	mavenCentral()
+  maven {
+    url "https://packages.confluent.io/maven/"
+  }
+}
+
+apply plugin: "com.commercehub.gradle.plugin.avro"
+
+ext {
+	set('springCloudVersion', "Hoxton.SR8")
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+  implementation 'org.springframework.boot:spring-boot-starter-actuator'
+  implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation 'org.apache.kafka:kafka-streams'
+  implementation 'org.springframework.kafka:spring-kafka'
+  implementation 'org.projectlombok:lombok'
+  implementation 'org.apache.avro:avro:1.10.0'
+  implementation 'io.confluent:kafka-streams-avro-serde:6.0.0'
+  implementation "io.vavr:vavr:0.10.3"
+  testImplementation 'org.awaitility:awaitility'
+  testImplementation 'org.springframework.boot:spring-boot-starter-test'
+  testImplementation 'org.springframework.kafka:spring-kafka-test'
+  testImplementation 'org.apache.kafka:kafka-streams-test-utils'
+}
+
+test {
+	useJUnitPlatform()
+
+  testLogging {
+    events "passed", "skipped", "failed"
+  }
+}
