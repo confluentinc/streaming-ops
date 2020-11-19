@@ -12,6 +12,9 @@ jobs:
   build:
     name: Release orders-service Image
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/microservices-orders/orders-service/
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
