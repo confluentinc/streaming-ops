@@ -17,7 +17,7 @@ mkdir -p config
 # Spring Kafka requires Kafka client properties to have a prefix, like the following:
 #   spring.kafka.properties.sasl.jass.config
 # This sed command will edit in place the properties file constructed above and prefix
-#   all the lines with spring.kafka.properties, skipping the comment lines
+#   all the lines with spring.kafka.properties, skipping the comment and blank lines
 sed -i '/^#/b; /^$/b; s/^/spring.kafka.properties./;' config/application.properties
 
 echo "starting orders-service"
@@ -25,5 +25,5 @@ cat config/application.properties 2>/dev/null
 
 sleep $STARTUP_DELAY
 
-# java -jar /app/orders-service-*.jar
+java -jar /app/orders-service-*.jar
 
