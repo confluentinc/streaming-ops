@@ -27,7 +27,7 @@ version:
 	@printf "%s" $(VERSION)
 
 package: build
-	@./gradlew bootBuildImage --imageName $(IMAGE_FULL_NAME)
+	@docker build -t $(IMAGE_FULL_NAME) .
 
 publish: package
 	@docker push $(IMAGE_FULL_NAME)
