@@ -20,14 +20,14 @@ clean:
 test:
 	@./gradlew test
 
-build:
+build: test
 	@./gradlew bootJar
 
 version:
 	@printf "%s" $(VERSION)
 
-package:
-	@./gradlew bootBuildImage --imageName $(IMAGE_FULL_NAME)
+package: build
+	@docker build -t $(IMAGE_FULL_NAME) .
 
 publish: package
 	@docker push $(IMAGE_FULL_NAME)

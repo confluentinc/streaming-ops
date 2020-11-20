@@ -14,7 +14,7 @@ plugins {
 }
 
 group = 'io.confluent.kafka-devops.microservices-orders'
-version = '10.0.1'
+version = '10.0.2'
 sourceCompatibility = '11'
 
 repositories {
@@ -25,10 +25,6 @@ repositories {
 }
 
 apply plugin: "com.commercehub.gradle.plugin.avro"
-
-ext {
-	set('springCloudVersion', "Hoxton.SR8")
-}
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
