@@ -32,7 +32,7 @@ test: clean
 build: test
 	@./gradlew bootJar
 
-package:
+package: build
 	@docker build -t $(IMAGE_FULL_NAME) .
 	@docker tag $(IMAGE_FULL_NAME) $(IMAGE_SHA_NAME)
 
