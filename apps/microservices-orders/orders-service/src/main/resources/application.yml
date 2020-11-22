@@ -3,4 +3,4 @@ logging:
 orders-topic:
   name: orders
 server:
-  port: 9000
+  port: 18894
