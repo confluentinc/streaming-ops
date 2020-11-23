@@ -25,5 +25,5 @@ cat config/application.properties 2>/dev/null
 
 sleep $STARTUP_DELAY
 
-java -jar /app/orders-service-*.jar
+java -jar /app/orders-service-*.jar "$@"
 
