@@ -7,6 +7,6 @@ spec:
     spec:
       containers:
       - name: orders-service
-        image: cnfldemos/orders-service:sha-109abbf
+        image: cnfldemos/orders-service:sha-f534834 # 10.0.4
         args: ["--logging.level.root=DEBUG"]
 
