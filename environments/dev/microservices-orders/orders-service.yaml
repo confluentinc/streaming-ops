@@ -8,4 +8,5 @@ spec:
       containers:
       - name: orders-service
         image: cnfldemos/orders-service:sha-109abbf
+        args: ["--logging.level.root=DEBUG"]
 
