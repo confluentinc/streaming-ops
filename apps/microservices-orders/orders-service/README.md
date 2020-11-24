@@ -13,7 +13,7 @@ The project contains a `Makefile` for managing build and package.
 | `make test`  |will run provide unit and integration tests|
 | `make build` |will build a single shadow jar for running the application|
 | `make package` |will build a Docker image|
-| `make publish` |will build and publish the Docker image to the cnfldemos Confluent Docker Hub repository|
+| `make publish` |will build and publish the Docker image to the cnfldemos Confluent Docker Hub repository (proper credentials required)|
 
 ## Configuring
 
