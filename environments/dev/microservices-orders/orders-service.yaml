@@ -7,6 +7,6 @@ spec:
     spec:
       containers:
       - name: orders-service
-        image: cnfldemos/orders-service:sha-dddd243 # 10.0.5
+        image: cnfldemos/orders-service:sha-2149646 # 10.0.6
         args: ["--spring.config.location=file:///etc/config/orders-service/", "--spring.profiles.active=bootstrap-servers,schema-registry-basic-auth-user-info,shared-client,sasl-jaas-config,schema-registry-url"]
 
