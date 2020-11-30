@@ -54,24 +54,24 @@ spec:
           value: "0"
         volumeMounts:
         - name: shared-client-config-volume
-          mountPath: /etc/config/orders-service/shared-client.properties
-          subPath: shared-client.properties
+          mountPath: /etc/config/orders-service/application-shared-client.properties
+          subPath: application-shared-client.properties
           readOnly: true
         - name: sasl-jaas-config-volume
-          mountPath: /etc/config/orders-service/sasl-jaas-config.properties
-          subPath: sasl-jaas-config.properties
+          mountPath: /etc/config/orders-service/application-sasl-jaas-config.properties
+          subPath: application-sasl-jaas-config.properties
           readOnly: true
         - name: bootstrap-config-volume
-          mountPath: /etc/config/orders-service/bootstrap-servers.properties
-          subPath: bootstrap-servers.properties
+          mountPath: /etc/config/orders-service/application-bootstrap-servers.properties
+          subPath: application-bootstrap-servers.properties
           readOnly: true
         - name: schema-registry-basic-user-info-config-volume
-          mountPath: /etc/config/orders-service/schema-registry-basic-auth-user-info.properties
-          subPath: schema-registry-basic-auth-user-info.properties
+          mountPath: /etc/config/orders-service/application-schema-registry-basic-auth-user-info.properties
+          subPath: application-schema-registry-basic-auth-user-info.properties
           readOnly: true
         - name: schema-registry-url-volume
-          mountPath: /etc/config/orders-service/schema-registry-url.properties
-          subPath: schema-registry-url.properties
+          mountPath: /etc/config/orders-service/application-schema-registry-url.properties
+          subPath: application-schema-registry-url.properties
           readOnly: true
         ports:
         - containerPort: 18894
