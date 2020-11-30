@@ -8,4 +8,5 @@ spec:
       containers:
       - name: orders-service
         image: cnfldemos/orders-service:sha-dddd243 # 10.0.5
+        args: ["--spring.profiles.active=bootstrap-servers,schema-registry-basic-auth-user-info,shared-client,sasl-jaas-config,schema-registry-url"]
 
