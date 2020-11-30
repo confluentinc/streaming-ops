@@ -14,7 +14,7 @@ plugins {
 }
 
 group = 'io.confluent.kafka-devops.microservices-orders'
-version = '10.0.4'
+version = '10.0.5'
 sourceCompatibility = '11'
 
 repositories {
