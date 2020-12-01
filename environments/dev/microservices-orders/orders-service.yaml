@@ -5,6 +5,9 @@ metadata:
 spec:
   template:
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       containers:
       - name: orders-service
         image: cnfldemos/orders-service:sha-0ccce99 # 10.0.8
