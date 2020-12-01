@@ -9,6 +9,8 @@ spec:
       - name: orders-service
         image: cnfldemos/orders-service:sha-0ccce99 # 10.0.8
         env:
+        - name: DEBUG
+          value: "true"
         - name: SPRING_PROFILES_ACTIVE
           value: "bootstrap-servers,sasl-jaas-config,schema-registry-basic-auth-user-info,schema-registry-url,shared-client"
         volumeMounts:
