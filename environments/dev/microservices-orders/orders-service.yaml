@@ -14,6 +14,7 @@ spec:
         - name: SPRING_PROFILES_ACTIVE
           value: "bootstrap-servers,sasl-jaas-config,schema-registry-basic-auth-user-info,schema-registry-url,shared-client"
         volumeMounts:
+        - $patch: replace
         - name: shared-client-config-volume
           mountPath: /workspace/config/application-shared-client.properties
           subPath: application-shared-client.properties
