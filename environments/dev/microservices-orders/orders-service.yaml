@@ -5,35 +5,7 @@ metadata:
 spec:
   template:
     spec:
-      securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
       containers:
       - name: orders-service
         image: cnfldemos/orders-service:sha-0ccce99 # 10.0.8
-        env:
-        - name: SPRING_PROFILES_ACTIVE
-          value: "bootstrap-servers,sasl-jaas-config,schema-registry-basic-auth-user-info,schema-registry-url,shared-client"
-        volumeMounts:
-        - $patch: replace
-        - name: shared-client-config-volume
-          mountPath: /workspace/config/application-shared-client.properties
-          subPath: shared-client.properties
-          readOnly: true
-        - name: sasl-jaas-config-volume
-          mountPath: /workspace/config/application-sasl-jaas-config.properties
-          subPath: sasl-jaas-config.properties
-          readOnly: true
-        - name: bootstrap-config-volume
-          mountPath: /workspace/config/application-bootstrap-servers.properties
-          subPath: bootstrap-servers.properties
-          readOnly: true
-        - name: schema-registry-basic-user-info-config-volume
-          mountPath: /workspace/config/application-schema-registry-basic-auth-user-info.properties
-          subPath: schema-registry-basic-auth-user-info.properties
-          readOnly: true
-        - name: schema-registry-url-volume
-          mountPath: /workspace/config/application-schema-registry-url.properties
-          subPath: schema-registry-url.properties
-          readOnly: true
 
