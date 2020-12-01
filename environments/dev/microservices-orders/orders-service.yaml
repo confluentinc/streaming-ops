@@ -8,7 +8,9 @@ spec:
       containers:
       - name: orders-service
         image: cnfldemos/orders-service:sha-0ccce99 # 10.0.8
-        args: ["--spring.profiles.active=bootstrap-servers,sasl-jaas-config,schema-registry-basic-auth-user-info,schema-registry-url,shared-client"]
+        env:
+        - name: SPRING_PROFILES_ACTIVE
+          value: "bootstrap-servers,sasl-jaas-config,schema-registry-basic-auth-user-info,schema-registry-url,shared-client"
         volumeMounts:
         - name: shared-client-config-volume
           mountPath: /workspace/config/application-shared-client.properties
