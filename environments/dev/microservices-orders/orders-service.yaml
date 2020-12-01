@@ -7,5 +7,27 @@ spec:
     spec:
       containers:
       - name: orders-service
-        image: cnfldemos/orders-service:sha-82165db # 10.0.4
+        image: cnfldemos/orders-service:sha-0ccce99 # 10.0.8
+        args: ["--spring.profiles.active=bootstrap-servers,sasl-jaas-config,schema-registry-basic-auth-user-info,schema-registry-url,shared-client"]
+        volumeMounts:
+        - name: shared-client-config-volume
+          mountPath: /workspace/config/application-shared-client.properties
+          subPath: application-shared-client.properties
+          readOnly: true
+        - name: sasl-jaas-config-volume
+          mountPath: /workspace/config/application-sasl-jaas-config.properties
+          subPath: application-sasl-jaas-config.properties
+          readOnly: true
+        - name: bootstrap-config-volume
+          mountPath: /workspace/config/application-bootstrap-servers.properties
+          subPath: application-bootstrap-servers.properties
+          readOnly: true
+        - name: schema-registry-basic-user-info-config-volume
+          mountPath: /workspace/config/application-schema-registry-basic-auth-user-info.properties
+          subPath: application-schema-registry-basic-auth-user-info.properties
+          readOnly: true
+        - name: schema-registry-url-volume
+          mountPath: /workspace/config/application-schema-registry-url.properties
+          subPath: application-schema-registry-url.properties
+          readOnly: true
 
