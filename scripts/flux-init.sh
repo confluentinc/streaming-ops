@@ -28,7 +28,7 @@ REPO_GIT_USER=${GHUSER}
 REPO_GIT_EMAIL=${GHUSER}@users.noreply.github.com
 
 REPO_GIT_INIT_PATHS="environments/${ENVIRONMENT}\,secrets/sealed/${ENVIRONMENT}"
-REPO_BRANCH=master
+REPO_BRANCH=${REPO_BRANCH:-master}
 REPO_ROOT=$(git rev-parse --show-toplevel)
 WAIT_FOR_DEPLOY=${WAIT_FOR_DEPLOY:-true}
 
