@@ -4,10 +4,6 @@
 name: Test orders-service
 
 on:
-  push:
-    branches: [ master ]
-    paths:
-    - 'apps/microservices-orders/orders-service/**'
   pull_request:
     branches: [ master ]
     paths:
