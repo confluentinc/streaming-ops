@@ -34,6 +34,7 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: images/connect/
+          file: images/connect/Dockerfile
           push: false # to true before releasing changes
           tags: ${{ steps.prep.outputs.tags }}
 
