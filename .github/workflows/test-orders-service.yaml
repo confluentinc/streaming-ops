@@ -5,10 +5,9 @@ name: Test orders-service
 
 on:
   push:
-    # Testing is executed in the release job on push to master
-    # branches: [ master ]
-    # paths:
-    # - 'apps/microservices-orders/orders-service/**'
+    branches: [ master ]
+    paths:
+    - 'apps/microservices-orders/orders-service/**'
   pull_request:
     branches: [ master ]
     paths:
