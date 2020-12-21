@@ -30,7 +30,7 @@ jobs:
         run: |
           DOCKER_IMAGE=cnfldemos/microservices-orders-connect
           SHA=$(git log -1 --pretty=%h)
-          TAGS="${DOCKER_IMAGE}:sha-${SHA}
+          TAGS="${DOCKER_IMAGE}:sha-${SHA}"
           echo ::set-output name=tags::${TAGS}
 
       - name: Build and push Docker image
