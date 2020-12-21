@@ -12,9 +12,6 @@ jobs:
   build:
     name: Release microservices-orders-connect Image
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: images/connect
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -36,8 +33,7 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v2
         with:
-          context: images/connect/
-          file: images/connect/Dockerfile
+          context: /home/runner/work/kafka-devops/kafka-devops/images/connect/
           push: false # to true before releasing changes
           tags: ${{ steps.prep.outputs.tags }}
 
