@@ -35,6 +35,6 @@ jobs:
         with:
           context: images/connect/
           file: images/connect/Dockerfile
-          push: false # to true before releasing changes
+          push: true
           tags: ${{ steps.prep.outputs.tags }}
 
