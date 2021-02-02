@@ -23,7 +23,7 @@ if [ -z ${GHUSER+x} ]; then
 fi
 
 ENVIRONMENT=${ENVIRONMENT:-dev}
-REPO_URL=${REPO_URL:-git@github.com:confluentinc/kafka-devops}
+REPO_URL=${REPO_URL:-git@github.com:confluentinc/streaming-ops}
 REPO_GIT_USER=${GHUSER}
 REPO_GIT_EMAIL=${GHUSER}@users.noreply.github.com
 
