@@ -4,7 +4,7 @@ Simulated production environment running a streaming application targeting Kafka
 
 The full usage documentation for this project can be found on [this Confluent documentation page](https://docs.confluent.io/current/tutorials/kafka-devops/index.html).
 
-This project is the subject of the following Confluent Blog post discussing the concepts of DevOps with Kubernetes and Event Streaming Platforms: [DevOps for Apache Kafka® with Kubernetes and GitOps](https://www.confluent.io/blog/kafka-devops-with-confluent-kubernetes-and-gitops/)
+This project is the subject of the following Confluent Blog post discussing the concepts of DevOps with Kubernetes and Event Streaming Platforms: [DevOps for Apache Kafka® with Kubernetes and GitOps](https://www.confluent.io/blog/devops-for-apache-kafka-with-kubernetes-and-gitops/)
 
 ## Credits / Links
 * Significant portions of the repository are based on the work of Steven Wade @ https://github.com/swade1987
