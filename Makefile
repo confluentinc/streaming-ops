@@ -42,12 +42,12 @@ install-deps: ccloud kubeseal yq
 cluster:
 	@$(call print-header,"creating new k3d cluster")
 	@$(call print-prompt)
-	k3d cluster create kafka-devops --servers 4 --volume $(PWD)/.data:/var/lib/host --wait
+	k3d cluster create streaming-ops --servers 4 --volume $(PWD)/.data:/var/lib/host --wait
 
 destroy-cluster:
 	@$(call print-header,"deleting k3d cluster")
 	@$(call print-prompt)
-	-(k3d cluster list | grep kafka-devops) && k3d cluster delete kafka-devops
+	-(k3d cluster list | grep streaming-ops) && k3d cluster delete streaming-ops
 
 install-bitnami-secret-controller:
 	@$(call print-header,"Installing bitnami secret controller")
@@ -91,7 +91,7 @@ ifndef GH_TOKEN
 endif
 	@$(call print-header,"deploying flux deploy key to GitHub")
 	@$(call print-prompt)
-	@KEY="$(FLUX_KEY)" NAME="kafka-devops-flux" ./scripts/create-deploy-key.sh
+	@KEY="$(FLUX_KEY)" NAME="streaming-ops-flux" ./scripts/create-deploy-key.sh
 
 sync:
 	@$(call print-header,"Flux sync")

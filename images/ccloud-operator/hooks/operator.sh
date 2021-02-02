@@ -36,7 +36,7 @@ hook::apply() {
 }
 
 hook::delete() {
-	echo "!! Deleting resources with ccloud-operator is not supported at this time. To delete resources use the ccloud CLI or Confluent Cloud web UI.  See: https://github.com/confluentinc/kafka-devops/issues/3"
+	echo "!! Deleting resources with ccloud-operator is not supported at this time. To delete resources use the ccloud CLI or Confluent Cloud web UI.  See: https://github.com/confluentinc/streaming-ops/issues/3"
 }
 
 hook::run() {
