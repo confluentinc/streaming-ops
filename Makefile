@@ -113,7 +113,7 @@ endif
 	@$(call print-header,"pushing new secrets to git repo")
 	git add secrets/sealed/$*/.
 	git commit -m "demo-$*: $(WHO_AM_I): $(TIMESTAMP)"'\n\n[ci skip]'
-	git push origin master
+	git push origin main
 	@make --no-print-directory install-flux-dev WAIT_FOR_DEPLOY=false
 	@make --no-print-directory gh-deploy-key
 
