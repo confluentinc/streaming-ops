@@ -3,7 +3,7 @@ name: Release validations-aggregator-service Image
 on:
   push:
     branches:
-    - master
+    - main
     paths:
     - 'images/microservices-orders/validations-aggregator-service/**'
   workflow_dispatch:

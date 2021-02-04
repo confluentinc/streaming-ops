@@ -3,7 +3,7 @@ name: Release fraud-service Image
 on:
   push:
     branches:
-    - master
+    - main
     paths:
     - 'images/microservices-orders/fraud-service/**'
   workflow_dispatch:

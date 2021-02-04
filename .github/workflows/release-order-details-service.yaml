@@ -3,7 +3,7 @@ name: Release order-details-service Image
 on:
   push:
     branches:
-    - master
+    - main
     paths:
     - 'images/microservices-orders/order-details-service/**'
   workflow_dispatch:

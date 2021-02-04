@@ -3,7 +3,7 @@ name: Release orders-and-payments-simulator Image
 on:
   push:
     branches:
-    - master
+    - main
     paths:
     - 'images/microservices-orders/orders-and-payments-simulator/**'
   workflow_dispatch:

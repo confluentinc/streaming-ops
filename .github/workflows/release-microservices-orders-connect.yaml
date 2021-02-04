@@ -3,7 +3,7 @@ name: Release microservices-orders-connect Image
 on:
   push:
     branches:
-    - master
+    - main
     paths:
     - 'images/connect/**'
   workflow_dispatch:

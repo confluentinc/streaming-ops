@@ -3,7 +3,7 @@ name: Release ccloud-operator Image
 on:
   push:
     branches:
-    - master
+    - main
     paths:
     - 'images/ccloud-operator/**'
   workflow_dispatch:

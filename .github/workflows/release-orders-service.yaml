@@ -3,7 +3,7 @@ name: Release orders-service Image
 on:
   push:
     branches:
-    - master
+    - main
     paths:
     - 'apps/microservices-orders/orders-service/**'
     - '.github/workflows/release-orders-service.yaml'

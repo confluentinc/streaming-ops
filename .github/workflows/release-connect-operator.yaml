@@ -3,7 +3,7 @@ name: Release connect-operator Image
 on:
   push:
     branches:
-    - master
+    - main
     paths:
     - 'images/connect-operator/**'
   workflow_dispatch:

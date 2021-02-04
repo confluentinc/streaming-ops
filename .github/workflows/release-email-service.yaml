@@ -3,7 +3,7 @@ name: Release email-service Image
 on:
   push:
     branches:
-    - master
+    - main
     paths:
     - 'images/microservices-orders/email-service/**'
   workflow_dispatch:

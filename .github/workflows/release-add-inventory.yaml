@@ -3,7 +3,7 @@ name: Release add-inventory Image
 on:
   push:
     branches:
-    - master
+    - main
     paths:
     - 'images/microservices-orders/add-inventory/**'
   workflow_dispatch:

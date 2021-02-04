@@ -5,7 +5,7 @@ name: Test orders-service
 
 on:
   pull_request:
-    branches: [ master ]
+    branches: [ main ]
     paths:
     - 'apps/microservices-orders/orders-service/**'
   workflow_dispatch:
