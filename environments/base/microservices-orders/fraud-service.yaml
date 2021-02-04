@@ -19,16 +19,16 @@ spec:
           name: cc.shared-client-config
       - name: sasl-jaas-config-volume
         secret:
-          secretName: cc.sasl-jaas-config.microservices-orders-client.kafka-devops.microservices-orders
+          secretName: cc.sasl-jaas-config.microservices-orders-client.streaming-ops.microservices-orders
       - name: bootstrap-config-volume
         secret:
-          secretName: cc.bootstrap-servers.kafka-devops.microservices-orders
+          secretName: cc.bootstrap-servers.streaming-ops.microservices-orders
       - name: schema-registry-basic-user-info-config-volume
         secret:
-          secretName: cc.schema-registry-basic-auth-user-info.kafka-devops-sr-client.kafka-devops
+          secretName: cc.schema-registry-basic-auth-user-info.streaming-ops-sr-client.streaming-ops
       - name: schema-registry-url-volume
         secret:
-          secretName: cc.schema-registry-url.kafka-devops
+          secretName: cc.schema-registry-url.streaming-ops
       containers:
       - name: fraud-service
         image: cnfldemos/fraud-service:sha-93c0516

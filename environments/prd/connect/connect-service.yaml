@@ -11,13 +11,13 @@ spec:
           name: cc.shared-client-config
       - name: sasl-jaas-config-volume
         secret:
-          secretName: cc.sasl-jaas-config.connect-worker-client.kafka-devops-prd.microservices-orders
+          secretName: cc.sasl-jaas-config.connect-worker-client.streaming-ops-prd.microservices-orders
       - name: bootstrap-config-volume
         secret:
-          secretName: cc.bootstrap-servers.kafka-devops-prd.microservices-orders
+          secretName: cc.bootstrap-servers.streaming-ops-prd.microservices-orders
       - name: schema-registry-basic-user-info-config-volume
         secret:
-          secretName: cc.schema-registry-basic-auth-user-info.kafka-devops-sr-client.kafka-devops-prd
+          secretName: cc.schema-registry-basic-auth-user-info.streaming-ops-sr-client.streaming-ops-prd
       - name: schema-registry-url-volume
         secret:
-          secretName: cc.schema-registry-url.kafka-devops-prd
+          secretName: cc.schema-registry-url.streaming-ops-prd

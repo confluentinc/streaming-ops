@@ -10,5 +10,5 @@ USERNAME=${USERNAME:-$(whoami)}
 DATA=$(jq -n --arg title "$NAME" --arg key "$KEY" --arg read_only "false" '{title: $title, key: $key, read_only: $read_only}')
 
 echo "Posting new GH Deploy key"
-curl -XPOST -u$USERNAME:$GH_TOKEN https://api.github.com/repos/$ORG/kafka-devops/keys -d "$DATA"
+curl -XPOST -u$USERNAME:$GH_TOKEN https://api.github.com/repos/$ORG/streaming-ops/keys -d "$DATA"
 

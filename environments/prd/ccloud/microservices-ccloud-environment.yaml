@@ -1,19 +1,19 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: kafka-devops-ccloud-environment
+  name: streaming-ops-ccloud-environment
   labels:
     destination: ccloud
 data:
   environments: |
     [
       {
-        "name": "kafka-devops-prd",
+        "name": "streaming-ops-prd",
         "schema-registry": {
           "cloud": "gcp",
           "geo": "us",
           "api-key": [
-            { "service-account": "kafka-devops-sr-client" }
+            { "service-account": "streaming-ops-sr-client" }
           ]
         },
         "kafka": [
@@ -68,7 +68,7 @@ data:
                   { "operation" : "read,write", "permission": "allow",
                     "resource": "topic", "name": "*", "prefix": "true" },
                   { "operation" : "read", "permission": "allow",
-                    "resource": "consumer-group", "name": "kafka-devops-connect" },
+                    "resource": "consumer-group", "name": "streaming-ops-connect" },
                   { "operation" : "describe", "permission": "allow",
                     "resource": "cluster-scope" }
                 ]

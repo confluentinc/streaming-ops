@@ -2,7 +2,7 @@
 
 Simulated production environment running a streaming application targeting Kafka on Confluent Cloud. Applications and resources are managed by GitOps with declarative infrastructure, Kubernetes, and the [Operator Pattern](https://kubernetes.io/docs/concepts/extend-kubernetes/operator/).
 
-The full usage documentation for this project can be found on [this Confluent documentation page](https://docs.confluent.io/current/tutorials/kafka-devops/index.html).
+The full usage documentation for this project can be found on [this Confluent documentation page](https://docs.confluent.io/current/tutorials/streaming-ops/index.html).
 
 This project is the subject of the following Confluent Blog post discussing the concepts of DevOps with Kubernetes and Event Streaming Platforms: [DevOps for Apache Kafka® with Kubernetes and GitOps](https://www.confluent.io/blog/devops-for-apache-kafka-with-kubernetes-and-gitops/)
 

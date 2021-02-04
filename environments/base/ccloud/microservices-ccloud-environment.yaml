@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: kafka-devops-ccloud-environment
+  name: streaming-ops-ccloud-environment
   labels:
     destination: ccloud
 data:
@@ -10,8 +10,8 @@ data:
       { "name": "microservices-orders-client",
         "description": "Account for client microservices orders client apps"
       }, {
-        "name": "kafka-devops-sr-client",
-        "description": "Account for client access to kafka-devlops environment scheuma registry"
+        "name": "streaming-ops-sr-client",
+        "description": "Account for client access to streaming-ops environment schema registry"
       }, {
         "name": "connect-worker-client",
         "description": "Account for connect worker client access"

@@ -13,7 +13,7 @@ plugins {
 	id 'java'
 }
 
-group = 'io.confluent.kafka-devops.microservices-orders'
+group = 'io.confluent.streaming-ops.microservices-orders'
 version = '10.0.8'
 sourceCompatibility = '11'
 
