@@ -19,16 +19,16 @@ spec:
           name: cc.shared-client-config
       - name: sasl-jaas-config-volume
         secret:
-          secretName: cc.sasl-jaas-config.microservices-orders-client.streaming-ops.microservices-orders
+          secretName: cc.sasl-jaas-config.microservices-orders-client.streaming-ops-dev.microservices-orders
       - name: bootstrap-config-volume
         secret:
-          secretName: cc.bootstrap-servers.streaming-ops.microservices-orders
+          secretName: cc.bootstrap-servers.streaming-ops-dev.microservices-orders
       - name: schema-registry-basic-user-info-config-volume
         secret:
-          secretName: cc.schema-registry-basic-auth-user-info.streaming-ops-sr-client.streaming-ops
+          secretName: cc.schema-registry-basic-auth-user-info.streaming-ops-sr-client.streaming-ops-dev
       - name: schema-registry-url-volume
         secret:
-          secretName: cc.schema-registry-url.streaming-ops
+          secretName: cc.schema-registry-url.streaming-ops-dev
       containers:
       - name: inventory-service
         image: cnfldemos/inventory-service:sha-93c0516
