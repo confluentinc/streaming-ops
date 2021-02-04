@@ -9,16 +9,16 @@ spec:
         name: cc.shared-client-config
     - name: sasl-jaas-config-volume
       secret:
-        secretName: cc.sasl-jaas-config.connect-worker-client.streaming-ops.microservices-orders
+        secretName: cc.sasl-jaas-config.connect-worker-client.streaming-ops-dev.microservices-orders
     - name: bootstrap-config-volume
       secret:
-        secretName: cc.bootstrap-servers.streaming-ops.microservices-orders
+        secretName: cc.bootstrap-servers.streaming-ops-dev.microservices-orders
     - name: schema-registry-basic-user-info-config-volume
       secret:
-        secretName: cc.schema-registry-basic-auth-user-info.streaming-ops-sr-client.streaming-ops
+        secretName: cc.schema-registry-basic-auth-user-info.streaming-ops-sr-client.streaming-ops-dev
     - name: schema-registry-url-volume
       secret:
-        secretName: cc.schema-registry-url.streaming-ops
+        secretName: cc.schema-registry-url.streaming-ops-dev
   containers:
   - name: connect-operator
     image: cnfldemos/connect-operator:sha-656e615
