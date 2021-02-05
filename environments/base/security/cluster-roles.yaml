@@ -7,3 +7,11 @@ rules:
   resources: ["configmaps"]
   verbs: ["get","watch","list"]
 ---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRole
+metadata:
+  name: configmaps-admin
+rules:
+- apiGroups: [""]
+  resources: ["configmaps"]
+  verbs: ["create","patch","update","get","watch","list"]
