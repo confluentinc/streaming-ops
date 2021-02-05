@@ -20,4 +20,4 @@ spec:
           secretName: cc.schema-registry-basic-auth-user-info.streaming-ops-sr-client.streaming-ops-prd
       - name: schema-registry-url-volume
         secret:
-          secretName: cc.schema-registry-url.streming-ops-prd
+          secretName: cc.schema-registry-url.streaming-ops-prd
