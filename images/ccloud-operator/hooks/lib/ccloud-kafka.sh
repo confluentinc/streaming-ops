@@ -72,9 +72,13 @@ function ccloud::kafka::apply() {
 
   }
 
-  local secret_result=$(ccloud::kafka::apply_secret_for_endpoint kafka_id="$kafka_id" environment_name=$environment_name) && {
+  ccloud::kafka::apply_kafka_description_configmap environment_name="$environment_name" kafka_id="$kafka_id"
+
+  local secret_result=$(ccloud::kafka::apply_secret_for_endpoint kafka_id="$kafka_id" environment_name="$environment_name") && {
+
     echo $kafka_id
     return 0
+
   } || {
     local ret_code=$?
     echo "Error creating ccloud kafka secret: $secret_result"
@@ -138,3 +142,19 @@ function ccloud::kafka::apply_secret_for_endpoint() {
 
 }
 
+###################################
+# Updates a CC environment specific
+# ConfigMap with the kafka cluster
+# data
+###################################
+function ccloud::kafka::apply_kafka_description_configmap() {
+  local environment_name kafka_id
+  local "${@}"
+
+  local environment_id=$(kubectl get configmap/cc.env."$environment_name" -o json | jq -r ".data.id")
+
+  local kafka_description=$(ccloud kafka cluster describe --environment "$environment_id" "$kafka_id" -o json | jq -r '.')
+  local kafka_name=$(echo $kafka_description | jq -r '.name')
+
+  kubectl create configmap "cc.env.$environment_name.kafka.$kafka_name" --from-literal="description"="$kafka_description" --dry-run=client -o yaml | kubectl label -f - --dry-run=client -o yaml --local resource_id=$kafka_id | kubectl apply -f -
+}
