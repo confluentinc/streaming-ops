@@ -7,5 +7,6 @@ resources:
 patchesStrategicMerge:
 - connect/connect-service.yaml
 - connect/connect-operator.yaml
+- connect/orders-bigquery-sink-config.yaml
 - ccloud/microservices-ccloud-environment.yaml
 - microservices-orders/orders-service.yaml
