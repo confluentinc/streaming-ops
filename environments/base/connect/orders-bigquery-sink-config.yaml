@@ -4,7 +4,7 @@ metadata:
   name: orders-bigquery-sink-connector
   labels:
     destination: connect
-    enabled: false
+    enabled: "false"
     destination.cc: cc.env.streaming-ops-dev.kafka.microservices-orders
 data:
   orders-bq-sink.json: |-

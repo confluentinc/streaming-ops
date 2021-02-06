@@ -4,7 +4,7 @@ metadata:
   name: customers-jdbc-source-connector
   labels:
     destination: connect
-    enabled: true
+    enabled: "true"
 data:
   customers-jdbc-source-connector.json: |-
     {
