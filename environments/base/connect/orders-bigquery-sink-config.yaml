@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: orders-bigquery-sink-connector
+  labels:
+    destination: connect
+    enabled: false
+    destination.cc: cc.env.streaming-ops-dev.kafka.microservices-orders
+data:
+  customers-jdbc-source-connector.json: |-
+    { "name": "orders-bq-sink",
+      "config": {
+        "topics": "orders",
+        "input.data.format": "AVRO",
+        "connector.class": "BigQuerySink",
+        "name": "orders-bq-sink",
+        "kafka.api.key": "",
+        "kafka.api.secret": "",
+        "keyfile": "",
+        "project": "devx-testing",
+        "datasets": "orders",
+        "auto.create.tables": "true",
+        "auto.update.schemas": "true",
+        "sanitize.topics": "false",
+        "sanitize.field.names": "false",
+        "tasks.max": "1"
+      }
+    }
