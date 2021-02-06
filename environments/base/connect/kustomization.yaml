@@ -5,3 +5,4 @@ resources:
 - connect-service.yaml
 - connect-operator.yaml
 - customers-jdbc-source-config.yaml
+- orders-bigquery-sink-config.yaml
