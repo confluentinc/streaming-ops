@@ -7,4 +7,4 @@ metadata:
 spec:
   containers:
   - name: connect-operator
-    image: cnfldemos/connect-operator:sha-b54f3ab
+    image: cnfldemos/connect-operator:sha-f6d4246
