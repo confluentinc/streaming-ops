@@ -124,7 +124,7 @@ function get_cc_kafka_cluster_connect_user_arg() {
 }
 
 hook::run() {
-  if [ ! -z ${DEBUG+x} ]; then set -x; fi
+  if [ "${DEBUG}" == "true" ]; then set -x; fi
   load_configs
 
   # shell-operator gives us a wrapper around the resource we are monitoring
@@ -193,7 +193,7 @@ hook::run() {
 
   fi
 
-  if [ ! -z ${DEBUG+x} ]; then set +x; fi
+  if [ "${DEBUG}" == "true" ]; then set +x; fi
 }
 
 common::run_hook "$@"
