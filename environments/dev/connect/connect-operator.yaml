@@ -10,4 +10,4 @@ spec:
     image: cnfldemos/connect-operator:sha-1fa917d
     env:
     - name: DEBUG
-      value: "true"
+      value: "false"
