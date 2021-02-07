@@ -72,7 +72,7 @@ function apply_connector() {
   if [ -z "$user_arg" ]; then
     local curl_user_opt=""
   else
-    local curl_user_opt="--user '$user_arg'"
+    local curl_user_opt="--user $user_arg"
     echo "User option given: $curl_user_opt" >> debug.log
   fi;
 
@@ -127,7 +127,7 @@ function get_cc_kafka_cluster_connect_url() {
   echo "https://api.confluent.cloud/connect/v1/environments/$env_id/clusters/$cluster_id"
 }
 function get_cc_kafka_cluster_connect_user_arg() {
-  echo "$CONNECT_REST_KEY:$CONNECT_REST_SECRET"
+  echo "$CONNECT_REST_KEY":"$CONNECT_REST_SECRET"
 }
 
 hook::run() {
