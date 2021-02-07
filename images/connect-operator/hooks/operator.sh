@@ -54,7 +54,7 @@ function delete_connector() {
   local desired_connector_config=$(eval $template_command | jq -c '.config')
   local connector_name=$(echo $desired_connector_config | jq -r '.name')
   echo "deleting connector $connector_name"
-	curl -s -XDELETE $user_arg "$BASE_URL/connectors/$connector_name"
+	curl -s -S -XDELETE $user_arg "$BASE_URL/connectors/$connector_name"
 }
 
 # Accepts a JSON string parameter (config) representing a
@@ -73,6 +73,7 @@ function apply_connector() {
     local curl_user_opt=""
   else
     local curl_user_opt="--user '$user_arg'"
+    echo "User option given: $curl_user_opt" >> curl.log
   fi;
 
 	trap 'rm -f "$tmpfile"' EXIT
@@ -85,31 +86,33 @@ function apply_connector() {
   local connector_name=$(echo $desired_connector_config | jq -r '.name')
 
   # Determines if a connector already exists with this name
-  local connector_exists_result=$(curl -s -o curl.log -I -w "%{http_code}" -XGET -H "Accpet: application/json" $curl_user_opt "$BASE_URL/connectors/$connector_name")
+  echo "looking for existing connector $connector_name on $BASE_URL"
+  local connector_exists_result=$(curl -s -S -I -w "%{http_code}" -XGET -H "Accpet: application/json" $curl_user_opt "$BASE_URL/connectors/$connector_name")
 
   [[ "$connector_exists_result" == "200" ]] && {
 
     # If the conector already exists, we need to potentially update the configuration instead of POSTing a new connector
     # First we use `jq` to detect any changes in the desired config in the ConfigMap vs what's returned from the connector http endpoint
-		local current_connector_config=$(curl -o curl.log -s -XGET -H "Content-Type: application/json" $curl_user_opt "$BASE_URL/connectors/$connector_name/config")
+    echo "checking current connector config $connector_name on $BASE_URL"
+		local current_connector_config=$(curl -s -S --XGET -H "Content-Type: application/json" $curl_user_opt "$BASE_URL/connectors/$connector_name/config")
 
 		if cmp -s <(echo $desired_connector_config | jq -S -c .) <(echo $current_connector_config | jq -S -c .); then
 			echo "No config changes for $connector_name"
 		else
-			echo "Updating existing connector config: $connector_name"
       desired_connector_config=$(echo $desired_connector_config | jq -S -c '.config')
       # Here we PUT the changed configuration to the API under the connectorname/config route
       # We output the results of the call to /dev/null to prevent leakage of secrets to logging
       # todo: better handling of errors to assist debugging
-    	curl -s -o curl.log -XPUT -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$BASE_URL/connectors/$connector_name/config" || {
+			echo "Updating existing connector config: $connector_name on $BASE_URL"
+    	curl -s -S -o curl.log -XPUT -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$BASE_URL/connectors/$connector_name/config" || {
         echo "Error updating exisiting connector config: $connector_name. See "
       }
 		fi
 
   } || {
 
-    echo "creating new connector: $connector_name"
-    curl -o curl.log -s -XPOST -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$BASE_URL/connectors"
+    echo "creating new connector: $connector_name on $BASE_URL"
+    curl -s -S -o curl.log -XPOST -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$BASE_URL/connectors"
 
   }
 }
