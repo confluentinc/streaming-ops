@@ -69,21 +69,41 @@ function apply_connector() {
 
   DESIRED_CONNECTOR_CONFIG=$(eval $TEMPLATE_COMMAND)
   CONNECTOR_NAME=$(echo $DESIRED_CONNECTOR_CONFIG | jq -r '.name')
-	CONNECTOR_EXISTS_RESULT=$(curl -s -o /dev/null -I -w "%{http_code}" -XGET -H "Accpet: application/json" "$BASE_URL/connectors/$CONNECTOR_NAME")
+
+  # Determines if a connector already exists with this name
+  CONNECTOR_EXISTS_RESULT=$(curl -s -o /dev/null -I -w "%{http_code}" -XGET -H "Accpet: application/json" "$BASE_URL/connectors/$CONNECTOR_NAME")
 
   [[ "$CONNECTOR_EXISTS_RESULT" == "200" ]] && {
+
+    # If the conector already exists, we need to potentially update the configuration instead of POSTing a new connector
+    # First we use `jq` to detect any changes in the desired config in the ConfigMap vs what's returned from the connector http endpoint
 		CURRENT_CONNECTOR_CONFIG=$(curl -s -XGET -H "Content-Type: application/json" "$BASE_URL/connectors/$CONNECTOR_NAME/config")
+
 		if cmp -s <(echo $DESIRED_CONNECTOR_CONFIG | jq -S -c .) <(echo $CURRENT_CONNECTOR_CONFIG | jq -S -c .); then
 			echo "No config changes for $CONNECTOR_NAME"
 		else
 			echo "Updating existing connector config: $CONNECTOR_NAME"
       DESIRED_CONNECTOR_CONFIG=$(echo $DESIRED_CONNECTOR_CONFIG | jq -S -c '.config')
-    	curl -s -o /dev/null -XPUT -H "Content-Type: application/json" --data "$DESIRED_CONNECTOR_CONFIG" "$BASE_URL/connectors/$CONNECTOR_NAME/config"
+      # Here we PUT the changed configuration to the API under the connectorname/config route
+    	curl -s -XPUT -H "Content-Type: application/json" --data "$DESIRED_CONNECTOR_CONFIG" "$BASE_URL/connectors/$CONNECTOR_NAME/config"
 		fi
+
   } || {
+
     echo "creating new connector: $CONNECTOR_NAME"
-    curl -s -o /dev/null -XPOST -H "Content-Type: application/json" --data "$DESIRED_CONNECTOR_CONFIG" "$BASE_URL/connectors"
+    curl -s -XPOST -H "Content-Type: application/json" --data "$DESIRED_CONNECTOR_CONFIG" "$BASE_URL/connectors"
+
   }
+}
+
+function get_cc_kafka_cluster_connect_url() {
+	local cluster_configmap_name
+	local "${@}"
+
+  local cluster_info=$(kubectl get configmap/"$cluster_configmap_name" -o json)
+  local env_id=$(echo $cluster_info | jq -r '.metadata.labels.environment_id')
+  local cluster_id=$(echo $cluster_info | jq -r '.metadata.labels.resource_id')
+  echo "https://api.confluent.cloud/connect/v1/environments/$env_id/clusters/$cluster_id"
 }
 
 hook::run() {
@@ -96,31 +116,57 @@ hook::run() {
   # https://github.com/flant/shell-operator/blob/master/pkg/hook/binding_context/binding_context.go
 
   # so first we pull out the type of update we are getting from Kubernetes
+  # todo: Do we need to handle multiple update types here?
   TYPE=$(jq -r .[0].type $BINDING_CONTEXT_PATH)
 
   # A "Syncronization" Type event indicates we need to syncronize with the
   # current state of the resource, otherwise we'll get an "Event" type event.
   if [[ "$TYPE" == "Synchronization" ]]; then
+
     # In the Syncronization phase, we maybe receive many object instances,
-    # so we pull out each one and process them indpendently
-    KEYS=$(jq -c -r '.[0].objects | .[].object.data | keys | .[]' $BINDING_CONTEXT_PATH)
-   for KEY in $KEYS; do
-   	CONFIG=$(jq -c -r ".[].objects | .[].object.data | select(has(\"$KEY\")) | .\"$KEY\"" $BINDING_CONTEXT_PATH)
-   	apply_connector "$CONFIG"
-   done
+    # so we pull out each one and process them independently
+    for OBJECT_ENCODED in $(jq -c -r '.[0].objects | .[] | @base64' "$BINDING_CONTEXT_PATH"); do
+
+      local object=$(echo "${OBJECT_ENCODED}" | base64 -d)
+
+      local cc_destination=$(echo $object | jq -r -c '.object.metadata.labels."destination.cc"')
+
+      local keys=$(echo $object | jq -c -r '.object.data | keys | .[]')
+
+      for KEY in $keys; do
+
+      	local config=$(echo $object | jq -c -r ".object.data | select(has(\"$KEY\")) | .\"$KEY\"")
+
+        if [[ "$cc_destination" != "null" ]]; then
+          local cc_url=$(get_cc_kafka_cluster_connect_url cluster_configmap_name="$cc_destination")
+          BASE_URL=$cc_url apply_connector "$config"
+        else
+          apply_connector "$config"
+        fi
+
+
+      done
+
+    done
+
   elif [[ "$TYPE" == "Event" ]]; then
+
     # The EVENT variable will containe either Added, Updated, or Deleted in the
     # case where TYPE == Event
     EVENT=$(jq -r .[0].watchEvent $BINDING_CONTEXT_PATH)
     DATA=$(jq -r '.[0].object.data' $BINDING_CONTEXT_PATH)
     KEY=$(echo $DATA | jq -r -c 'keys | .[0]')
+
     CONFIG=$(echo $DATA | jq -r -c ".\"$KEY\"")
+
     if [[ "$EVENT" == "Deleted" ]]; then
       delete_connector "$CONFIG"
     else
      apply_connector "$CONFIG"
     fi
+
   fi
+
   if [ ! -z ${DEBUG+x} ]; then set +x; fi
 }
 

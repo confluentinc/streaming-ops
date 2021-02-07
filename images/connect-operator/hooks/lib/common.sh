@@ -13,6 +13,7 @@ kubernetes:
   labelSelector:
     matchLabels:
       destination: connect
+      enabled: "true"
   namespace:
     nameSelector:
       matchNames: ["default"]
