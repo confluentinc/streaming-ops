@@ -73,7 +73,7 @@ function apply_connector() {
     local curl_user_opt=""
   else
     local curl_user_opt="--user '$user_arg'"
-    echo "User option given: $curl_user_opt" >> curl.log
+    echo "User option given: $curl_user_opt" >> debug.log
   fi;
 
 	trap 'rm -f "$tmpfile"' EXIT
@@ -94,7 +94,7 @@ function apply_connector() {
     # If the conector already exists, we need to potentially update the configuration instead of POSTing a new connector
     # First we use `jq` to detect any changes in the desired config in the ConfigMap vs what's returned from the connector http endpoint
     echo "checking current connector config $connector_name on $BASE_URL"
-		local current_connector_config=$(curl -s -S --XGET -H "Content-Type: application/json" $curl_user_opt "$BASE_URL/connectors/$connector_name/config")
+		local current_connector_config=$(curl -s -S -XGET -H "Content-Type: application/json" $curl_user_opt "$BASE_URL/connectors/$connector_name/config")
 
 		if cmp -s <(echo $desired_connector_config | jq -S -c .) <(echo $current_connector_config | jq -S -c .); then
 			echo "No config changes for $connector_name"
