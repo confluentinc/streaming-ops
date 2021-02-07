@@ -25,6 +25,16 @@ spec:
     env:
     - name: DEBUG
       value: "false"
+    - name: CONNECT_REST_KEY
+      valueFrom:
+        secretKeyRef:
+          name: cc.api-key.cloud
+          key: key
+    - name: CONNECT_REST_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: cc.api-key.cloud
+          key: secret
     envFrom:
     - secretRef:
         name: connect-operator-secrets
