@@ -24,7 +24,7 @@ spec:
     image: cnfldemos/connect-operator:sha-656e615
     env:
     - name: DEBUG
-      value: "true"
+      value: "false"
     envFrom:
     - secretRef:
         name: connect-operator-secrets
