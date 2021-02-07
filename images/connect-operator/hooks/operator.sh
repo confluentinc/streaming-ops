@@ -104,7 +104,7 @@ function apply_connector() {
       # We output the results of the call to /dev/null to prevent leakage of secrets to logging
       # todo: better handling of errors to assist debugging
 			echo "Updating existing connector config: $connector_name on $BASE_URL"
-    	curl -s -S -o curl.log -XPUT -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$BASE_URL/connectors/$connector_name/config" || {
+    	curl -s -S -XPUT -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$BASE_URL/connectors/$connector_name/config" || {
         echo "Error updating exisiting connector config: $connector_name. See "
       }
 		fi
@@ -112,7 +112,7 @@ function apply_connector() {
   } || {
 
     echo "creating new connector: $connector_name on $BASE_URL"
-    curl -s -S -o curl.log -XPOST -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$BASE_URL/connectors"
+    curl -s -S -XPOST -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$BASE_URL/connectors"
 
   }
 }
