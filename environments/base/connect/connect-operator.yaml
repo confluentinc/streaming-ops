@@ -24,7 +24,7 @@ spec:
     image: cnfldemos/connect-operator:sha-656e615
     env:
     - name: DEBUG
-      value: "true"
+      value: "false"
     - name: CONNECT_REST_KEY
       valueFrom:
         secretKeyRef:
