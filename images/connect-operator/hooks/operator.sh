@@ -87,7 +87,7 @@ function apply_connector() {
 
   # Determines if a connector already exists with this name
   echo "looking for existing connector $connector_name on $BASE_URL"
-  local connector_exists_result=$(curl -s -S -I -w "%{http_code}" -XGET -H "Accpet: application/json" $curl_user_opt "$BASE_URL/connectors/$connector_name")
+  local connector_exists_result=$(curl -o /dev/null -s -S -I -w "%{http_code}" -XGET -H "Accpet: application/json" $curl_user_opt "$BASE_URL/connectors/$connector_name")
 
   [[ "$connector_exists_result" == "200" ]] && {
 
