@@ -41,6 +41,7 @@ hook::delete() {
 
 hook::run() {
 	ccloud::login
+  ccloud::save_cloud_key
 
   # shell-operator gives us a wrapper around the resource we are monitoring
   # in a file located at the path of $BINDING_CONTEXT_PATH
