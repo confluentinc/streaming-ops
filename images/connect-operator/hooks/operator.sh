@@ -112,7 +112,7 @@ function apply_connector() {
       # todo: better handling of errors to assist debugging
 			echo "Updating existing connector config: $connector_name on $BASE_URL"
       echo "$desired_connector_config" > "$connector_name.json"
-    	curl -s -S -XPUT -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$BASE_URL/connectors/$connector_name/config" || {
+    	curl -o /dev/null -s -S -XPUT -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$BASE_URL/connectors/$connector_name/config" || {
         echo "Error updating exisiting connector config: $connector_name. See "
       }
 		fi
@@ -121,8 +121,7 @@ function apply_connector() {
 
     echo "creating new connector: $connector_name on $BASE_URL"
     echo "$desired_connector_config" > "$connector_name.json"
-    curl -s -S -XPOST -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$BASE_URL/connectors"
-
+    curl -o /dev/null -s -S -XPOST -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$BASE_URL/connectors"
   }
 }
 
