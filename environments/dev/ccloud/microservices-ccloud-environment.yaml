@@ -65,7 +65,7 @@ data:
               {
                 "service-account": "connect-worker-client",
                 "controls": [
-                  { "operation" : "read,write", "permission": "allow",
+                  { "operation" : "read,write,create,describe,describe-configs,delete", "permission": "allow",
                     "resource": "topic", "name": "*", "prefix": "true" },
                   { "operation" : "read", "permission": "allow",
                     "resource": "consumer-group", "name": "streaming-ops-connect" },
