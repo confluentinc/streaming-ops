@@ -36,7 +36,8 @@ data:
               { "name": "connect-offsets", "partitions": 6, "config": "cleanup.policy=compact" },
               { "name": "connect-statuses", "partitions": 1, "config": "cleanup.policy=compact" },
               { "name": "_confluent-monitoring" },
-              { "name": "_confluent-command" }
+              { "name": "_confluent-command" },
+              { "name": "pageviews", "partitions": 3 }
             ],
             "acl": [
               {
