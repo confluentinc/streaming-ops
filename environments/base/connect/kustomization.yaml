@@ -6,3 +6,4 @@ resources:
 - connect-operator.yaml
 - customers-jdbc-source-config.yaml
 - orders-bigquery-sink-config.yaml
+- datagen-source-config.yaml
