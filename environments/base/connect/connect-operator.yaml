@@ -35,6 +35,11 @@ spec:
         secretKeyRef:
           name: cc.api-key.cloud
           key: secret
+    - name: ORDERS_BQ_SINK_KEYFILE
+      valueFrom:
+        secretKeyRef:
+          name: orders-bq-sink-keyfile
+          key: keyfile
     envFrom:
     - secretRef:
         name: connect-operator-secrets
