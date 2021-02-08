@@ -7,7 +7,7 @@ metadata:
 spec:
   containers:
   - name: connect-operator
-    image: cnfldemos/connect-operator:sha-2e7879b
+    image: cnfldemos/connect-operator:sha-fe3db54
     env:
     - name: DEBUG
       value: "false"
