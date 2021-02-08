@@ -5,7 +5,7 @@ metadata:
 spec:
   containers:
   - name: ccloud-operator
-    image: cnfldemos/ccloud-operator:sha-9582177
+    image: cnfldemos/ccloud-operator:sha-2b7c3ac
     envFrom:
     - secretRef:
         name: cc.ccloud-secrets
