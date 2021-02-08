@@ -16,7 +16,7 @@ data:
         "name": "orders-bq-sink",
         "kafka.api.key": env.KAFKA_API_KEY,
         "kafka.api.secret": env.KAFKA_API_SECRET,
-        "keyfile": "bad-value",
+        "keyfile": env.ORDERS_BQ_SINK_KEYFILE,
         "project": "devx-testing",
         "datasets": "orders",
         "auto.create.tables": "true",
