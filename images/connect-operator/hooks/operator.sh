@@ -36,6 +36,12 @@ function load_configs() {
   #
   # and jq respects these arguments which get templated into json
 
+  # The Kafka API Key and Secret can be used by managed connectors which connect
+  # to Kafka using the individual values instead of a sasl jaas config.  These
+  # little snippets pull out the key and secret from the sasl.jaas.config configuration
+  # stripping off the quotes
+  export KAFKA_API_KEY=$(echo $SASL_JAAS_CONFIG | cut -f4 -d" " | cut -f2 -d= | sed "s/^\([\"']\)\(.*\)\1\$/\2/g")
+  export KAFKA_API_SECRET=$(echo $SASL_JAAS_CONFIG | cut -f3 -d" " | cut -f2 -d= | sed "s/^\([\"']\)\(.*\)\1\$/\2/g")
 }
 
 # Accepts a JSON string parameter (config) representing a
@@ -202,6 +208,7 @@ hook::run() {
 
   if [ "${DEBUG}" == "true" ]; then set +x; fi
 }
+
 
 common::run_hook "$@"
 
