@@ -156,5 +156,5 @@ function ccloud::kafka::apply_kafka_description_configmap() {
   local kafka_description=$(ccloud kafka cluster describe --environment "$environment_id" "$kafka_id" -o json | jq -r '.')
   local kafka_name=$(echo $kafka_description | jq -r '.name')
 
-  kubectl create configmap "cc.env.$environment_name.kafka.$kafka_name" --from-literal="description"="$kafka_description" --dry-run=client -o yaml | kubectl label -f - --dry-run=client -o yaml --local resource_id=$kafka_id --local environment_id=$environment_id | kubectl apply -f -
+  kubectl create configmap "cc.env.$environment_name.kafka.$kafka_name" --from-literal="description"="$kafka_description" --dry-run=client -o yaml | kubectl label -f - --dry-run=client -o yaml --local resource_id=$kafka_id --local environment_id=$environment_id | kubectl apply -f - >/dev/null 2>&1
 }
