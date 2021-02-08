@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: datagen-source-connector
+  labels:
+    destination: connect
+    destination.cc: cc.env.streaming-ops-dev.kafka.microservices-orders
+    enabled: "true"
+data:
+  datagen-source-connector.json: |-
+    {
+      "name": "pageviews-datagen",
+      "config": {
+        "name": "pageviews-datagen",
+        "kafka.api.key": env.KAFKA_API_KEY,
+        "kafka.api.secret": env.KAFKA_API_SECRET,
+        "connector.class": "DatagenSource",
+        "kafka.topic": "pageviews",
+        "output.data.format": "AVRO",
+        "quickstart": "PAGEVIEWS",
+        "tasks.max": "1"
+      }
+    }
+
