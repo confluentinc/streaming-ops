@@ -8,12 +8,13 @@ function ccloud::login() {
 
 function ccloud::save_cloud_key() {
 
-  local current_cloud_key=$(kubectl get secrets/cc.api-key.cloud -o json | jq -c -r '.data.key' | base64 -d)
-  ccloud api-key delete "$current_cloud_key"
+  kubectl get secrets/cc.api-key.cloud > /dev/null 2>&1 || {
+    # todo: rotating keys needs work as it depends on how pods are updated dynamically with the new values.  Investigate
+    #   for now, just don't change existing key, a user could delete a key and this will create a new one
 
-  local new_cloud_key=$(ccloud api-key create --resource cloud -o json --description "cc.api-key.cloud")
-  local key=$(echo $new_cloud_key | jq -r -c ".key")
-  local secret=$(echo $new_cloud_key | jq -r -c ".secret")
-  kubectl create secret generic cc.api-key.cloud --from-literal="key"="$key" --from-literal="secret"="$secret" -o yaml --dry-run=client | kubectl apply -f -
-
+    local new_cloud_key=$(ccloud api-key create --resource cloud -o json --description "cc.api-key.cloud")
+    local key=$(echo $new_cloud_key | jq -r -c ".key")
+    local secret=$(echo $new_cloud_key | jq -r -c ".secret")
+    kubectl create secret generic cc.api-key.cloud --from-literal="key"="$key" --from-literal="secret"="$secret" -o yaml --dry-run=client | kubectl apply -f -
+  }
 }
