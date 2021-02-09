@@ -3,7 +3,7 @@ kind: Pod
 metadata:
   name: connect-operator
   annotations:
-    fluxcd.io/ignore: "true"
+    fluxcd.io/ignore: "false"
 spec:
   containers:
   - name: connect-operator
