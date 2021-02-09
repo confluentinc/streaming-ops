@@ -120,12 +120,11 @@ function apply_connector() {
 		else
       desired_connector_config=$(echo $desired_connector_config | jq -S -c '.config')
       # Here we PUT the changed configuration to the API under the connectorname/config route
-      # We output the results of the call to /dev/null to prevent leakage of secrets to logging
       # todo: better handling of errors to assist debugging
 			echo "Updating existing connector config: $connector_name on $url"
       echo "$desired_connector_config" > "$connector_name.json"
     	curl -s -S -XPUT -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$url/connectors/$connector_name/config" >> debug.log 2&>1 || {
-        echo "Error updating exisiting connector config: $connector_name. See "
+        echo "Error updating exisiting connector config: $connector_name."
       }
 		fi
 
@@ -162,6 +161,7 @@ hook::run() {
   # so first we pull out the type of update we are getting from Kubernetes
   # todo: Do we need to handle multiple update types here?
   local type=$(jq -r .[0].type $BINDING_CONTEXT_PATH)
+  echo "hook::run $type"
 
   # A "Syncronization" Type event indicates we need to syncronize with the
   # current state of the resource, otherwise we'll get an "Event" type event.
