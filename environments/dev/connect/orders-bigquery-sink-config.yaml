@@ -3,4 +3,4 @@ kind: ConfigMap
 metadata:
   name: orders-bigquery-sink-connector
   labels:
-    enabled: "true"
+    enabled: "false"
