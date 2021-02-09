@@ -191,6 +191,7 @@ hook::run() {
     local config=$(echo $data | jq -r -c ".\"$key\"")
 
     if [[ "$event" == "Deleted" ]]; then
+      echo "Deleted event observed: $key"
       if [[ "$cc_destination" != "null" ]]; then
         local cc_url=$(get_cc_kafka_cluster_connect_url cluster_configmap_name="$cc_destination")
         BASE_URL=$cc_url delete_connector "$config" user_arg=$(get_cc_kafka_cluster_connect_user_arg)
@@ -198,6 +199,7 @@ hook::run() {
         delete_connector config="$config" user_arg=""
       fi
     else
+      echo "New/Updated event observed: $key"
       if [[ "$cc_destination" != "null" ]]; then
         local cc_url=$(get_cc_kafka_cluster_connect_url cluster_configmap_name="$cc_destination")
         BASE_URL=$cc_url apply_connector config="$config" user_arg=$(get_cc_kafka_cluster_connect_user_arg)
