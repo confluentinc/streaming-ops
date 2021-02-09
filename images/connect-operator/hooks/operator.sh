@@ -48,11 +48,20 @@ function load_configs() {
 # Kafka Connnect configuration and deletes it from the Kafka Connect
 # cluster located at $BASE_URL with optional credentials passed in at user_arg
 function delete_connector() {
-  local config user_arg
+  local config cc_destination
   local "${@}"
+
+  local url="$BASE_URL"
+  local curl_user_opt
+
+  if [ ! -z "$cc_destination" ]; then
+    url=$(get_cc_kafka_cluster_connect_url cluster_configmap_name="$cc_destination")
+    curl_user_opt="--user $(get_cc_kafka_cluster_connect_user_arg)"
+  fi
 
 	trap 'rm -f "$tmpfile"' EXIT
 	local tmpfile=$(mktemp) || exit 1
+  echo "$tmpfile" >> debug.log
   echo $config > $tmpfile
 
 	local template_command="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $tmpfile"
@@ -60,7 +69,7 @@ function delete_connector() {
   local desired_connector_config=$(eval $template_command | jq -c '.config')
   local connector_name=$(echo $desired_connector_config | jq -r '.name')
   echo "deleting connector $connector_name"
-	curl -s -S -XDELETE $user_arg "$BASE_URL/connectors/$connector_name"
+	curl -s -S -XDELETE $curl_user_opt "$url/connectors/$connector_name"
 }
 
 # Accepts a JSON string parameter (config) representing a
@@ -72,18 +81,21 @@ function delete_connector() {
 # values in the JQ_ARGS_FROM_CONFIG_FILE variable which is set on startup
 # See load_configs for how those values are provided at runtime
 function apply_connector() {
-  local config user_arg
+  local config cc_destination
   local "${@}"
 
-  if [ -z "$user_arg" ]; then
-    local curl_user_opt=""
-  else
-    local curl_user_opt="--user $user_arg"
+  local url="$BASE_URL"
+  local curl_user_opt
+
+  if [ ! -z "$cc_destination" ]; then
+    url=$(get_cc_kafka_cluster_connect_url cluster_configmap_name="$cc_destination")
+    curl_user_opt="--user $(get_cc_kafka_cluster_connect_user_arg)"
     echo "User option given: $curl_user_opt" >> debug.log
-  fi;
+  fi
 
 	trap 'rm -f "$tmpfile"' EXIT
 	local tmpfile=$(mktemp) || exit 1
+  echo "$tmpfile" >> debug.log
   echo "$config" > $tmpfile
 
 	local template_command="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $tmpfile"
@@ -92,15 +104,15 @@ function apply_connector() {
   local connector_name=$(echo $desired_connector_config | jq -r '.name')
 
   # Determines if a connector already exists with this name
-  echo "looking for existing connector $connector_name on $BASE_URL"
-  local connector_exists_result=$(curl -o /dev/null -s -S -I -w "%{http_code}" -XGET -H "Accpet: application/json" $curl_user_opt "$BASE_URL/connectors/$connector_name")
+  echo "looking for existing connector $connector_name on $url"
+  local connector_exists_result=$(curl -o /dev/null -s -S -I -w "%{http_code}" -XGET -H "Accpet: application/json" $curl_user_opt "$url/connectors/$connector_name")
 
   [[ "$connector_exists_result" == "200" ]] && {
 
     # If the conector already exists, we need to potentially update the configuration instead of POSTing a new connector
     # First we use `jq` to detect any changes in the desired config in the ConfigMap vs what's returned from the connector http endpoint
-    echo "checking current connector config $connector_name on $BASE_URL"
-		local current_connector_config=$(curl -s -S -XGET -H "Content-Type: application/json" $curl_user_opt "$BASE_URL/connectors/$connector_name/config")
+    echo "checking current connector config $connector_name on $url"
+		local current_connector_config=$(curl -s -S -XGET -H "Content-Type: application/json" $curl_user_opt "$url/connectors/$connector_name/config")
 
 		if cmp -s <(echo $desired_connector_config | jq -S -c .) <(echo $current_connector_config | jq -S -c .); then
 			echo "No config changes for $connector_name"
@@ -110,18 +122,18 @@ function apply_connector() {
       # Here we PUT the changed configuration to the API under the connectorname/config route
       # We output the results of the call to /dev/null to prevent leakage of secrets to logging
       # todo: better handling of errors to assist debugging
-			echo "Updating existing connector config: $connector_name on $BASE_URL"
+			echo "Updating existing connector config: $connector_name on $url"
       echo "$desired_connector_config" > "$connector_name.json"
-    	curl -s -S -XPUT -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$BASE_URL/connectors/$connector_name/config" >> debug.log 2&>1 || {
+    	curl -s -S -XPUT -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$url/connectors/$connector_name/config" >> debug.log 2&>1 || {
         echo "Error updating exisiting connector config: $connector_name. See "
       }
 		fi
 
   } || {
 
-    echo "creating new connector: $connector_name on $BASE_URL"
+    echo "creating new connector: $connector_name on $url"
     echo "$desired_connector_config" > "$connector_name.json"
-    curl -s -S -XPOST -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$BASE_URL/connectors" >> debug.log 2&>1
+    curl -s -S -XPOST -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$url/connectors" >> debug.log 2&>1
   }
 }
 
@@ -187,25 +199,16 @@ hook::run() {
     local event=$(jq -r .[0].watchEvent $BINDING_CONTEXT_PATH)
     local data=$(jq -r '.[0].object.data' $BINDING_CONTEXT_PATH)
     local cc_destination=$(jq -r -c '.[0].object.metadata.labels."destination.cc"')
+    local enabled=$(jq -r -c '.[0].object.metadata.labels.enabled')
     local key=$(echo $config | jq -r -c 'keys | .[0]')
     local config=$(echo $data | jq -r -c ".\"$key\"")
 
     if [[ "$event" == "Deleted" ]]; then
       echo "Deleted event observed: $key"
-      if [[ "$cc_destination" != "null" ]]; then
-        local cc_url=$(get_cc_kafka_cluster_connect_url cluster_configmap_name="$cc_destination")
-        BASE_URL=$cc_url delete_connector "$config" user_arg=$(get_cc_kafka_cluster_connect_user_arg)
-      else
-        delete_connector config="$config" user_arg=""
-      fi
+      delete_connector config="$config" cc_destination="$cc_destination"
     else
       echo "New/Updated event observed: $key"
-      if [[ "$cc_destination" != "null" ]]; then
-        local cc_url=$(get_cc_kafka_cluster_connect_url cluster_configmap_name="$cc_destination")
-        BASE_URL=$cc_url apply_connector config="$config" user_arg=$(get_cc_kafka_cluster_connect_user_arg)
-      else
-        apply_connector config="$config" user_arg=""
-      fi
+      apply_connector config="$config" cc_destination="$cc_destination"
     fi
 
   fi
