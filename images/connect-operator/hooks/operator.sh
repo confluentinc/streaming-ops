@@ -174,18 +174,17 @@ hook::run() {
       local object=$(echo "${OBJECT_ENCODED}" | base64 -d)
 
       local cc_destination=$(echo $object | jq -r -c '.object.metadata.labels."destination.cc"')
-
+      local enabled=$(echo $object | jq -r -c '.object.metadata.labels.enabled')
       local keys=$(echo $object | jq -c -r '.object.data | keys | .[]')
 
       for KEY in $keys; do
 
       	local config=$(echo $object | jq -c -r ".object.data | select(has(\"$KEY\")) | .\"$KEY\"")
 
-        if [[ "$cc_destination" != "null" ]]; then
-          local cc_url=$(get_cc_kafka_cluster_connect_url cluster_configmap_name="$cc_destination")
-          BASE_URL=$cc_url apply_connector config="$config" user_arg=$(get_cc_kafka_cluster_connect_user_arg)
+        if [ "$enabled" == "true" ]; then
+          apply_connector config="$config" cc_destination="$cc_destination"
         else
-          apply_connector config="$config" user_arg=""
+          delete_connector config="$config" cc_destination="$cc_destination"
         fi
 
       done
@@ -208,7 +207,11 @@ hook::run() {
       delete_connector config="$config" cc_destination="$cc_destination"
     else
       echo "New/Updated event observed: $key"
-      apply_connector config="$config" cc_destination="$cc_destination"
+      if [ "$enabled" == "true" ]; then
+        apply_connector config="$config" cc_destination="$cc_destination"
+      else
+        delete_connector config="$config" cc_destination="$cc_destination"
+      fi
     fi
 
   fi
