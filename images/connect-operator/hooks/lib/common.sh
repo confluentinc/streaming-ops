@@ -16,7 +16,6 @@ kubernetes:
   namespace:
     nameSelector:
       matchNames: ["default"]
-  jqFilter: ".data"
 EOF
 }
 
