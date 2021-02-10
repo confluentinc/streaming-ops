@@ -5,7 +5,7 @@ metadata:
   labels:
     destination: connect
     destination.cc: cc.env.streaming-ops-dev.kafka.microservices-orders
-    enabled: "true"
+    enabled: "false"
 data:
   datagen-source-connector.json: |-
     {
