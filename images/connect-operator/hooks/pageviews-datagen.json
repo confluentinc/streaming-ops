@@ -1,1 +1,0 @@
-{"connector.class":"DatagenSource","kafka.api.key":"DC2Z5YPNNVASUXRY","kafka.api.secret":"n4LJbR+JNxoH4pfMcp1RV01859AfOlTeSUdFx+AMD9KNODOQMS0ii7yVul2FsB3Q","kafka.topic":"pageviews","name":"pageviews-datagen","output.data.format":"AVRO","quickstart":"PAGEVIEWS","tasks.max":"1"}
