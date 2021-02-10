@@ -10,6 +10,18 @@ kubernetes:
   apiVersion: v1
   kind: ConfigMap
   executeHookOnEvent: ["Added","Deleted","Modified"]
+  jqFilter: ".data"
+  labelSelector:
+    matchLabels:
+      destination: connect
+  namespace:
+    nameSelector:
+      matchNames: ["default"]
+- name: ConnectStatusMonitor
+  apiVersion: v1
+  kind: ConfigMap
+  executeHookOnEvent: ["Added","Deleted","Modified"]
+  jqFilter: ".metadata.labels.enabled"
   labelSelector:
     matchLabels:
       destination: connect
@@ -23,6 +35,7 @@ function common::run_hook() {
   if [[ $1 == "--config" ]] ; then
     common::get_config
   else
+    echo "common::run_hook"
     hook::run
   fi
 }

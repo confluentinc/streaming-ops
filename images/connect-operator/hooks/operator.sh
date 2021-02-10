@@ -11,6 +11,11 @@ BASE_URL=${BASE_URL:-http://connect}
 # Currently sets the global variable JQ_ARGS_FROM_CONFIG_FILE as it's "output"
 function load_configs() {
 
+  if [ -f "/etc/config/connect-operator/connect-operator.properties" ]; then
+    echo "config file already exists,skipping reload"
+    return 0
+  fi
+
   for f in /etc/config/connect-operator/*.properties; do (cat "${f}"; echo) >> /etc/config/connect-operator/connect-operator.properties; done
 
   # read all the lines from the aggregate properties file and load them
@@ -61,7 +66,6 @@ function delete_connector() {
 
   trap 'rm -f "$tmpfile"' EXIT
   local tmpfile=$(mktemp) || exit 1
-  echo "$tmpfile" >> debug.log
   echo $config > $tmpfile
 
   local template_command="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $tmpfile"
@@ -94,7 +98,6 @@ function apply_connector() {
 
   trap 'rm -f "$tmpfile"' EXIT
   local tmpfile=$(mktemp) || exit 1
-  echo "$tmpfile" >> debug.log
   echo "$config" > $tmpfile
 
   local template_command="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $tmpfile"
@@ -115,9 +118,9 @@ function apply_connector() {
     echo "checking current connector config $connector_name on $url"
     local current_connector_config=$(curl -s -S -XGET -H "Content-Type: application/json" $curl_user_opt "$url/connectors/$connector_name/config")
 
-    #echo "desired = $desired_connector_only_config"
-    #echo "current = $current_connector_config"
-
+    # note: There is a known issue here with comparing connector
+    #   configs found on managed confluent cloud with desired configs
+    #   because confluent cloud redacts secrets
     if cmp -s <(echo $desired_connector_only_config | jq -S -c .) <(echo $current_connector_config | jq -S -c .); then
       echo "No config changes for $connector_name"
     else
@@ -172,7 +175,6 @@ hook::run() {
     for OBJECT_ENCODED in $(jq -c -r '.[0].objects | .[] | @base64' "$BINDING_CONTEXT_PATH"); do
 
       local object=$(echo "${OBJECT_ENCODED}" | base64 -d)
-
       local cc_destination=$(echo $object | jq -r -c '.object.metadata.labels."destination.cc"')
       local enabled=$(echo $object | jq -r -c '.object.metadata.labels.enabled')
       local keys=$(echo $object | jq -c -r '.object.data | keys | .[]')
@@ -192,15 +194,13 @@ hook::run() {
     done
 
   elif [[ "$type" == "Event" ]]; then
-
     # The EVENT variable will containe either Added, Updated, or Deleted in the
     # case where $type == Event
-    local event=$(jq -r .[0].watchEvent $BINDING_CONTEXT_PATH)
-    local data=$(jq -r '.[0].object.data' $BINDING_CONTEXT_PATH)
-    local cc_destination=$(jq -r -c '.[0].object.metadata.labels."destination.cc"')
-    local enabled=$(jq -r -c '.[0].object.metadata.labels.enabled')
-    local key=$(echo $config | jq -r -c 'keys | .[0]')
-    local config=$(echo $data | jq -r -c ".\"$key\"")
+    local event=$(jq -r '.[0].watchEvent' $BINDING_CONTEXT_PATH)
+    local cc_destination=$(jq -r -c '.[0].object.metadata.labels."destination.cc"' $BINDING_CONTEXT_PATH)
+    local enabled=$(jq -r -c '.[0].object.metadata.labels.enabled' $BINDING_CONTEXT_PATH)
+    local key=$(jq -r '.[0].object.data | keys | .[0]' $BINDING_CONTEXT_PATH)
+    local config=$(jq -r -c ".[0].object.data.\"$key\"" $BINDING_CONTEXT_PATH)
 
     if [[ "$event" == "Deleted" ]]; then
       echo "Deleted event observed: $key"
@@ -218,7 +218,6 @@ hook::run() {
 
   if [ "${DEBUG}" == "true" ]; then set +x; fi
 }
-
 
 common::run_hook "$@"
 
