@@ -132,6 +132,7 @@ function apply_connector() {
   } || {
 
     echo "creating new connector: $connector_name on $url"
+    echo "$desired_connector_config" > "$connector_name.json"
     curl -s -S -XPOST -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$url/connectors" >> debug.log 2&>1
   }
 }
