@@ -18,15 +18,15 @@ function load_configs() {
   JQ_ARGS_FROM_CONFIG_FILE=$(
   while read line
   do
-  	[[ ! -z "$line" ]] && {
+    [[ ! -z "$line" ]] && {
       # this will turn a java properties file key like:
       # schema.registry.basic.auth.user.info
       # into
       # SCHEMA_REGISTRY_BASIC_AUTH_USER_INFO
-  		local key=$(echo ${line} | cut -d= -f1 | tr '[a-z]' '[A-Z]' | tr '.' '_')
-  		local value=$(echo ${line} | cut -d= -f2)
-  		echo -n "--arg ${key} \"${value}\" "
-  	}
+      local key=$(echo ${line} | cut -d= -f1 | tr '[a-z]' '[A-Z]' | tr '.' '_')
+      local value=$(echo ${line} | cut -d= -f2)
+      echo -n "--arg ${key} \"${value}\" "
+    }
   done < /etc/config/connect-operator/connect-operator.properties)
 
   # The end result is, JQ_ARGS_FROM_CONFIG_FILE looks something like this:
@@ -59,17 +59,17 @@ function delete_connector() {
     curl_user_opt="--user $(get_cc_kafka_cluster_connect_user_arg)"
   fi
 
-	trap 'rm -f "$tmpfile"' EXIT
-	local tmpfile=$(mktemp) || exit 1
+  trap 'rm -f "$tmpfile"' EXIT
+  local tmpfile=$(mktemp) || exit 1
   echo "$tmpfile" >> debug.log
   echo $config > $tmpfile
 
-	local template_command="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $tmpfile"
+  local template_command="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $tmpfile"
 
   local desired_connector_config=$(eval $template_command | jq -c '.config')
   local connector_name=$(echo $desired_connector_config | jq -r '.name')
   echo "deleting connector $connector_name"
-	curl -s -S -XDELETE $curl_user_opt "$url/connectors/$connector_name" >> debug.log 2>&1
+  curl -s -S -XDELETE $curl_user_opt "$url/connectors/$connector_name" >> debug.log 2>&1
 }
 
 # Accepts a JSON string parameter (config) representing a
@@ -92,12 +92,12 @@ function apply_connector() {
     curl_user_opt="--user $(get_cc_kafka_cluster_connect_user_arg)"
   fi
 
-	trap 'rm -f "$tmpfile"' EXIT
-	local tmpfile=$(mktemp) || exit 1
+  trap 'rm -f "$tmpfile"' EXIT
+  local tmpfile=$(mktemp) || exit 1
   echo "$tmpfile" >> debug.log
   echo "$config" > $tmpfile
 
-	local template_command="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $tmpfile"
+  local template_command="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $tmpfile"
 
   local desired_connector_config=$(eval $template_command)
   echo "$desired_connector_config" > "$connector_name.json"
@@ -113,19 +113,21 @@ function apply_connector() {
     # If the conector already exists, we need to potentially update the configuration instead of POSTing a new connector
     # First we use `jq` to detect any changes in the desired config in the ConfigMap vs what's returned from the connector http endpoint
     echo "checking current connector config $connector_name on $url"
-		local current_connector_config=$(curl -s -S -XGET -H "Content-Type: application/json" $curl_user_opt "$url/connectors/$connector_name/config")
+    local current_connector_config=$(curl -s -S -XGET -H "Content-Type: application/json" $curl_user_opt "$url/connectors/$connector_name/config")
 
-		if cmp -s <(echo $desired_connector_only_config | jq '.config' | jq -S -c .) <(echo $current_connector_config | jq -S -c .); then
-			echo "No config changes for $connector_name"
-      echo "$desired_connector_config" > "$connector_name.json"
-		else
+    #echo "desired = $desired_connector_only_config"
+    #echo "current = $current_connector_config"
+
+    if cmp -s <(echo $desired_connector_only_config | jq -S -c .) <(echo $current_connector_config | jq -S -c .); then
+      echo "No config changes for $connector_name"
+    else
       # Here we PUT the changed configuration to the API under the connectorname/config route
       # todo: better handling of errors to assist debugging
-			echo "Updating existing connector config: $connector_name on $url"
-    	curl -s -S -XPUT -H "Content-Type: application/json" --data "$desired_connector_only_config" $curl_user_opt "$url/connectors/$connector_name/config" >> debug.log 2&>1 || {
+      echo "Updating existing connector config: $connector_name on $url"
+      curl -s -S -XPUT -H "Content-Type: application/json" --data "$desired_connector_only_config" $curl_user_opt "$url/connectors/$connector_name/config" >> debug.log 2&>1 || {
         echo "Error updating exisiting connector config: $connector_name: $?"
       }
-		fi
+    fi
 
   } || {
 
@@ -135,8 +137,8 @@ function apply_connector() {
 }
 
 function get_cc_kafka_cluster_connect_url() {
-	local cluster_configmap_name
-	local "${@}"
+  local cluster_configmap_name
+  local "${@}"
 
   local cluster_info=$(kubectl get configmap/"$cluster_configmap_name" -o json)
   local env_id=$(echo $cluster_info | jq -r '.metadata.labels.environment_id')
@@ -177,7 +179,7 @@ hook::run() {
 
       for KEY in $keys; do
 
-      	local config=$(echo $object | jq -c -r ".object.data | select(has(\"$KEY\")) | .\"$KEY\"")
+        local config=$(echo $object | jq -c -r ".object.data | select(has(\"$KEY\")) | .\"$KEY\"")
 
         if [ "$enabled" == "true" ]; then
           apply_connector config="$config" cc_destination="$cc_destination"
