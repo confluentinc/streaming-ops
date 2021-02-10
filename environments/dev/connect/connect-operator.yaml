@@ -3,11 +3,11 @@ kind: Pod
 metadata:
   name: connect-operator
   annotations:
-    fluxcd.io/ignore: "true"
+    fluxcd.io/ignore: "false"
 spec:
   containers:
   - name: connect-operator
-    image: cnfldemos/connect-operator:sha-ca81733
+    image: cnfldemos/connect-operator:sha-7a6c7cc
     env:
     - name: DEBUG
       value: "false"
