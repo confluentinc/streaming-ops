@@ -69,7 +69,7 @@ function delete_connector() {
   local desired_connector_config=$(eval $template_command | jq -c '.config')
   local connector_name=$(echo $desired_connector_config | jq -r '.name')
   echo "deleting connector $connector_name"
-	curl -s -S -XDELETE $curl_user_opt "$url/connectors/$connector_name"
+	curl -s -S -XDELETE $curl_user_opt "$url/connectors/$connector_name" >> debug.log 2>&1
 }
 
 # Accepts a JSON string parameter (config) representing a
@@ -87,7 +87,7 @@ function apply_connector() {
   local url="$BASE_URL"
   local curl_user_opt
 
-  if [ ! -z "$cc_destination" ]; then
+  if [ ! -z "$cc_destination" ] && [ "$cc_destination" != "null" ]; then
     url=$(get_cc_kafka_cluster_connect_url cluster_configmap_name="$cc_destination")
     curl_user_opt="--user $(get_cc_kafka_cluster_connect_user_arg)"
     echo "User option given: $curl_user_opt" >> debug.log
