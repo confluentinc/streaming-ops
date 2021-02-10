@@ -90,7 +90,6 @@ function apply_connector() {
   if [ ! -z "$cc_destination" ] && [ "$cc_destination" != "null" ]; then
     url=$(get_cc_kafka_cluster_connect_url cluster_configmap_name="$cc_destination")
     curl_user_opt="--user $(get_cc_kafka_cluster_connect_user_arg)"
-    echo "User option given: $curl_user_opt" >> debug.log
   fi
 
 	trap 'rm -f "$tmpfile"' EXIT
@@ -101,6 +100,8 @@ function apply_connector() {
 	local template_command="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $tmpfile"
 
   local desired_connector_config=$(eval $template_command)
+  echo "$desired_connector_config" > "$connector_name.json"
+  local desired_connector_only_config=$(echo $desired_connector_config | jq -S -c '.config')
   local connector_name=$(echo $desired_connector_config | jq -r '.name')
 
   # Determines if a connector already exists with this name
@@ -114,24 +115,21 @@ function apply_connector() {
     echo "checking current connector config $connector_name on $url"
 		local current_connector_config=$(curl -s -S -XGET -H "Content-Type: application/json" $curl_user_opt "$url/connectors/$connector_name/config")
 
-		if cmp -s <(echo $desired_connector_config | jq -S -c .) <(echo $current_connector_config | jq -S -c .); then
+		if cmp -s <(echo $desired_connector_only_config | jq '.config' | jq -S -c .) <(echo $current_connector_config | jq -S -c .); then
 			echo "No config changes for $connector_name"
       echo "$desired_connector_config" > "$connector_name.json"
 		else
-      desired_connector_config=$(echo $desired_connector_config | jq -S -c '.config')
       # Here we PUT the changed configuration to the API under the connectorname/config route
       # todo: better handling of errors to assist debugging
 			echo "Updating existing connector config: $connector_name on $url"
-      echo "$desired_connector_config" > "$connector_name.json"
-    	curl -s -S -XPUT -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$url/connectors/$connector_name/config" >> debug.log 2&>1 || {
-        echo "Error updating exisiting connector config: $connector_name."
+    	curl -s -S -XPUT -H "Content-Type: application/json" --data "$desired_connector_only_config" $curl_user_opt "$url/connectors/$connector_name/config" >> debug.log 2&>1 || {
+        echo "Error updating exisiting connector config: $connector_name: $?"
       }
 		fi
 
   } || {
 
     echo "creating new connector: $connector_name on $url"
-    echo "$desired_connector_config" > "$connector_name.json"
     curl -s -S -XPOST -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$url/connectors" >> debug.log 2&>1
   }
 }
