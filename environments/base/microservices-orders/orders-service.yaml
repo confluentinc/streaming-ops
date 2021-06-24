@@ -79,4 +79,19 @@ spec:
           readOnly: true
         ports:
         - containerPort: 18894
+        startupProbe:
+          httpGet:
+            path: /v1/healthcheck
+            port: 18894
+          failureThreshold: 12
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /v1/healthcheck
+            port: 18894
+          initialDelaySeconds: 3
+          periodSeconds: 30
+
+
+
 
