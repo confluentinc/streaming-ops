@@ -61,7 +61,7 @@ function delete_connector() {
     curl_user_opt="--user $(get_cc_kafka_cluster_connect_user_arg)"
   fi
 
-  trap 'rm -f "$tmpfile"' EXIT
+  trap 'rm -f "$tmpfile"' RETURN
   local tmpfile=$(mktemp) || exit 1
   echo $config > $tmpfile
 
@@ -93,7 +93,7 @@ function apply_connector() {
     curl_user_opt="--user $(get_cc_kafka_cluster_connect_user_arg)"
   fi
 
-  trap 'rm -f "$tmpfile"' EXIT
+  trap 'rm -f "$tmpfile"' RETURN
   local tmpfile=$(mktemp) || exit 1
   echo "$config" > $tmpfile
 
@@ -124,7 +124,7 @@ function apply_connector() {
       # Here we PUT the changed configuration to the API under the connectorname/config route
       # todo: better handling of errors to assist debugging
       echo "Updating existing connector config: $connector_name on $url"
-      curl -s -S -XPUT -H "Content-Type: application/json" --data "$desired_connector_only_config" $curl_user_opt "$url/connectors/$connector_name/config" >> debug.log 2&>1 || {
+      curl -s -S -XPUT -H "Content-Type: application/json" --data "$desired_connector_only_config" $curl_user_opt "$url/connectors/$connector_name/config" >> debug.log 2>&1 || {
         echo "Error updating exisiting connector config: $connector_name: $?"
       }
     fi
@@ -133,7 +133,7 @@ function apply_connector() {
 
     echo "creating new connector: $connector_name on $url"
     echo "$desired_connector_config" > "$connector_name.json"
-    curl -s -S -XPOST -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$url/connectors" >> debug.log 2&>1
+    curl -s -S -XPOST -H "Content-Type: application/json" --data "$desired_connector_config" $curl_user_opt "$url/connectors" >> debug.log 2>&1
   }
 }
 
