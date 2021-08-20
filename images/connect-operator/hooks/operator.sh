@@ -67,7 +67,7 @@ function delete_connector() {
 
   local template_command="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $tmpfile"
 
-  local desired_connector_config=$(eval $template_command | jq -c '.config')
+  local desired_connector_config=$(eval $template_command)
   local connector_name=$(echo $desired_connector_config | jq -r '.name')
   echo "deleting connector $connector_name"
   curl -s -S -XDELETE $curl_user_opt "$url/connectors/$connector_name" >> debug.log 2>&1
@@ -100,9 +100,9 @@ function apply_connector() {
   local template_command="jq -c -n $JQ_ARGS_FROM_CONFIG_FILE -f $tmpfile"
 
   local desired_connector_config=$(eval $template_command)
-  echo "$desired_connector_config" > "$connector_name.json"
   local desired_connector_only_config=$(echo $desired_connector_config | jq -S -c '.config')
   local connector_name=$(echo $desired_connector_config | jq -r '.name')
+  echo "$desired_connector_config" > "$connector_name.json"
 
   # Determines if a connector already exists with this name
   echo "looking for existing connector $connector_name on $url"
