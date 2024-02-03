@@ -52,7 +52,7 @@ destroy-cluster:
 install-bitnami-secret-controller:
 	@$(call print-header,"Installing bitnami secret controller")
 	@$(call print-prompt)
-	kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.12.4/controller.yaml
+	kubectl apply -f https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.25.0/controller.yaml
 
 wait-for-secret-controller:
 	@$(call print-header,"Waiting for secret controller")
