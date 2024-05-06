@@ -192,25 +192,27 @@ hook::run() {
     done
 
   elif [[ "$type" == "Event" ]]; then
-    # The EVENT variable will containe either Added, Updated, or Deleted in the
+    # The EVENT variable will contain either Added, Updated, or Deleted in the
     # case where $type == Event
     local event=$(jq -r '.[0].watchEvent' $BINDING_CONTEXT_PATH)
     local cc_destination=$(jq -r -c '.[0].object.metadata.labels."destination.cc"' $BINDING_CONTEXT_PATH)
     local enabled=$(jq -r -c '.[0].object.metadata.labels.enabled' $BINDING_CONTEXT_PATH)
-    local key=$(jq -r '.[0].object.data | keys | .[0]' $BINDING_CONTEXT_PATH)
-    local config=$(jq -r -c ".[0].object.data.\"$key\"" $BINDING_CONTEXT_PATH)
+    for key in $(jq -r '.[0].object.data | keys | .[]' $BINDING_CONTEXT_PATH); do
 
-    if [[ "$event" == "Deleted" ]]; then
-      echo "Deleted event observed: $key"
-      delete_connector config="$config" cc_destination="$cc_destination"
-    else
-      echo "New/Updated event observed: $key"
-      if [ "$enabled" == "true" ]; then
-        apply_connector config="$config" cc_destination="$cc_destination"
-      else
+      local config=$(jq -r -c ".[0].object.data.\"$key\"" $BINDING_CONTEXT_PATH)
+
+      if [[ "$event" == "Deleted" ]]; then
+        echo "Deleted event observed: $key"
         delete_connector config="$config" cc_destination="$cc_destination"
+      else
+        echo "New/Updated event observed: $key"
+        if [ "$enabled" == "true" ]; then
+          apply_connector config="$config" cc_destination="$cc_destination"
+        else
+          delete_connector config="$config" cc_destination="$cc_destination"
+        fi
       fi
-    fi
+    done
 
   fi
 
